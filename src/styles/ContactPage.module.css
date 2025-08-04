@@ -1,0 +1,42 @@
+.contactPage {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--surface-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.contactPage h1 {
+    text-align: center;
+}
+.contactPage p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
+}
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+.formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.formGroup input,
+.formGroup textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+.formGroup input:focus,
+.formGroup textarea:focus {
+    outline: 2px solid var(--primary-color);
+}
+.thankYouMessage {
+    text-align: center;
+    padding: 2rem;
+}

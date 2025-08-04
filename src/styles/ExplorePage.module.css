@@ -1,0 +1,99 @@
+/* Styling for ExplorePage */
+.header {
+    height: 50vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.headerOverlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 43, 127, 0.6);
+}
+
+.headerContent {
+    position: relative;
+    z-index: 2;
+}
+
+.headerContent h1 {
+    font-size: 3rem;
+    color: white;
+}
+
+.sectionTitle {
+    font-size: 2.2rem;
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.attractionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.attractionCard {
+    background: var(--surface-color);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.attractionCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+.attractionCard img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+.cardContent {
+    padding: 1.5rem;
+}
+.cardContent h3 {
+    margin-bottom: 0.5rem;
+}
+
+/* Stamps Section */
+.stampsGrid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+.stampCard {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px dashed var(--accent-color);
+}
+.stampButton {
+    margin-top: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.stampButton:hover:not(:disabled) {
+    background-color: var(--primary-color);
+}
+.stampButton:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+}
+.loginPrompt {
+    margin-top: 1rem;
+    font-style: italic;
+    color: var(--text-secondary);
+}

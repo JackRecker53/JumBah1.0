@@ -1,0 +1,86 @@
+.navbar {
+    background-color: var(--surface-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 0 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+.navContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.navMenu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.navMenu a {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 1rem;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.navMenu a:hover,
+.navMenu a.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.navControls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.loginButton {
+    background-color: var(--primary-color);
+    color: white !important; /* Important to override link styles */
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.loginButton:hover {
+    background-color: var(--accent-color);
+    color: var(--secondary-color) !important;
+    transform: scale(1.05);
+}
+
+.profileIcon {
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.profileIcon:hover {
+    color: var(--primary-color);
+}
+
+.themeToggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.3s, transform 0.3s;
+}
+
+.themeToggle:hover {
+    color: var(--primary-color);
+    transform: rotate(15deg);
+}

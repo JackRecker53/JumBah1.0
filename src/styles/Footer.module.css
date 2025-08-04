@@ -1,0 +1,48 @@
+.footer {
+    background-color: var(--secondary-color);
+    color: var(--text-secondary);
+    padding-top: 3rem;
+    margin-top: 4rem;
+}
+
+[data-theme='dark'] .footer {
+    color: #b0c4de;
+}
+
+.footerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.footerAbout h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.socialLinks {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.socialLinks a {
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.socialLinks a:hover {
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.footerBottom {
+    text-align: center;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--surface-color);
+    font-size: 0.9rem;
+}

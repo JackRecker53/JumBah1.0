@@ -1,0 +1,100 @@
+/* Adventure Page Styles */
+.loginWall {
+    text-align: center;
+    padding: 5rem 0;
+}
+
+.loginWall h2 {
+    font-size: 2.5rem;
+}
+
+.loginWall p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.adventurePage .header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 1.5rem;
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.statItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.statItem .icon {
+    color: var(--primary-color);
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.section {
+    background-color: var(--surface-color);
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+.section h2 {
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.questList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.questItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid var(--background-color);
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+.questItem.completed {
+    border-left: 5px solid #28a745; /* Green for completed */
+    background-color: var(--background-color);
+}
+.questItem.completed h3 {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.questReward {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.checkIcon {
+    color: #28a745;
+}
+
+.comingSoon {
+    font-style: italic;
+    color: var(--text-secondary);
+}
