@@ -12,19 +12,49 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
+  height: 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navLeft {
+  flex: 0 0 auto;
+}
+
+.navCenter {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.navRight {
+  flex: 0 0 auto;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.logo img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .navMenu {
   display: flex;
   list-style: none;
   gap: 2rem;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  align-items: center;
 }
 
 .navMenu a {
@@ -34,6 +64,7 @@
   padding-bottom: 5px;
   border-bottom: 2px solid transparent;
   transition: color 0.3s, border-color 0.3s;
+  text-decoration: none;
 }
 
 .navMenu a:hover,
@@ -46,6 +77,9 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .loginButton {
@@ -99,4 +133,34 @@
 .themeToggle:hover {
   color: var(--primary-color);
   transform: rotate(15deg);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .navContainer {
+    height: 70px;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .navMenu {
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .navControls {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .navCenter {
+    display: none; /* Hide menu on very small screens */
+  }
+
+  .navContainer {
+    justify-content: space-between;
+  }
 }
