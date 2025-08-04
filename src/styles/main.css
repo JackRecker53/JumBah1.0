@@ -1,31 +1,35 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
 /* CSS Variables for Theming */
 :root {
-  --font-main: 'Poppins', sans-serif;
-  
-  /* Light Theme */
-  --primary-color: #0484D6;
-  --secondary-color: #002B7F;
-  --accent-color: #77CCFF;
-  --background-color: #f4f8fa;
-  --surface-color: #ffffff;
-  --text-primary: #121212;
-  --text-secondary: #555555;
-  --glow-color: rgba(4, 132, 214, 0.5);
+  --font-main: "Poppins", sans-serif;
+
+  /* Light Theme - Sabah-inspired palette */
+  --primary-color: #0484d6; /* Ocean Blue - main brand color */
+  --secondary-color: #072b80; /* Deep Navy - headers and nav */
+  --accent-color: #77cbfe; /* Sky Blue - highlights and accents */
+  --warm-accent: #f5362e; /* Sunset Red - CTAs and energy */
+  --background-color: #ffffff; /* Pure White - clean background */
+  --surface-color: #f8fafb; /* Off-white - cards and surfaces */
+  --text-primary: #072b80; /* Deep Navy - main text */
+  --text-secondary: #0484d6; /* Ocean Blue - secondary text */
+  --glow-color: rgba(119, 203, 254, 0.4); /* Sky Blue glow */
+  --warm-glow: rgba(245, 54, 46, 0.3); /* Sunset glow */
 }
 
-[data-theme='dark'] {
-  /* Dark Theme */
-  --primary-color: #77CCFF;
-  --secondary-color: #E0F7FA;
-  --accent-color: #0484D6;
-  --background-color: #001f3f; /* Dark Navy */
-  --surface-color: #002b5c;   /* Darker Navy */
-  --text-primary: #f4f8fa;
-  --text-secondary: #b0c4de;
-  --glow-color: rgba(119, 204, 255, 0.6);
+[data-theme="dark"] {
+  /* Dark Theme - Sabah night sky inspired */
+  --primary-color: #77cbfe; /* Sky Blue - bright in dark */
+  --secondary-color: #f5362e; /* Sunset Red - warm contrast */
+  --accent-color: #0484d6; /* Ocean Blue - accents */
+  --warm-accent: #ff6b5a; /* Lighter red for dark theme */
+  --background-color: #072b80; /* Deep Navy - night sky */
+  --surface-color: #0d3d99; /* Lighter Navy - surfaces */
+  --text-primary: #ffffff; /* Pure White - main text */
+  --text-secondary: #77cbfe; /* Sky Blue - secondary text */
+  --glow-color: rgba(119, 203, 254, 0.6); /* Bright sky blue glow */
+  --warm-glow: rgba(245, 54, 46, 0.5); /* Warm sunset glow */
 }
 
 * {
@@ -42,7 +46,9 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--primary-color);
   font-weight: 600;
   margin-bottom: 1rem;
@@ -59,26 +65,55 @@ a:hover {
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+  width: 90%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    color: var(--background-color);
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, var(--warm-accent), #ff6b5a);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px var(--warm-glow);
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--glow-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--warm-glow);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-secondary:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px var(--glow-color);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--glow-color);
 }
