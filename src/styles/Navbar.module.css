@@ -34,7 +34,10 @@
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--primary-color);
+  background: linear-gradient(135deg, #f5362e, #0484d6, #072b80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   display: flex;
   align-items: center;
   height: 100%;
