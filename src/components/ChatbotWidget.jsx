@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styles from "../styles/Chatbot.module.css";
 import { runChat } from "../services/geminiService";
 import {
   FaCommentDots,
@@ -7,7 +8,6 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
-import "../styles/Chatbot.css";
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,34 +62,45 @@ const ChatbotWidget = () => {
 
   return (
     <div>
-      <button className="fab" onClick={toggleOpen} aria-label="Open Chatbot">
-        <img
-          src="/backgrounds/madu-icon.png"
-          alt="Madu Chat"
-          className="fabIcon"
-        />
+      <button
+        className={styles.fab}
+        onClick={toggleOpen}
+        aria-label="Open Chatbot"
+      >
+        {isOpen ? (
+          <FaTimes />
+        ) : (
+          <img
+            src="public\backgrounds\madu-icon.png"
+            alt="Madu Chat"
+            style={{ width: "40px", height: "40px" }}
+          />
+        )}
       </button>
       {isOpen && (
-        <div className="chatWindow">
-          <div className="chatHeader">
+        <div className={styles.chatWindow}>
+          <div className={styles.chatHeader}>
             <h3>Chat with Madu</h3>
             <button onClick={toggleOpen}>
               <FaTimes />
             </button>
           </div>
-          <div className="chatBody">
+          <div className={styles.chatBody}>
             {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.sender}`}>
+              <div
+                key={index}
+                className={`${styles.message} ${styles[msg.sender]}`}
+              >
                 {msg.text}
               </div>
             ))}
             {isLoading && (
-              <div className={`message bot`}>
-                <FaSpinner className="spinner" />
+              <div className={`${styles.message} ${styles.bot}`}>
+                <FaSpinner className={styles.spinner} />
               </div>
             )}
           </div>
-          <div className="chatInput">
+          <div className={styles.chatInput}>
             <input
               type="text"
               value={input}
