@@ -1,13 +1,14 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import ExplorePage from './pages/ExplorePage';
-import AdventurePage from './pages/AdventurePage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import EventsPage from './pages/EventsPage';
-import Login from './pages/Login';
-import UserProfile from './pages/UserProfile';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import HomePage from "./pages/HomePage";
+import ExplorePage from "./pages/ExplorePage";
+import AdventurePage from "./pages/AdventurePage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import EventsPage from "./pages/EventsPage";
+import Login from "./pages/Login";
+import UserProfile from "./pages/UserProfile";
+import DropdownMenu from "../components/DropdownMenu.jsx";
 
 function App() {
   return (

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import styles from "../styles/SearchModal.module.css";
 import { FaSearch } from "react-icons/fa";
 
 import { districts } from "../data/attractions";
+import "../styles/SearchModal.css";
 
 const SearchModal = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState("");
@@ -54,28 +54,28 @@ const SearchModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className={styles.dropdownSearchPanel}>
-      <div className={styles.searchContainer}>
-        <button className={styles.closeButton} onClick={onClose}>
+    <div className="dropdownSearchPanel">
+      <div className="searchContainer">
+        <button className="closeButton" onClick={onClose}>
           &times;
         </button>
-        <form className={styles.searchInputContainer} onSubmit={handleSearch}>
+        <form className="searchInputContainer" onSubmit={handleSearch}>
           <input
-            className={styles.searchInput}
+            className="searchInput"
             type="text"
             placeholder="Search for something in Sabah"
             autoFocus
             value={query}
             onChange={handleInput}
           />
-          <button className={styles.searchSubmitButton} type="submit">
+          <button className="searchSubmitButton" type="submit">
             <FaSearch />
           </button>
         </form>
         {results.length > 0 && (
-          <div className={styles.searchResults}>
+          <div className="searchResults">
             {results.map((a, i) => (
-              <div key={i} className={styles.resultItem}>
+              <div key={i} className="resultItem">
                 <strong>{a.name}</strong>{" "}
                 <span style={{ color: "#888" }}>({a.district})</span>
                 <div style={{ fontSize: "0.95em", color: "#555" }}>
@@ -86,8 +86,8 @@ const SearchModal = ({ isOpen, onClose }) => {
           </div>
         )}
         {query && results.length === 0 && (
-          <div className={styles.searchResults}>
-            <div className={styles.resultItem} style={{ color: "#888" }}>
+          <div className="searchResults">
+            <div className="resultItem" style={{ color: "#888" }}>
               No results found.
             </div>
           </div>

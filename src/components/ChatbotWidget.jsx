@@ -1,5 +1,4 @@
 import { useState } from "react";
-import styles from "../styles/Chatbot.module.css";
 import { runChat } from "../services/geminiService";
 import {
   FaCommentDots,
@@ -8,6 +7,7 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
+import "../styles/Chatbot.css";
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,45 +62,34 @@ const ChatbotWidget = () => {
 
   return (
     <div>
-      <button
-        className={styles.fab}
-        onClick={toggleOpen}
-        aria-label="Open Chatbot"
-      >
-        {isOpen ? (
-          <FaTimes />
-        ) : (
-          <img
-            src="/backgrounds/madu-icon.png"
-            alt="Madu Chat"
-            className={styles.fabIcon}
-          />
-        )}
+      <button className="fab" onClick={toggleOpen} aria-label="Open Chatbot">
+        <img
+          src="/backgrounds/madu-icon.png"
+          alt="Madu Chat"
+          className="fabIcon"
+        />
       </button>
       {isOpen && (
-        <div className={styles.chatWindow}>
-          <div className={styles.chatHeader}>
+        <div className="chatWindow">
+          <div className="chatHeader">
             <h3>Chat with Madu</h3>
             <button onClick={toggleOpen}>
               <FaTimes />
             </button>
           </div>
-          <div className={styles.chatBody}>
+          <div className="chatBody">
             {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`${styles.message} ${styles[msg.sender]}`}
-              >
+              <div key={index} className={`message ${msg.sender}`}>
                 {msg.text}
               </div>
             ))}
             {isLoading && (
-              <div className={`${styles.message} ${styles.bot}`}>
-                <FaSpinner className={styles.spinner} />
+              <div className={`message bot`}>
+                <FaSpinner className="spinner" />
               </div>
             )}
           </div>
-          <div className={styles.chatInput}>
+          <div className="chatInput">
             <input
               type="text"
               value={input}

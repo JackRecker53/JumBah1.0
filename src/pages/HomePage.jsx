@@ -1,4 +1,4 @@
-import styles from "../styles/HomePage.module.css";
+import "../styles/HomePage.css";
 import { Link } from "react-router-dom";
 import { districts } from "../data/attractions";
 import { upcomingEvents } from "../data/events";
@@ -15,14 +15,14 @@ const HomePage = () => {
   const districtList = Object.keys(districts);
 
   return (
-    <div className={styles.homePage}>
+    <div className="homePage">
       {/* Hero Section */}
-      <header
-        className={styles.heroSection}
+      <div
+        className="heroSection"
         style={{ backgroundImage: `url('/backgrounds/MountKinabalu.png')` }}
       >
-        <div className={styles.heroOverlay}></div>
-        <div className={styles.heroContent}>
+        <div className="heroOverlay"></div>
+        <div className="heroContent">
           <h1>Welcome to Sabah, Land Below the Wind</h1>
           <p>
             Your unforgettable adventure starts with JumBah. Let's explore guys!
@@ -32,11 +32,11 @@ const HomePage = () => {
             Start Your Adventure
           </Link>
         </div>
-      </header>
+      </div>
 
       {/* Explore Districts Section */}
-      <section className={`${styles.section} container`}>
-        <h2 className={styles.sectionTitle}>Explore Our Districts</h2>
+      <section className="section container">
+        <h2 className="sectionTitle">Explore Our Districts</h2>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           spaceBetween={30}
@@ -53,10 +53,10 @@ const HomePage = () => {
             <SwiperSlide key={name}>
               <Link
                 to={`/explore/${name.replace(/\s+/g, "-")}`}
-                className={styles.districtCard}
+                className="districtCard"
               >
                 <img src={districts[name].attractions[0].image} alt={name} />
-                <div className={styles.cardOverlay}>
+                <div className="cardOverlay">
                   <h3>{name}</h3>
                 </div>
               </Link>
@@ -66,17 +66,15 @@ const HomePage = () => {
       </section>
 
       {/* Upcoming Events Section */}
-      <section
-        className={`${styles.section} ${styles.eventsSection} container`}
-      >
-        <h2 className={styles.sectionTitle}>Upcoming Events</h2>
-        <div className={styles.eventList}>
+      <section className="section eventsSection container">
+        <h2 className="sectionTitle">Upcoming Events</h2>
+        <div className="eventList">
           {upcomingEvents.slice(0, 3).map((event) => (
-            <div key={event.id} className={styles.eventCard}>
-              <div className={styles.eventDate}>{event.date}</div>
-              <h3 className={styles.eventTitle}>{event.title}</h3>
-              <p className={styles.eventLocation}>{event.location}</p>
-              <Link to="/events" className={styles.readMore}>
+            <div key={event.id} className="eventCard">
+              <div className="eventDate">{event.date}</div>
+              <h3 className="eventTitle">{event.title}</h3>
+              <p className="eventLocation">{event.location}</p>
+              <Link to="/events" className="readMore">
                 See More <FaArrowRight />
               </Link>
             </div>
