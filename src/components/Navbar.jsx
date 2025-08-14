@@ -82,18 +82,8 @@ const Navbar = () => {
             <FaSearch size={22} />
           </button>
 
-          {/* Theme Switcher */}
-          <ThemeSwitcher />
-
-          {/* Dropdown Menu */}
+          {/* Dropdown Menu - Moved to the right */}
           <DropdownMenu />
-
-          {/* Login Button (if not authenticated) */}
-          {!isAuthenticated && (
-            <Link to="/login" className="loginButton">
-              Login
-            </Link>
-          )}
         </div>
 
         {/* Search Modal */}
