@@ -55,6 +55,16 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
+              to="/ai-planner"
+              className={({ isActive }) =>
+                `ai-planner-button ${isActive ? "active" : ""}`
+              }
+            >
+              AI Planner
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/adventure"
               className={({ isActive }) => (isActive ? "active" : "")}
             >

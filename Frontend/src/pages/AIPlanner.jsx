@@ -1,0 +1,579 @@
+import React, { useState, useRef, useEffect } from "react";
+import { aiPlannerService } from "../services/aiPlannerService";
+import "../styles/AIPlanner.css";
+import {
+  FaRobot,
+  FaUser,
+  FaPaperPlane,
+  FaSpinner,
+  FaMapMarkedAlt,
+  FaPlane,
+  FaHeart,
+  FaCalendarAlt,
+  FaMoneyBillWave,
+  FaUsers,
+  FaBed,
+  FaCopy,
+  FaDownload,
+} from "react-icons/fa";
+
+const AIPlanner = () => {
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      type: "bot",
+      content:
+        "Hello! I'm your AI Travel Assistant for Sabah, Malaysia. I can help you:\n\n🗺️ Create detailed itineraries\n✈️ Find flight recommendations\n💡 Answer any travel questions\n\nWhat would you like to explore today?",
+      timestamp: new Date(),
+    },
+  ]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeMode, setActiveMode] = useState("chat"); // 'chat', 'itinerary', 'flights'
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // Form states for structured requests
+  const [itineraryForm, setItineraryForm] = useState({
+    duration: "3-5 days",
+    budget: "1000",
+    interests: [],
+    accommodation: "mid-range",
+    group_size: "2",
+  });
+
+  const [flightForm, setFlightForm] = useState({
+    origin: "",
+    departure_date: "",
+    return_date: "",
+    passengers: "1",
+    class: "economy",
+  });
+
+  const interestOptions = [
+    "Nature & Wildlife",
+    "Adventure Sports",
+    "Cultural Experiences",
+    "Photography",
+    "Diving & Snorkeling",
+    "Food & Cuisine",
+    "Relaxation",
+    "Shopping",
+    "Nightlife",
+    "History",
+  ];
+
+  const quickQuestions = [
+    "What are the best diving spots in Sabah?",
+    "When is the best time to climb Mount Kinabalu?",
+    "What local food should I try in Kota Kinabalu?",
+    "How much does a 5-day trip to Sabah cost?",
+    "What should I pack for a Sabah adventure?",
+  ];
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const addMessage = (type, content) => {
+    const newMessage = {
+      id: Date.now(),
+      type,
+      content,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, newMessage]);
+  };
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return;
+
+    const userMessage = inputMessage.trim();
+    addMessage("user", userMessage);
+    setInputMessage("");
+    setIsLoading(true);
+
+    try {
+      const response = await aiPlannerService.getTravelRecommendations(
+        userMessage
+      );
+      if (response.success) {
+        addMessage("bot", response.recommendations);
+      } else {
+        addMessage(
+          "bot",
+          "I'm sorry, I encountered an error. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      addMessage(
+        "bot",
+        "I'm having trouble connecting. Please check that the backend server is running and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleQuickQuestion = (question) => {
+    setInputMessage(question);
+    setTimeout(() => handleSendMessage(), 100);
+  };
+
+  const handleInterestToggle = (interest) => {
+    setItineraryForm((prev) => ({
+      ...prev,
+      interests: prev.interests.includes(interest)
+        ? prev.interests.filter((i) => i !== interest)
+        : [...prev.interests, interest],
+    }));
+  };
+
+  const generateItinerary = async () => {
+    if (itineraryForm.interests.length === 0) {
+      addMessage(
+        "bot",
+        "Please select at least one interest before generating an itinerary."
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    addMessage(
+      "user",
+      `Generate a ${itineraryForm.duration} itinerary for ${itineraryForm.group_size} people with a budget of RM${itineraryForm.budget}`
+    );
+
+    try {
+      const response = await aiPlannerService.generateItinerary(itineraryForm);
+      if (response.success) {
+        addMessage("bot", response.itinerary);
+      } else {
+        addMessage(
+          "bot",
+          "I'm sorry, I couldn't generate the itinerary. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      addMessage(
+        "bot",
+        "I'm having trouble generating your itinerary. Please ensure the backend server is running."
+      );
+    } finally {
+      setIsLoading(false);
+      setActiveMode("chat");
+    }
+  };
+
+  const getFlightRecommendations = async () => {
+    if (!flightForm.origin.trim()) {
+      addMessage(
+        "bot",
+        "Please enter your departure city before getting flight recommendations."
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    addMessage(
+      "user",
+      `Find flights from ${flightForm.origin} to Kota Kinabalu for ${flightForm.passengers} passengers`
+    );
+
+    try {
+      const response = await aiPlannerService.getFlightRecommendations(
+        flightForm
+      );
+      if (response.success) {
+        addMessage("bot", response.recommendations);
+      } else {
+        addMessage(
+          "bot",
+          "I'm sorry, I couldn't get flight recommendations. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      addMessage(
+        "bot",
+        "I'm having trouble getting flight information. Please ensure the backend server is running."
+      );
+    } finally {
+      setIsLoading(false);
+      setActiveMode("chat");
+    }
+  };
+
+  const copyMessage = (content) => {
+    navigator.clipboard.writeText(content);
+    // You could add a toast notification here
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  return (
+    <div className="ai-planner">
+      <div className="planner-container">
+        {/* Header */}
+        <div className="planner-header">
+          <div className="header-content">
+            <FaRobot className="ai-icon" />
+            <div>
+              <h1>AI Travel Assistant</h1>
+              <p>Your personal guide to exploring Sabah, Malaysia</p>
+            </div>
+          </div>
+          <div className="mode-toggles">
+            <button
+              className={`mode-btn ${activeMode === "chat" ? "active" : ""}`}
+              onClick={() => setActiveMode("chat")}
+            >
+              <FaHeart /> Chat
+            </button>
+            <button
+              className={`mode-btn ${
+                activeMode === "itinerary" ? "active" : ""
+              }`}
+              onClick={() => setActiveMode("itinerary")}
+            >
+              <FaMapMarkedAlt /> Itinerary
+            </button>
+            <button
+              className={`mode-btn ${activeMode === "flights" ? "active" : ""}`}
+              onClick={() => setActiveMode("flights")}
+            >
+              <FaPlane /> Flights
+            </button>
+          </div>
+        </div>
+
+        {/* Chat Messages */}
+        <div className="chat-container">
+          <div className="messages-area">
+            {messages.map((message) => (
+              <div key={message.id} className={`message ${message.type}`}>
+                <div className="message-avatar">
+                  {message.type === "bot" ? <FaRobot /> : <FaUser />}
+                </div>
+                <div className="message-content">
+                  <div className="message-text">
+                    {message.content.split("\n").map((line, index) => (
+                      <span key={index}>
+                        {line}
+                        {index < message.content.split("\n").length - 1 && (
+                          <br />
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="message-actions">
+                    <span className="message-time">
+                      {message.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                    {message.type === "bot" && (
+                      <button
+                        className="action-btn"
+                        onClick={() => copyMessage(message.content)}
+                        title="Copy message"
+                      >
+                        <FaCopy />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {isLoading && (
+              <div className="message bot">
+                <div className="message-avatar">
+                  <FaRobot />
+                </div>
+                <div className="message-content">
+                  <div className="typing-indicator">
+                    <FaSpinner className="spinner" />
+                    <span>AI is thinking...</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Quick Questions (only in chat mode) */}
+          {activeMode === "chat" && messages.length <= 2 && (
+            <div className="quick-questions">
+              <p>Try asking:</p>
+              <div className="questions-grid">
+                {quickQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    className="quick-question"
+                    onClick={() => handleQuickQuestion(question)}
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Structured Forms */}
+          {activeMode === "itinerary" && (
+            <div className="form-panel">
+              <h3>
+                <FaMapMarkedAlt /> Create Custom Itinerary
+              </h3>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>
+                    <FaCalendarAlt /> Duration
+                  </label>
+                  <select
+                    value={itineraryForm.duration}
+                    onChange={(e) =>
+                      setItineraryForm((prev) => ({
+                        ...prev,
+                        duration: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="1-2 days">1-2 days</option>
+                    <option value="3-5 days">3-5 days</option>
+                    <option value="1 week">1 week</option>
+                    <option value="2 weeks">2 weeks</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    <FaMoneyBillWave /> Budget (MYR)
+                  </label>
+                  <input
+                    type="number"
+                    value={itineraryForm.budget}
+                    onChange={(e) =>
+                      setItineraryForm((prev) => ({
+                        ...prev,
+                        budget: e.target.value,
+                      }))
+                    }
+                    placeholder="Enter budget"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    <FaUsers /> Group Size
+                  </label>
+                  <select
+                    value={itineraryForm.group_size}
+                    onChange={(e) =>
+                      setItineraryForm((prev) => ({
+                        ...prev,
+                        group_size: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="1">Solo</option>
+                    <option value="2">Couple</option>
+                    <option value="3-4">Small Group (3-4)</option>
+                    <option value="5+">Large Group (5+)</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    <FaBed /> Accommodation
+                  </label>
+                  <select
+                    value={itineraryForm.accommodation}
+                    onChange={(e) =>
+                      setItineraryForm((prev) => ({
+                        ...prev,
+                        accommodation: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="budget">Budget</option>
+                    <option value="mid-range">Mid-range</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="mixed">Mixed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Your Interests</label>
+                <div className="interests-grid">
+                  {interestOptions.map((interest) => (
+                    <button
+                      key={interest}
+                      className={`interest-btn ${
+                        itineraryForm.interests.includes(interest)
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => handleInterestToggle(interest)}
+                    >
+                      {interest}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                className="generate-btn"
+                onClick={generateItinerary}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <FaSpinner className="spinner" />
+                ) : (
+                  <FaMapMarkedAlt />
+                )}
+                Generate Itinerary
+              </button>
+            </div>
+          )}
+
+          {activeMode === "flights" && (
+            <div className="form-panel">
+              <h3>
+                <FaPlane /> Find Flight Recommendations
+              </h3>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>From (City/Airport)</label>
+                  <input
+                    type="text"
+                    value={flightForm.origin}
+                    onChange={(e) =>
+                      setFlightForm((prev) => ({
+                        ...prev,
+                        origin: e.target.value,
+                      }))
+                    }
+                    placeholder="e.g., Kuala Lumpur, Singapore"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Departure Date</label>
+                  <input
+                    type="date"
+                    value={flightForm.departure_date}
+                    onChange={(e) =>
+                      setFlightForm((prev) => ({
+                        ...prev,
+                        departure_date: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Return Date</label>
+                  <input
+                    type="date"
+                    value={flightForm.return_date}
+                    onChange={(e) =>
+                      setFlightForm((prev) => ({
+                        ...prev,
+                        return_date: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Passengers</label>
+                  <select
+                    value={flightForm.passengers}
+                    onChange={(e) =>
+                      setFlightForm((prev) => ({
+                        ...prev,
+                        passengers: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="1">1 Passenger</option>
+                    <option value="2">2 Passengers</option>
+                    <option value="3">3 Passengers</option>
+                    <option value="4">4 Passengers</option>
+                    <option value="5+">5+ Passengers</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Class</label>
+                  <select
+                    value={flightForm.class}
+                    onChange={(e) =>
+                      setFlightForm((prev) => ({
+                        ...prev,
+                        class: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="economy">Economy</option>
+                    <option value="premium-economy">Premium Economy</option>
+                    <option value="business">Business</option>
+                    <option value="first">First Class</option>
+                  </select>
+                </div>
+              </div>
+
+              <button
+                className="generate-btn"
+                onClick={getFlightRecommendations}
+                disabled={isLoading}
+              >
+                {isLoading ? <FaSpinner className="spinner" /> : <FaPlane />}
+                Find Flights
+              </button>
+            </div>
+          )}
+
+          {/* Input Area */}
+          <div className="input-area">
+            <div className="input-container">
+              <textarea
+                ref={inputRef}
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask me anything about traveling in Sabah..."
+                rows="1"
+                disabled={isLoading}
+              />
+              <button
+                className="send-btn"
+                onClick={handleSendMessage}
+                disabled={isLoading || !inputMessage.trim()}
+              >
+                <FaPaperPlane />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AIPlanner;
