@@ -14,35 +14,30 @@
 }
 
 .ai-planner {
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   background: linear-gradient(
     135deg,
     var(--background-color) 0%,
     var(--surface-color) 100%
   );
   padding: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   box-sizing: border-box;
   overflow: hidden;
-  position: fixed;
-  top: 80px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
 }
 
 .planner-container {
   width: 100%;
   max-width: 1400px;
+  margin: 0 auto;
   background: var(--surface-color);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   display: grid;
   grid-template-columns: 320px 1fr;
-  height: calc(100vh - 160px);
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
