@@ -79,6 +79,14 @@ const AIPlanner = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Prevent body scroll when component is mounted
+  useEffect(() => {
+    document.body.classList.add("ai-planner-page");
+    return () => {
+      document.body.classList.remove("ai-planner-page");
+    };
+  }, []);
+
   const addMessage = (type, content) => {
     const newMessage = {
       id: Date.now(),
@@ -225,104 +233,291 @@ const AIPlanner = () => {
   return (
     <div className="ai-planner">
       <div className="planner-container">
-        {/* Header */}
-        <div className="planner-header">
-          <div className="header-content">
-            <FaRobot className="ai-icon" />
-            <div>
-              <h1>AI Travel Assistant</h1>
-              <p>Your personal guide to exploring Sabah, Malaysia</p>
+        {/* Sidebar */}
+        <div className="planner-sidebar">
+          {/* Sidebar Header */}
+          <div className="sidebar-header">
+            <div className="header-content">
+              <FaRobot className="ai-icon" />
+              <div>
+                <h1>AI Travel Assistant</h1>
+                <p>Your personal guide to exploring Sabah, Malaysia</p>
+              </div>
             </div>
           </div>
-          <div className="mode-toggles">
-            <button
-              className={`mode-btn ${activeMode === "chat" ? "active" : ""}`}
-              onClick={() => setActiveMode("chat")}
-            >
-              <FaHeart /> Chat
-            </button>
-            <button
-              className={`mode-btn ${
-                activeMode === "itinerary" ? "active" : ""
-              }`}
-              onClick={() => setActiveMode("itinerary")}
-            >
-              <FaMapMarkedAlt /> Itinerary
-            </button>
-            <button
-              className={`mode-btn ${activeMode === "flights" ? "active" : ""}`}
-              onClick={() => setActiveMode("flights")}
-            >
-              <FaPlane /> Flights
-            </button>
-          </div>
-        </div>
 
-        {/* Chat Messages */}
-        <div className="chat-container">
-          <div className="messages-area">
-            {messages.map((message) => (
-              <div key={message.id} className={`message ${message.type}`}>
-                <div className="message-avatar">
-                  {message.type === "bot" ? <FaRobot /> : <FaUser />}
+          {/* Mode Selection */}
+          <div className="sidebar-modes">
+            <h3>Planning Tools</h3>
+            <div className="mode-toggles">
+              <button
+                className={`mode-btn ${activeMode === "chat" ? "active" : ""}`}
+                onClick={() => setActiveMode("chat")}
+              >
+                <FaHeart /> Free Chat
+              </button>
+              <button
+                className={`mode-btn ${
+                  activeMode === "itinerary" ? "active" : ""
+                }`}
+                onClick={() => setActiveMode("itinerary")}
+              >
+                <FaMapMarkedAlt /> Plan Itinerary
+              </button>
+              <button
+                className={`mode-btn ${
+                  activeMode === "flights" ? "active" : ""
+                }`}
+                onClick={() => setActiveMode("flights")}
+              >
+                <FaPlane /> Find Flights
+              </button>
+            </div>
+          </div>
+
+          {/* Sidebar Content */}
+          <div className="sidebar-content">
+            {/* Structured Forms */}
+            {activeMode === "itinerary" && (
+              <div className="form-panel">
+                <h3>
+                  <FaMapMarkedAlt /> Create Custom Itinerary
+                </h3>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>
+                      <FaCalendarAlt /> Duration
+                    </label>
+                    <select
+                      value={itineraryForm.duration}
+                      onChange={(e) =>
+                        setItineraryForm((prev) => ({
+                          ...prev,
+                          duration: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="1-2 days">1-2 days</option>
+                      <option value="3-5 days">3-5 days</option>
+                      <option value="1 week">1 week</option>
+                      <option value="2 weeks">2 weeks</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      <FaMoneyBillWave /> Budget (MYR)
+                    </label>
+                    <input
+                      type="number"
+                      value={itineraryForm.budget}
+                      onChange={(e) =>
+                        setItineraryForm((prev) => ({
+                          ...prev,
+                          budget: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter budget"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      <FaUsers /> Group Size
+                    </label>
+                    <select
+                      value={itineraryForm.group_size}
+                      onChange={(e) =>
+                        setItineraryForm((prev) => ({
+                          ...prev,
+                          group_size: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="1">Solo</option>
+                      <option value="2">Couple</option>
+                      <option value="3-4">Small Group (3-4)</option>
+                      <option value="5+">Large Group (5+)</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      <FaBed /> Accommodation
+                    </label>
+                    <select
+                      value={itineraryForm.accommodation}
+                      onChange={(e) =>
+                        setItineraryForm((prev) => ({
+                          ...prev,
+                          accommodation: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="budget">
+                        Budget (Hostels, Guesthouses)
+                      </option>
+                      <option value="mid-range">Mid-range (Hotels)</option>
+                      <option value="luxury">Luxury (Resorts)</option>
+                      <option value="eco-lodge">Eco-lodge</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="message-content">
-                  <div className="message-text">
-                    {message.content.split("\n").map((line, index) => (
-                      <span key={index}>
-                        {line}
-                        {index < message.content.split("\n").length - 1 && (
-                          <br />
-                        )}
-                      </span>
+
+                <div className="form-group">
+                  <label>Interests</label>
+                  <div className="interests-grid">
+                    {interestOptions.map((interest) => (
+                      <button
+                        key={interest}
+                        className={`interest-btn ${
+                          itineraryForm.interests.includes(interest)
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => handleInterestToggle(interest)}
+                      >
+                        {interest}
+                      </button>
                     ))}
                   </div>
-                  <div className="message-actions">
-                    <span className="message-time">
-                      {message.timestamp.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                    {message.type === "bot" && (
-                      <button
-                        className="action-btn"
-                        onClick={() => copyMessage(message.content)}
-                        title="Copy message"
-                      >
-                        <FaCopy />
-                      </button>
-                    )}
-                  </div>
                 </div>
-              </div>
-            ))}
 
-            {isLoading && (
-              <div className="message bot">
-                <div className="message-avatar">
-                  <FaRobot />
-                </div>
-                <div className="message-content">
-                  <div className="typing-indicator">
-                    <FaSpinner className="spinner" />
-                    <span>AI is thinking...</span>
-                  </div>
-                </div>
+                <button
+                  className="generate-btn"
+                  onClick={generateItinerary}
+                  disabled={isLoading || itineraryForm.interests.length === 0}
+                >
+                  {isLoading ? (
+                    <>
+                      <FaSpinner className="spinner" /> Generating...
+                    </>
+                  ) : (
+                    <>
+                      <FaMapMarkedAlt /> Generate Itinerary
+                    </>
+                  )}
+                </button>
               </div>
             )}
-            <div ref={messagesEndRef} />
+
+            {activeMode === "flights" && (
+              <div className="form-panel">
+                <h3>
+                  <FaPlane /> Flight Recommendations
+                </h3>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Origin City</label>
+                    <input
+                      type="text"
+                      value={flightForm.origin}
+                      onChange={(e) =>
+                        setFlightForm((prev) => ({
+                          ...prev,
+                          origin: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter departure city"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Departure Date</label>
+                    <input
+                      type="date"
+                      value={flightForm.departure_date}
+                      onChange={(e) =>
+                        setFlightForm((prev) => ({
+                          ...prev,
+                          departure_date: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Return Date</label>
+                    <input
+                      type="date"
+                      value={flightForm.return_date}
+                      onChange={(e) =>
+                        setFlightForm((prev) => ({
+                          ...prev,
+                          return_date: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      <FaUsers /> Passengers
+                    </label>
+                    <select
+                      value={flightForm.passengers}
+                      onChange={(e) =>
+                        setFlightForm((prev) => ({
+                          ...prev,
+                          passengers: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="1">1 passenger</option>
+                      <option value="2">2 passengers</option>
+                      <option value="3">3 passengers</option>
+                      <option value="4">4 passengers</option>
+                      <option value="5+">5+ passengers</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Class</label>
+                    <select
+                      value={flightForm.class}
+                      onChange={(e) =>
+                        setFlightForm((prev) => ({
+                          ...prev,
+                          class: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="economy">Economy</option>
+                      <option value="premium-economy">Premium Economy</option>
+                      <option value="business">Business</option>
+                      <option value="first">First Class</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button
+                  className="generate-btn"
+                  onClick={getFlightRecommendations}
+                  disabled={isLoading || !flightForm.origin.trim()}
+                >
+                  {isLoading ? (
+                    <>
+                      <FaSpinner className="spinner" /> Searching...
+                    </>
+                  ) : (
+                    <>
+                      <FaPlane /> Find Flights
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Quick Questions (only in chat mode) */}
-          {activeMode === "chat" && messages.length <= 2 && (
-            <div className="quick-questions">
-              <p>Try asking:</p>
-              <div className="questions-grid">
-                {quickQuestions.map((question, index) => (
+          {/* Quick Questions in Sidebar */}
+          {activeMode === "chat" && (
+            <div className="sidebar-quick-questions">
+              <h4>Quick Start</h4>
+              <div className="quick-questions-list">
+                {quickQuestions.slice(0, 3).map((question, index) => (
                   <button
                     key={index}
-                    className="quick-question"
+                    className="quick-question-sidebar"
                     onClick={() => handleQuickQuestion(question)}
                   >
                     {question}
@@ -331,223 +526,79 @@ const AIPlanner = () => {
               </div>
             </div>
           )}
+        </div>
 
-          {/* Structured Forms */}
-          {activeMode === "itinerary" && (
-            <div className="form-panel">
-              <h3>
-                <FaMapMarkedAlt /> Create Custom Itinerary
-              </h3>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>
-                    <FaCalendarAlt /> Duration
-                  </label>
-                  <select
-                    value={itineraryForm.duration}
-                    onChange={(e) =>
-                      setItineraryForm((prev) => ({
-                        ...prev,
-                        duration: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="1-2 days">1-2 days</option>
-                    <option value="3-5 days">3-5 days</option>
-                    <option value="1 week">1 week</option>
-                    <option value="2 weeks">2 weeks</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>
-                    <FaMoneyBillWave /> Budget (MYR)
-                  </label>
-                  <input
-                    type="number"
-                    value={itineraryForm.budget}
-                    onChange={(e) =>
-                      setItineraryForm((prev) => ({
-                        ...prev,
-                        budget: e.target.value,
-                      }))
-                    }
-                    placeholder="Enter budget"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>
-                    <FaUsers /> Group Size
-                  </label>
-                  <select
-                    value={itineraryForm.group_size}
-                    onChange={(e) =>
-                      setItineraryForm((prev) => ({
-                        ...prev,
-                        group_size: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="1">Solo</option>
-                    <option value="2">Couple</option>
-                    <option value="3-4">Small Group (3-4)</option>
-                    <option value="5+">Large Group (5+)</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>
-                    <FaBed /> Accommodation
-                  </label>
-                  <select
-                    value={itineraryForm.accommodation}
-                    onChange={(e) =>
-                      setItineraryForm((prev) => ({
-                        ...prev,
-                        accommodation: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="budget">Budget</option>
-                    <option value="mid-range">Mid-range</option>
-                    <option value="luxury">Luxury</option>
-                    <option value="mixed">Mixed</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Your Interests</label>
-                <div className="interests-grid">
-                  {interestOptions.map((interest) => (
-                    <button
-                      key={interest}
-                      className={`interest-btn ${
-                        itineraryForm.interests.includes(interest)
-                          ? "selected"
-                          : ""
-                      }`}
-                      onClick={() => handleInterestToggle(interest)}
-                    >
-                      {interest}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                className="generate-btn"
-                onClick={generateItinerary}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <FaSpinner className="spinner" />
-                ) : (
-                  <FaMapMarkedAlt />
-                )}
-                Generate Itinerary
-              </button>
+        {/* Main Chat Area */}
+        <div className="planner-main">
+          {/* Chat Header */}
+          <div className="chat-header">
+            <h2>
+              {activeMode === "chat" && "Chat with AI Assistant"}
+              {activeMode === "itinerary" && "Itinerary Planning"}
+              {activeMode === "flights" && "Flight Search"}
+            </h2>
+            <div className="chat-status">
+              <div className="status-indicator"></div>
+              <span>Online</span>
             </div>
-          )}
+          </div>
 
-          {activeMode === "flights" && (
-            <div className="form-panel">
-              <h3>
-                <FaPlane /> Find Flight Recommendations
-              </h3>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label>From (City/Airport)</label>
-                  <input
-                    type="text"
-                    value={flightForm.origin}
-                    onChange={(e) =>
-                      setFlightForm((prev) => ({
-                        ...prev,
-                        origin: e.target.value,
-                      }))
-                    }
-                    placeholder="e.g., Kuala Lumpur, Singapore"
-                  />
+          {/* Chat Messages */}
+          <div className="chat-container">
+            <div className="messages-area">
+              {messages.map((message) => (
+                <div key={message.id} className={`message ${message.type}`}>
+                  <div className="message-avatar">
+                    {message.type === "bot" ? <FaRobot /> : <FaUser />}
+                  </div>
+                  <div className="message-content">
+                    <div className="message-text">
+                      {message.content.split("\n").map((line, index) => (
+                        <span key={index}>
+                          {line}
+                          {index < message.content.split("\n").length - 1 && (
+                            <br />
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="message-actions">
+                      <span className="message-time">
+                        {message.timestamp.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                      {message.type === "bot" && (
+                        <button
+                          className="action-btn"
+                          onClick={() => copyMessage(message.content)}
+                          title="Copy message"
+                        >
+                          <FaCopy />
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
+              ))}
 
-                <div className="form-group">
-                  <label>Departure Date</label>
-                  <input
-                    type="date"
-                    value={flightForm.departure_date}
-                    onChange={(e) =>
-                      setFlightForm((prev) => ({
-                        ...prev,
-                        departure_date: e.target.value,
-                      }))
-                    }
-                  />
+              {isLoading && (
+                <div className="message bot">
+                  <div className="message-avatar">
+                    <FaRobot />
+                  </div>
+                  <div className="message-content">
+                    <div className="typing-indicator">
+                      <FaSpinner className="spinner" />
+                      <span>AI is thinking...</span>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="form-group">
-                  <label>Return Date</label>
-                  <input
-                    type="date"
-                    value={flightForm.return_date}
-                    onChange={(e) =>
-                      setFlightForm((prev) => ({
-                        ...prev,
-                        return_date: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Passengers</label>
-                  <select
-                    value={flightForm.passengers}
-                    onChange={(e) =>
-                      setFlightForm((prev) => ({
-                        ...prev,
-                        passengers: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="1">1 Passenger</option>
-                    <option value="2">2 Passengers</option>
-                    <option value="3">3 Passengers</option>
-                    <option value="4">4 Passengers</option>
-                    <option value="5+">5+ Passengers</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>Class</label>
-                  <select
-                    value={flightForm.class}
-                    onChange={(e) =>
-                      setFlightForm((prev) => ({
-                        ...prev,
-                        class: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="economy">Economy</option>
-                    <option value="premium-economy">Premium Economy</option>
-                    <option value="business">Business</option>
-                    <option value="first">First Class</option>
-                  </select>
-                </div>
-              </div>
-
-              <button
-                className="generate-btn"
-                onClick={getFlightRecommendations}
-                disabled={isLoading}
-              >
-                {isLoading ? <FaSpinner className="spinner" /> : <FaPlane />}
-                Find Flights
-              </button>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-          )}
+          </div>
 
           {/* Input Area */}
           <div className="input-area">
@@ -557,16 +608,30 @@ const AIPlanner = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything about traveling in Sabah..."
-                rows="1"
+                placeholder="Ask me anything about traveling to Sabah..."
                 disabled={isLoading}
+                rows={1}
+                style={{
+                  height: "auto",
+                  minHeight: "44px",
+                  maxHeight: "120px",
+                }}
+                onInput={(e) => {
+                  e.target.style.height = "auto";
+                  e.target.style.height =
+                    Math.min(e.target.scrollHeight, 120) + "px";
+                }}
               />
               <button
                 className="send-btn"
                 onClick={handleSendMessage}
                 disabled={isLoading || !inputMessage.trim()}
               >
-                <FaPaperPlane />
+                {isLoading ? (
+                  <FaSpinner className="spinner" />
+                ) : (
+                  <FaPaperPlane />
+                )}
               </button>
             </div>
           </div>

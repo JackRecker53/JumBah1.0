@@ -9,6 +9,7 @@ import EventsPage from "./pages/EventsPage";
 import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
 import AIPlanner from "./pages/AIPlanner";
+import Map from "./pages/Map";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/adventure" element={<AdventurePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/ai-planner" element={<AIPlanner />} />
+          <Route path="/map" element={<Map />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<Login />} />

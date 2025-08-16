@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaEllipsisV,
   FaMoon,
@@ -23,6 +24,7 @@ const DropdownMenu = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
   const panelRef = useRef(null);
+  const navigate = useNavigate();
 
   // Use real theme context
   const { theme, toggleTheme } = useTheme();
@@ -65,23 +67,21 @@ const DropdownMenu = () => {
   const handleLogout = () => {
     logout();
     handleItemClick();
-    // navigate("/"); // Uncomment when using react-router
-    console.log("Navigate to home");
+    navigate("/");
   };
 
   // Simple login handler for demo (replace with real form/modal as needed)
   const handleLogin = () => {
     login({ email: "demo@email.com" });
     handleItemClick();
-    // navigate("/profile"); // Uncomment when using react-router
-    console.log("Logged in and navigate to profile");
+    navigate("/profile");
   };
 
   const menuItems = [
     {
       icon: FaMap,
       label: "Interactive Map",
-      to: "/explore",
+      to: "/map",
       color: "#4285f4",
     },
     {
@@ -263,11 +263,12 @@ const DropdownMenu = () => {
 };
 
 const MenuItem = ({ icon: Icon, label, to, onClick, color }) => {
+  const navigate = useNavigate();
+
   const handleClick = () => {
     if (onClick) onClick();
     if (to) {
-      // navigate(to); // Uncomment when using react-router
-      console.log(`Navigate to ${to}`);
+      navigate(to);
     }
   };
 
