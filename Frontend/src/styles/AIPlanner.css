@@ -23,13 +23,15 @@
   padding: 1rem;
   display: flex;
   justify-content: center;
+  align-items: center;
   box-sizing: border-box;
   overflow: hidden;
   position: fixed;
-  top: 0;
+  top: 80px;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 1000;
 }
 
 .planner-container {
@@ -40,8 +42,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   display: grid;
   grid-template-columns: 320px 1fr;
-  min-height: calc(100vh - 2rem);
-  max-height: calc(100vh - 2rem);
+  height: calc(100vh - 160px);
   overflow: hidden;
 }
 
@@ -214,17 +215,14 @@
 .messages-area::-webkit-scrollbar {
   width: 6px;
 }
-
 .messages-area::-webkit-scrollbar-track {
   background: var(--background-color);
   border-radius: 3px;
 }
-
 .messages-area::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 3px;
 }
-
 .messages-area::-webkit-scrollbar-thumb:hover {
   background: var(--primary-color);
 }
@@ -232,7 +230,7 @@
 /* Messages */
 .message {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem; /* polished spacing */
   animation: fadeInUp 0.3s ease;
 }
 
@@ -249,7 +247,7 @@
   justify-content: center;
   font-size: 1rem;
   flex-shrink: 0;
-  margin: 0 0.6rem;
+  margin: 0 0.75rem;
 }
 
 .message.bot .message-avatar {
@@ -273,15 +271,134 @@
 
 .message-text {
   background: #ffffff;
-  padding: 0.8rem 1rem;
+  padding: 0.9rem 1.05rem;
   border-radius: 14px;
   color: #333333;
-  line-height: 1.4;
+  line-height: 1.55;
   word-wrap: break-word;
-  white-space: pre-line;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  overflow-wrap: anywhere;
+  /* Let ReactMarkdown handle paragraphs & breaks */
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ---------- Markdown inside chat bubbles ---------- */
+.message-text h1,
+.message-text h2,
+.message-text h3,
+.message-text h4,
+.message-text h5,
+.message-text h6 {
+  margin: 0.5em 0 0.3em;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #222;
+}
+.message-text h1 {
+  font-size: 1.25rem;
+}
+.message-text h2 {
+  font-size: 1.15rem;
+}
+.message-text h3 {
+  font-size: 1.05rem;
+}
+
+.message-text p {
+  margin: 0.45em 0;
+}
+
+.message-text ul,
+.message-text ol {
+  margin: 0.5em 0 0.5em 1.25em;
+  padding: 0;
+}
+.message-text li {
+  margin: 0.25em 0;
+}
+
+.message-text a {
+  color: #0b6ef3;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.message-text blockquote {
+  margin: 0.6em 0;
+  padding-left: 0.9em;
+  border-left: 3px solid #d7d7d7;
+  color: #505963;
+  font-style: italic;
+  background: #f6f7f9;
+  border-radius: 4px;
+}
+
+.message-text code {
+  background: #f3f5f7;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+  font-size: 0.9em;
+}
+.message-text pre {
+  margin: 0.6em 0;
+  padding: 0.85rem 1rem;
+  background: #1f2937;
+  color: #f3f4f6;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.message-text pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.95em;
+}
+
+/* Tables (in case AI returns them) */
+.message-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6em 0;
+}
+.message-text th,
+.message-text td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+}
+.message-text th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+/* Make images responsive */
+.message-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* User bubble contrasts when rendering Markdown links, code, etc. */
+.message.user .message-text a {
+  color: #fff;
+  text-decoration: underline;
+}
+.message.user .message-text code {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.message.user .message-text pre {
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+}
+
+/* Slightly tighter bot bubble look */
+.message.bot .message-text {
+  background: #f7f9fb;
+  border-bottom-left-radius: 4px;
 }
 
 .message.user .message-text {
@@ -319,7 +436,6 @@
   border-radius: 6px;
   transition: all 0.2s ease;
 }
-
 .action-btn:hover {
   background: #e9ecef;
   color: var(--primary-color);
@@ -368,7 +484,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: auto;
 }
-
 .sidebar-quick-questions h4 {
   color: rgba(255, 255, 255, 0.9);
   margin: 0 0 1rem 0;
@@ -377,13 +492,11 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .quick-questions-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .quick-question-sidebar {
   background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
@@ -396,7 +509,6 @@
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
-
 .quick-question-sidebar:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
@@ -411,16 +523,13 @@
   overflow-x: hidden;
   min-height: 0;
 }
-
 .sidebar-content::-webkit-scrollbar {
   width: 4px;
 }
-
 .sidebar-content::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
 }
-
 .sidebar-content::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 2px;
@@ -433,7 +542,6 @@
   max-height: none;
   overflow: visible;
 }
-
 .form-panel h3 {
   color: white;
   margin-bottom: 1.5rem;
@@ -444,14 +552,12 @@
   font-weight: 600;
   opacity: 0.9;
 }
-
 .form-grid {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -466,7 +572,6 @@
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.85rem;
 }
-
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -479,12 +584,10 @@
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
-
 .form-group input::placeholder,
 .form-group textarea::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -499,7 +602,6 @@
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
-
 .interest-btn {
   background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
@@ -512,12 +614,10 @@
   text-align: left;
   backdrop-filter: blur(10px);
 }
-
 .interest-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.4);
 }
-
 .interest-btn.selected {
   background: rgba(255, 255, 255, 0.3);
   color: white;
@@ -542,13 +642,11 @@
   width: 100%;
   backdrop-filter: blur(10px);
 }
-
 .generate-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-1px);
 }
-
 .generate-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -561,14 +659,12 @@
   padding: 1rem 1.5rem;
   flex-shrink: 0;
 }
-
 .input-container {
   display: flex;
   gap: 0.8rem;
   align-items: flex-end;
   max-width: 100%;
 }
-
 .input-container textarea {
   flex: 1;
   background: #f8f9fa;
@@ -583,24 +679,20 @@
   transition: all 0.3s ease;
   font-family: inherit;
 }
-
 .input-container textarea:focus {
   outline: none;
   border-color: var(--primary-color);
   background: white;
   box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
 }
-
 .input-container textarea::placeholder {
   color: #6c757d;
 }
-
 .input-container textarea:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background: #e9ecef;
 }
-
 .send-btn {
   background: var(--primary-color);
   color: white;
@@ -616,13 +708,11 @@
   flex-shrink: 0;
   font-size: 1rem;
 }
-
 .send-btn:hover:not(:disabled) {
   background: var(--accent-color);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
-
 .send-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -635,12 +725,10 @@
     grid-template-columns: 280px 1fr;
   }
 }
-
 @media (max-width: 768px) {
   .ai-planner {
     padding: 0.5rem;
   }
-
   .planner-container {
     min-height: calc(100vh - 1rem);
     max-height: calc(100vh - 1rem);
@@ -648,62 +736,50 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
-
   .planner-sidebar {
     border-radius: 12px 12px 0 0;
     max-height: 40vh;
     overflow-y: auto;
     flex-shrink: 0;
   }
-
   .planner-main {
     border-radius: 0 0 12px 12px;
     min-height: 0;
   }
-
   .sidebar-header {
     padding: 1rem;
   }
-
   .sidebar-header h1 {
     font-size: 1.1rem;
   }
-
   .sidebar-modes {
     padding: 0.8rem 1rem;
   }
-
   .mode-toggles {
     flex-direction: row;
     gap: 0.5rem;
   }
-
   .mode-btn {
     flex: 1;
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
   }
-
   .sidebar-content {
     padding: 0.8rem 1rem;
   }
-
   .sidebar-quick-questions {
     display: none;
   }
 }
-
 .planner-header {
   padding: 1rem 1.5rem;
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
 }
-
 .planner-header h1 {
   font-size: 1.5rem;
 }
-
 .mode-toggles {
   width: 100%;
   justify-content: center;
@@ -717,19 +793,65 @@
     font-size: 0.9rem;
     margin: 0 0.4rem;
   }
-
   .message-text {
     padding: 0.7rem 0.9rem;
     font-size: 0.85rem;
   }
-
   .input-container textarea {
     font-size: 0.85rem;
     padding: 0.7rem 0.9rem;
   }
-
   .send-btn {
     width: 40px;
     height: 40px;
   }
+}
+
+/* --- Fix chat bubble alignment with header padding --- */
+/* Align bot messages with header text */
+.message {
+  display: flex;
+  margin-bottom: 1.1rem;
+  animation: fadeInUp 0.3s ease;
+  padding: 0;
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+/* Position avatars consistently */
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin: 0 0.75rem;
+  position: static;
+}
+
+/* Align message content with header text */
+.message-content {
+  flex: 1;
+  max-width: 75%;
+  min-width: 0;
+}
+
+/* Special alignment for bot messages to match header */
+.message.bot {
+  padding-left: 0;
+}
+
+.message.bot .message-avatar {
+  margin-left: 0;
+  margin-right: 0.75rem;
+}
+
+/* Ensure text content starts at same position as header */
+.message.bot .message-text {
+  margin-left: 0;
 }

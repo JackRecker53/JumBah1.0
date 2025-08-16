@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { aiPlannerService } from "../services/aiPlannerService";
 import "../styles/AIPlanner.css";
 import {
@@ -78,14 +80,6 @@ const AIPlanner = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  // Prevent body scroll when component is mounted
-  useEffect(() => {
-    document.body.classList.add("ai-planner-page");
-    return () => {
-      document.body.classList.remove("ai-planner-page");
-    };
-  }, []);
 
   const addMessage = (type, content) => {
     const newMessage = {
@@ -220,7 +214,6 @@ const AIPlanner = () => {
 
   const copyMessage = (content) => {
     navigator.clipboard.writeText(content);
-    // You could add a toast notification here
   };
 
   const handleKeyPress = (e) => {
@@ -508,24 +501,6 @@ const AIPlanner = () => {
               </div>
             )}
           </div>
-
-          {/* Quick Questions in Sidebar */}
-          {activeMode === "chat" && (
-            <div className="sidebar-quick-questions">
-              <h4>Quick Start</h4>
-              <div className="quick-questions-list">
-                {quickQuestions.slice(0, 3).map((question, index) => (
-                  <button
-                    key={index}
-                    className="quick-question-sidebar"
-                    onClick={() => handleQuickQuestion(question)}
-                  >
-                    {question}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Main Chat Area */}
@@ -553,14 +528,16 @@ const AIPlanner = () => {
                   </div>
                   <div className="message-content">
                     <div className="message-text">
-                      {message.content.split("\n").map((line, index) => (
-                        <span key={index}>
-                          {line}
-                          {index < message.content.split("\n").length - 1 && (
-                            <br />
-                          )}
-                        </span>
-                      ))}
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ node, ...props }) => (
+                            <a {...props} target="_blank" rel="noreferrer" />
+                          ),
+                        }}
+                      >
+                        {String(message.content ?? "")}
+                      </ReactMarkdown>
                     </div>
                     <div className="message-actions">
                       <span className="message-time">

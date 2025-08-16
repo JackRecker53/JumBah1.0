@@ -1,14 +1,22 @@
+import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatbotWidget from './ChatbotWidget';
 
 const Layout = ({ children }) => {
+    const location = useLocation();
+    const isAIPlannerPage = location.pathname === '/ai-planner';
+
     return (
         <>
             <Navbar />
             <main>{children}</main>
-            <ChatbotWidget />
-            <Footer /> {/* Make sure this line is not commented out */}
+            {!isAIPlannerPage && (
+                <>
+                    <ChatbotWidget />
+                    <Footer />
+                </>
+            )}
         </>
     );
 };
