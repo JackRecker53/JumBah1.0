@@ -1,36 +1,59 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from "react";
 
-// Create the context
 const AuthContext = createContext(null);
 
-// The Provider component
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
-    const login = (userData) => {
-        const mockUser = { id: 1, email: userData.email, name: "Sabah Explorer" };
-        setUser(mockUser);
-    };
+  useEffect(() => {
+    if (token) {
+      // You might want to verify the token with the backend here
+      // For simplicity, we'll just decode it (not secure for production)
+      try {
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
+        setUser(decodedToken.sub);
+      } catch (e) {
+        console.error("Invalid token", e);
+        logout();
+      }
+    }
+  }, [token]);
 
-    const logout = () => {
-        setUser(null);
-    };
+  const login = async (username, password) => {
+    const response = await fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-    const value = { user, isAuthenticated: !!user, login, logout };
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("token", data.access_token);
+      setToken(data.access_token);
+      const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
+      setUser(decodedToken.sub);
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.msg || "Login failed");
+    }
+  };
 
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    );
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+  };
+
+  const value = { user, isAuthenticated: !!user, token, login, logout };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// The custom hook that components will use
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    // This check is the crucial improvement
-    if (context === null) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
+  const context = useContext(AuthContext);
+  if (context === null) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

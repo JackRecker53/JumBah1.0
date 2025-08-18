@@ -1,95 +1,83 @@
-.authContainer {
+.auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4rem 1rem;
+  padding: 2rem;
+  background-color: #f9fafb;
 }
-.authForm {
+
+.auth-form {
   width: 100%;
-  max-width: 420px;
-  padding: 2.5rem;
-  background-color: var(--surface-color);
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.authForm h2 {
+
+.auth-form h2 {
   text-align: center;
   font-size: 2rem;
+  margin-bottom: 1rem;
 }
-.authForm p {
+
+.auth-form p {
   text-align: center;
-  color: var(--text-secondary);
   margin-bottom: 2rem;
+  color: #6b7280;
 }
-.formGroup {
+
+.form-group {
   margin-bottom: 1.5rem;
 }
-.formGroup label {
+
+.form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 600;
+  font-weight: 500;
+  color: #374151;
 }
-.formGroup input {
+
+.form-group input {
+  display: block;
   width: 100%;
-  padding: 12px;
-  border: 1px solid var(--accent-color);
-  border-radius: 5px;
-  background-color: var(--background-color);
-  color: var(--text-primary);
+  padding: 0.75rem;
   font-size: 1rem;
-}
-.authForm .btn-primary {
-  width: 100%;
-  margin-top: 1rem;
-}
-.divider {
-  text-align: center;
-  margin: 1.5rem 0;
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-.googleBtn {
-  width: 100%;
-  padding: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  background-color: var(--background-color);
-  color: var(--text-primary);
-  border: 1px solid var(--accent-color);
-  border-radius: 5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.googleBtn:hover {
-  background-color: var(--accent-color);
+  color: #111827;
+  background-color: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box; /* Important for consistent sizing */
 }
 
-/* User Profile */
-.logoutBtn {
-  background-color: #d9534f !important; /* A red color */
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #3b82f6;
   border: none;
-  width: 100%;
-  margin-top: 2rem;
-}
-.logoutBtn:hover {
-  background-color: #c9302c !important;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.feedbackSection {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--accent-color);
+.error-message {
+  color: #ef4444;
   text-align: center;
-}
-.feedbackBtn {
   margin-top: 1rem;
-  padding: 10px 15px;
-  background: none;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  border-radius: 5px;
-  cursor: pointer;
+}
+
+.switch-auth {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #6b7280;
+}
+
+.switch-auth a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+.switch-auth a:hover {
+  text-decoration: underline;
 }

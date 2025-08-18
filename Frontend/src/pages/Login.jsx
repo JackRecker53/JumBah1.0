@@ -1,52 +1,61 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
 import { FcGoogle } from "react-icons/fc";
 import "../styles/AuthForm.css";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { login } = useAuth();
   const { completeQuest, completedQuests } = useGame();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Basic validation
-    if (email && password) {
-      login({ email }); // Pass user data to login function
+    setError("");
+
+    try {
+      await login(username, password);
       if (!completedQuests.has("q1")) {
         completeQuest("q1");
       }
-      navigate("/profile"); // Redirect to profile after login
+      navigate("/profile");
+    } catch (err) {
+      setError(err.message || "Login failed. Please check your credentials.");
     }
   };
 
   return (
-    <div className="authContainer">
-      <div className="authForm">
+    <div className="auth-container">
+      <div className="auth-form">
         <h2>Welcome Back!</h2>
         <p>Log in to access your adventure.</p>
+        {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <div className="formGroup">
-            <label htmlFor="email">Email</label>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
               required
             />
           </div>
-          <div className="formGroup">
+          <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
               required
             />
           </div>
@@ -55,10 +64,13 @@ const Login = () => {
           </button>
         </form>
         <div className="divider">OR</div>
-        <button className="googleBtn">
+        <button type="button" className="googleBtn">
           <FcGoogle size={24} />
           <span>Sign In with Google</span>
         </button>
+        <p className="switch-auth">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
       </div>
     </div>
   );

@@ -10,6 +10,8 @@ import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
 import AIPlanner from "./pages/AIPlanner";
 import Map from "./pages/Map";
+import GamePage from "./pages/GamePage";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -22,9 +24,11 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/ai-planner" element={<AIPlanner />} />
           <Route path="/map" element={<Map />} />
+          <Route path="/game" element={<GamePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<UserProfile />} />
         </Routes>
       </Layout>

@@ -73,6 +73,14 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
+              to="/game"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Game
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/about"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
