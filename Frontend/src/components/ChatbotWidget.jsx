@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/Chatbot.css";
 import { runChat } from "../services/geminiService";
 import {
@@ -16,9 +16,21 @@ const ChatbotWidget = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { completeQuest, completedQuests } = useGame();
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpen) {
+        setShowTooltip(true);
+      }
+    }, 2000); // Show tooltip after 2 seconds
+
+    return () => clearTimeout(timer);
+  }, [isOpen]);
 
   const toggleOpen = () => {
     setIsOpen(!isOpen);
+    setShowTooltip(false); // Hide tooltip when chat is opened
     if (!isOpen && messages.length === 0) {
       setMessages([
         {
@@ -62,7 +74,10 @@ const ChatbotWidget = () => {
   };
 
   return (
-    <div>
+    <div className="fab-container">
+      {showTooltip && !isOpen && (
+        <div className="fab-tooltip">Chat with Madu</div>
+      )}
       <button className="fab" onClick={toggleOpen} aria-label="Open Chatbot">
         {isOpen ? (
           <FaTimes />
@@ -70,7 +85,7 @@ const ChatbotWidget = () => {
           <img
             src="/backgrounds/madu-icon.png"
             alt="Madu Chat"
-            style={{ width: "40px", height: "40px" }}
+            className="fabIcon"
           />
         )}
       </button>

@@ -12,12 +12,8 @@ const Layout = ({ children }) => {
     <div className="layout-wrapper">
       <Navbar />
       <main className="layout-main">{children}</main>
-      {!isAIPlannerPage && (
-        <>
-          <ChatbotWidget />
-          <Footer />
-        </>
-      )}
+      <ChatbotWidget />
+      <Footer />
     </div>
   );
 };
