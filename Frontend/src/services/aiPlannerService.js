@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "http://localhost:8000";
 
 export const aiPlannerService = {
   // Generate complete itinerary
@@ -14,7 +14,10 @@ export const aiPlannerService = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorText}`
+        );
       }
 
       const result = await response.json();
@@ -39,7 +42,10 @@ export const aiPlannerService = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorText}`
+        );
       }
 
       const result = await response.json();
@@ -64,7 +70,10 @@ export const aiPlannerService = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorText}`
+        );
       }
 
       const result = await response.json();
@@ -80,6 +89,12 @@ export const aiPlannerService = {
   async healthCheck() {
     try {
       const response = await fetch(`${API_BASE_URL}/health`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, body: ${errorText}`
+        );
+      }
       const result = await response.json();
       console.log("Health check:", result);
       return result;
