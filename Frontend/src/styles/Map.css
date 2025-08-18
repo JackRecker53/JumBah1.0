@@ -8,16 +8,26 @@
 
 .app-container {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 70px); /* Adjusted for a 70px navbar */
   font-family: "Inter", sans-serif;
   background-color: var(--light-gray);
-  overflow: hidden; /* Prevent body scroll */
+  /* Let map calculate size; avoid clipping popups */
+  overflow: visible;
 }
 
 .map-container {
   flex-grow: 1;
   height: 100%;
+  min-height: 400px; /* Ensure minimum height */
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  /* Prevent flex min-height issues inside nested layouts */
+  min-width: 0;
+}
+
+/* Ensure Leaflet container fills the space */
+.map-container .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .panel {

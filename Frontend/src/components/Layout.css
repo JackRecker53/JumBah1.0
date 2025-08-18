@@ -8,6 +8,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  /* Allow children to calculate heights properly in nested flex layouts */
+  min-height: 0;
 }
 
 /* This ensures that the direct child of main (like the AIPlanner component) fills the available space */
@@ -15,4 +17,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  /* Prevent flex children from being constrained by auto min-height */
+  min-height: 0;
 }

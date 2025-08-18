@@ -3,14 +3,20 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/Map.css";
 
-// Leaflet's default icon path can break in React. This fixes it.
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
+// Fix Leaflet's default icons for React; guard to avoid double-deletes during HMR
+try {
+  if (L.Icon?.Default?.prototype?._getIconUrl) {
+    delete L.Icon.Default.prototype._getIconUrl;
+  }
+  L.Icon.Default.mergeOptions({
+    iconRetinaUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+    iconUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+  });
+} catch {}
 
 // Popular Sabah attractions data
 const sabahAttractions = [
@@ -66,27 +72,18 @@ const sabahAttractions = [
 
 export default function Map() {
   const mapRef = useRef(null);
-  const markersRef = useRef([]);
+  const mapInstanceRef = useRef(null);
   const [selectedAttraction, setSelectedAttraction] = useState(null);
-  const [status, setStatus] = useState(
-    "Explore popular attractions in Sabah, Malaysia"
-  );
-
-  // Function to clear all markers
-  const clearMarkers = () => {
-    markersRef.current.forEach((marker) => {
-      mapRef.current.removeLayer(marker);
-    });
-    markersRef.current = [];
-  };
+  const [status, setStatus] = useState("Loading map...");
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   // Function to add attraction markers
   const addAttractionMarkers = () => {
-    clearMarkers();
+    if (!mapInstanceRef.current) return;
 
     sabahAttractions.forEach((attraction) => {
       const marker = L.marker([attraction.lat, attraction.lng])
-        .addTo(mapRef.current)
+        .addTo(mapInstanceRef.current)
         .bindPopup(
           `<strong>${attraction.name}</strong><br/>${attraction.description}`
         )
@@ -94,42 +91,83 @@ export default function Map() {
           setSelectedAttraction(attraction);
           setStatus(`Selected: ${attraction.name}`);
         });
-
-      markersRef.current.push(marker);
     });
   };
 
   // Function to center map on specific attraction
   const centerOnAttraction = (attraction) => {
-    mapRef.current.setView([attraction.lat, attraction.lng], 12);
+    if (!mapInstanceRef.current) return;
+    mapInstanceRef.current.setView([attraction.lat, attraction.lng], 12);
     setSelectedAttraction(attraction);
     setStatus(`Viewing: ${attraction.name}`);
   };
 
   // Function to reset map view
   const resetMapView = () => {
-    mapRef.current.setView([5.9804, 116.0735], 8); // Centered on Sabah
+    if (!mapInstanceRef.current) return;
+    mapInstanceRef.current.setView([5.9804, 116.0735], 8);
     setSelectedAttraction(null);
     setStatus("Explore popular attractions in Sabah, Malaysia");
   };
 
   useEffect(() => {
-    // Initialize map only once
-    if (!mapRef.current) {
-      mapRef.current = L.map("map").setView([5.9804, 116.0735], 8); // Centered on Sabah
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(mapRef.current);
+    // Wait a bit to ensure DOM is ready
+    const timer = setTimeout(() => {
+      if (mapRef.current && !mapInstanceRef.current) {
+        try {
+          console.log("Initializing map...");
 
-      // Add attraction markers
-      addAttractionMarkers();
-    }
+          mapInstanceRef.current = L.map(mapRef.current, {
+            center: [5.9804, 116.0735],
+            zoom: 8,
+            zoomControl: true,
+          });
 
-    // Cleanup function
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19,
+          }).addTo(mapInstanceRef.current);
+
+          // Wait for tiles to load then add markers and fix sizing
+          mapInstanceRef.current.whenReady(() => {
+            console.log("Map is ready, adding markers...");
+            addAttractionMarkers();
+            setMapLoaded(true);
+            setStatus("Explore popular attractions in Sabah, Malaysia");
+
+            // Ensure correct size after initial layout
+            setTimeout(() => {
+              try {
+                mapInstanceRef.current?.invalidateSize(true);
+              } catch {}
+            }, 50);
+          });
+        } catch (error) {
+          console.error("Error initializing map:", error);
+          setStatus("Error loading map. Please refresh the page.");
+        }
+      }
+    }, 100);
+
+    // Handle window resize to keep map sized correctly
+    const handleResize = () => {
+      try {
+        mapInstanceRef.current?.invalidateSize();
+      } catch {}
+    };
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      if (mapRef.current) {
-        clearMarkers();
+      clearTimeout(timer);
+      window.removeEventListener("resize", handleResize);
+      if (mapInstanceRef.current) {
+        try {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
+        } catch (error) {
+          console.error("Error cleaning up map:", error);
+        }
       }
     };
   }, []);
@@ -161,6 +199,7 @@ export default function Map() {
               key={index}
               className="attraction-btn"
               onClick={() => centerOnAttraction(attraction)}
+              disabled={!mapLoaded}
             >
               {attraction.name}
             </button>
@@ -168,14 +207,38 @@ export default function Map() {
         </div>
 
         <div className="button-group">
-          <button className="reset-btn" onClick={resetMapView}>
+          <button
+            className="reset-btn"
+            onClick={resetMapView}
+            disabled={!mapLoaded}
+          >
             Reset View
           </button>
         </div>
       </div>
 
       {/* Map Container */}
-      <div id="map" className="map-container"></div>
+      <div
+        ref={mapRef}
+        id="map"
+        className="map-container"
+        style={{ width: "100%", height: "100%" }}
+      >
+        {!mapLoaded && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              background: "#f8f9fa",
+              color: "#666",
+            }}
+          >
+            Loading map...
+          </div>
+        )}
+      </div>
     </div>
   );
 }
