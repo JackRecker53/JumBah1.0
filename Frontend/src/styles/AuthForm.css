@@ -10,9 +10,9 @@
   width: 100%;
   max-width: 400px;
   padding: 2rem;
-  background-color: #1c3d5e;
+  background-color: #3e4879;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(204, 22, 22, 0.1);
 }
 
 .auth-form h2 {

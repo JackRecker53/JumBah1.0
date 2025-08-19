@@ -31,8 +31,8 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h2>Welcome Back!</h2>
-        <p>Log in to access your adventure.</p>
+        <h2>Welcome</h2>
+        <p>Log in to sabah adventure.</p>
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -43,7 +43,7 @@ const Login = () => {
               name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
+              placeholder="Email address or phone number"
               required
             />
           </div>
@@ -63,11 +63,6 @@ const Login = () => {
             Log In
           </button>
         </form>
-        <div className="divider">OR</div>
-        <button type="button" className="googleBtn">
-          <FcGoogle size={24} />
-          <span>Sign In with Google</span>
-        </button>
         <p className="switch-auth">
           Don't have an account? <Link to="/register">Register here</Link>
         </p>
