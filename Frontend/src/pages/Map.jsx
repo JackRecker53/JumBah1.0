@@ -24,25 +24,29 @@ const sabahAttractions = [
     name: "Mount Kinabalu",
     lat: 6.0647,
     lng: 116.5621,
-    description: "Highest mountain in Malaysia",
+    description:
+      "Highest mountain in Malaysia and famous for its biodiversity as it is the home to thousand of plant species, including the rare Rafflesia flower and 'The King of Orchid', Paphiopedilum rothschildianum, the rarest orchid speciin the world.",
   },
   {
     name: "Sepilok Orangutan Sanctuary",
     lat: 5.8742,
     lng: 117.9444,
-    description: "Famous orangutan rehabilitation center",
+    description:
+      "Famous orangutan rehabilitation center that is responsible in protecting and rehabilitating orphaned orangutan while offering visitors to observe them in their natural setting.",
   },
   {
     name: "Sipadan Island",
     lat: 4.1133,
     lng: 118.6281,
-    description: "World-class diving destination",
+    description:
+      "One of the most top 10 world-class diving destination, it is abudance in marine life and coral reefs.",
   },
   {
     name: "Kinabatangan River",
     lat: 5.5167,
     lng: 118.2333,
-    description: "Wildlife sanctuary and river cruise",
+    description:
+      "Wildlife sanctuary and river cruise. The Kinabatangan River is one of the best places in Southeast Asia to see wildlife in the wild — especially orangutans, proboscis monkeys, hornbills, and pygmy elephants.",
   },
   {
     name: "Tip of Borneo",

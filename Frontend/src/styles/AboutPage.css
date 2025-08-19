@@ -1,4 +1,4 @@
-.aboutPage {
+/* .aboutPage {
     padding: 2rem 0;
 }
 .header {
@@ -26,4 +26,87 @@
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 1rem;
+} */
+
+/* --- Google Font --- */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap");
+
+/* --- Sabah Island Breeze & Kinabalu Sky Palette --- */
+:root {
+  --primary-color: #0096c7; /* Clear Sky Blue */
+  --accent-color: #48b556; /* Lush Island Green */
+  --surface-color: #f4f7f5; /* Light Mist Grey */
+  --background-color: #ffffff; /* Clean White */
+  --text-color: #343a40; /* Dark, Crisp Grey */
+}
+
+/* --- Base Styles --- */
+body {
+  /* Montserrat is versatile enough for both headings and body text */
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.7;
+}
+
+.aboutPage {
+  padding: 3rem 1rem;
+}
+
+.header {
+  text-align: center;
+  padding: 5rem 2rem;
+  margin-bottom: 4rem;
+  background-color: var(--surface-color); /* A clean, light grey canvas */
+  border-radius: 12px;
+}
+
+.header h1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800; /* Extra bold for a strong impact */
+  color: var(--primary-color);
+  text-transform: uppercase; /* Adds a touch of modern style */
+  letter-spacing: 2px; /* Gives the title a more designed feel */
+  margin: 0;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.content h2 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700; /* Bold and clear */
+  color: var(--text-color);
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+
+  /* A modern separator line that sits beside the heading */
+  padding-left: 1.5rem;
+  border-left: 5px solid var(--accent-color);
+}
+
+.content p {
+  font-size: 1.1rem;
+  font-weight: 400; /* Regular weight for easy reading */
+  margin-bottom: 1.5rem;
+}
+
+/* A modern, understated link style */
+.content a {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent-color), var(--accent-color));
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 2px; /* Underline starts with 0 width */
+  transition: background-size 0.3s;
+}
+
+.content a:hover {
+  background-size: 100% 2px; /* Underline animates to full width on hover */
 }

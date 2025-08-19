@@ -24,7 +24,7 @@ const Login = () => {
       }
       navigate("/profile");
     } catch (err) {
-      setError(err.message || "Login failed. Please check your credentials.");
+      setError(err.message || "Login failed. Please check your password.");
     }
   };
 
