@@ -1,6 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import markerIcon2xUrl from "leaflet/dist/images/marker-icon-2x.png";
+import markerIconUrl from "leaflet/dist/images/marker-icon.png";
+import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
+import "../styles/Map.css";
 
-export default function MapTilerMap() {
+// Configure Leaflet default icons so they load when bundled by Vite
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2xUrl,
+  iconUrl: markerIconUrl,
+  shadowUrl: markerShadowUrl,
+});
+
+export default function LeafletMap() {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const [selectedAttraction, setSelectedAttraction] = useState(null);
@@ -8,8 +21,6 @@ export default function MapTilerMap() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [apiKey, setApiKey] = useState("");
-  const [showKeyInput, setShowKeyInput] = useState(true);
 
   // Popular Sabah attractions data
   const sabahAttractions = [
@@ -69,147 +80,124 @@ export default function MapTilerMap() {
 
   const [markersRef, setMarkersRef] = useState([]);
 
-  // Load Leaflet dynamically
-  const loadLeaflet = async () => {
-    if (window.L) return window.L;
-
-    return new Promise((resolve, reject) => {
-      // Load CSS
-      const cssLink = document.createElement("link");
-      cssLink.rel = "stylesheet";
-      cssLink.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      document.head.appendChild(cssLink);
-
-      // Load JS
-      const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      script.onload = () => {
-        // Fix default markers
-        if (window.L && window.L.Icon && window.L.Icon.Default) {
-          delete window.L.Icon.Default.prototype._getIconUrl;
-          window.L.Icon.Default.mergeOptions({
-            iconRetinaUrl:
-              "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-            iconUrl:
-              "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-            shadowUrl:
-              "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-          });
-        }
-        resolve(window.L);
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
-  };
-
-  // Initialize map with MapTiler
+  // Initialize map with OpenStreetMap (no API key required)
   const initializeMap = async () => {
     try {
-      if (!apiKey.trim()) {
-        setStatus("Please enter your MapTiler API key");
+      setStatus("Loading map tiles...");
+
+      const container = mapRef.current;
+      if (!container) {
+        setStatus("Map container not ready");
         return;
       }
 
-      const L = await loadLeaflet();
-      setStatus("Loading map tiles...");
-
-      const mapContainer = mapRef.current;
-      if (!mapContainer) return;
-
-      // Clear any existing map
+      // Remove any existing map instance
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.remove();
+        } catch {}
         mapInstanceRef.current = null;
       }
 
-      // Create new map instance
-      const map = L.map(mapContainer, {
+      // Create map
+      const map = L.map(container, {
         center: [5.9804, 116.0735],
         zoom: 8,
         zoomControl: true,
       });
-
       mapInstanceRef.current = map;
 
-      // Add MapTiler tiles
-      const tileLayer = L.tileLayer(
-        `https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=${apiKey}`,
+      // Primary tile layer (OpenStreetMap)
+      let tileLayer = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
           attribution:
-            '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           maxZoom: 19,
-          tileSize: 256,
-          zoomOffset: 0,
+          subdomains: "abc",
         }
       );
 
-      // Handle tile loading success/failure
       let tilesLoaded = false;
-      let hasError = false;
+      let loadTimeout;
 
-      tileLayer.on("loading", () => {
+      const onTilesLoaded = () => {
         if (!tilesLoaded) {
-          setStatus("Loading MapTiler tiles...");
-        }
-      });
-
-      tileLayer.on("load", () => {
-        if (!tilesLoaded && !hasError) {
           tilesLoaded = true;
           setMapLoaded(true);
           setStatus(
             "Map loaded successfully! Click on attractions to explore."
           );
           addAttractionMarkers(L, map);
+          if (loadTimeout) clearTimeout(loadTimeout);
         }
+      };
+
+      tileLayer.on("loading", () => {
+        if (!tilesLoaded) setStatus("Loading map tiles...");
       });
-
+      tileLayer.on("load", onTilesLoaded);
+      let errorCount = 0;
       tileLayer.on("tileerror", (e) => {
-        hasError = true;
         console.error("Tile loading error:", e);
-        setStatus(
-          "Error loading MapTiler tiles. Please check your API key and try again."
-        );
-
-        // Fallback to OpenStreetMap
-        map.removeLayer(tileLayer);
-        const fallbackTiles = L.tileLayer(
-          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          {
-            attribution:
-              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19,
-          }
-        );
-        fallbackTiles.addTo(map);
-        setStatus("Switched to fallback tiles (OpenStreetMap)");
-        if (!tilesLoaded) {
-          tilesLoaded = true;
-          setMapLoaded(true);
-          addAttractionMarkers(L, map);
+        errorCount += 1;
+        // If we see several early errors, switch to Carto basemap fallback
+        if (!tilesLoaded && errorCount >= 3) {
+          try {
+            map.removeLayer(tileLayer);
+          } catch {}
+          const carto = L.tileLayer(
+            "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+            {
+              attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+              subdomains: "abcd",
+              maxZoom: 19,
+            }
+          );
+          tileLayer = carto;
+          errorCount = 0;
+          tileLayer.on("load", onTilesLoaded);
+          tileLayer.on(
+            "loading",
+            () => !tilesLoaded && setStatus("Loading map tiles...")
+          );
+          tileLayer.addTo(map);
+          setStatus("Switched to fallback tiles (Carto)");
+        } else if (!tilesLoaded) {
+          setTimeout(onTilesLoaded, 1000);
         }
       });
 
       tileLayer.addTo(map);
 
-      // Handle map ready
+      loadTimeout = setTimeout(() => {
+        if (!tilesLoaded) onTilesLoaded();
+      }, 3000);
+
       map.whenReady(() => {
         setTimeout(() => {
-          map.invalidateSize();
-          if (!tilesLoaded && !hasError) {
-            tilesLoaded = true;
-            setMapLoaded(true);
-            setStatus("Map initialized successfully!");
-            addAttractionMarkers(L, map);
+          try {
+            map.invalidateSize();
+            if (!tilesLoaded) onTilesLoaded();
+          } catch (e) {
+            console.error("Error in map ready handler:", e);
           }
-        }, 500);
+        }, 200);
       });
+
+      // Ensure resizing or layout changes update the map size
+      const resizeObserver = new ResizeObserver(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize({ animate: false });
+        }
+      });
+      resizeObserver.observe(container);
+      // Clean observer on unmount of component or re-init
+      map.once("unload", () => resizeObserver.disconnect());
     } catch (error) {
       console.error("Map initialization error:", error);
-      setStatus(
-        "Failed to load map. Please check your internet connection and API key."
-      );
+      setStatus(`Failed to load map: ${error.message}`);
     }
   };
 
@@ -254,28 +242,57 @@ export default function MapTilerMap() {
 
   // Get user location
   const locateUser = () => {
-    if (!navigator.geolocation || !mapInstanceRef.current) {
-      setStatus("Geolocation not supported");
+    if (!navigator.geolocation) {
+      setStatus("Geolocation not supported by this browser");
       return;
     }
 
+    if (!mapInstanceRef.current) {
+      setStatus("Map not ready yet");
+      return;
+    }
+
+    setStatus("Getting your location...");
+
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        const position = [coords.latitude, coords.longitude];
-        setUserLocation(position);
+        try {
+          const position = [coords.latitude, coords.longitude];
+          setUserLocation(position);
 
-        if (window.L && mapInstanceRef.current) {
-          window.L.marker(position)
-            .addTo(mapInstanceRef.current)
-            .bindPopup("You are here")
-            .openPopup();
-          mapInstanceRef.current.setView(position, 13);
+          if (mapInstanceRef.current) {
+            L.marker(position)
+              .addTo(mapInstanceRef.current)
+              .bindPopup("You are here")
+              .openPopup();
+            mapInstanceRef.current.setView(position, 13);
+          }
+          setStatus("Located your position");
+        } catch (error) {
+          console.error("Error processing location:", error);
+          setStatus("Error processing your location");
         }
-        setStatus("Located your position");
       },
       (error) => {
         console.error("Geolocation error:", error);
-        setStatus("Unable to get your location");
+        let errorMessage = "Unable to get your location";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied by user";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information unavailable";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out";
+            break;
+        }
+        setStatus(errorMessage);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
       }
     );
   };
@@ -295,6 +312,7 @@ export default function MapTilerMap() {
 
     // Try geocoding with Nominatim as backup
     try {
+      setStatus("Searching...");
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(
           searchQuery + " Sabah Malaysia"
@@ -302,9 +320,14 @@ export default function MapTilerMap() {
         {
           headers: {
             Accept: "application/json",
+            "User-Agent": "JumBah-Tourist-App/1.0",
           },
         }
       );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -312,9 +335,9 @@ export default function MapTilerMap() {
         const lat = parseFloat(data[0].lat);
         const lng = parseFloat(data[0].lon);
 
-        if (mapInstanceRef.current && window.L) {
+        if (mapInstanceRef.current) {
           mapInstanceRef.current.setView([lat, lng], 14);
-          window.L.marker([lat, lng])
+          L.marker([lat, lng])
             .addTo(mapInstanceRef.current)
             .bindPopup(data[0].display_name)
             .openPopup();
@@ -324,17 +347,24 @@ export default function MapTilerMap() {
         setStatus("Place not found");
       }
     } catch (error) {
+      console.error("Search error:", error);
       setStatus("Search failed. Try searching from the attractions list.");
     }
   };
 
-  // Handle API key submission
-  const handleApiKeySubmit = () => {
-    if (apiKey.trim()) {
-      setShowKeyInput(false);
-      initializeMap();
-    }
-  };
+  // Initialize map on component mount
+  useEffect(() => {
+    const initMap = async () => {
+      try {
+        await initializeMap();
+      } catch (error) {
+        console.error("Failed to initialize map:", error);
+        setStatus("Failed to initialize map. Please refresh the page.");
+      }
+    };
+
+    initMap();
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -342,6 +372,7 @@ export default function MapTilerMap() {
       if (mapInstanceRef.current) {
         try {
           mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
         } catch (error) {
           console.error("Error cleaning up map:", error);
         }
@@ -349,255 +380,39 @@ export default function MapTilerMap() {
     };
   }, []);
 
-  if (showKeyInput) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          backgroundColor: "#f8f9fa",
-          fontFamily: "Arial, sans-serif",
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "white",
-            padding: "40px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-            maxWidth: "500px",
-            width: "90%",
-          }}
-        >
-          <h2
-            style={{
-              textAlign: "center",
-              marginBottom: "20px",
-              color: "#2c3e50",
-            }}
-          >
-            MapTiler API Key Required
-          </h2>
-          <p
-            style={{
-              textAlign: "center",
-              marginBottom: "30px",
-              color: "#7f8c8d",
-              lineHeight: 1.6,
-            }}
-          >
-            To use MapTiler maps, you need a free API key from{" "}
-            <a
-              href="https://www.maptiler.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#3498db" }}
-            >
-              maptiler.com
-            </a>
-          </p>
-
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: "bold",
-                color: "#2c3e50",
-              }}
-            >
-              Enter your MapTiler API Key:
-            </label>
-            <input
-              type="text"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Your MapTiler API key..."
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                fontSize: "14px",
-              }}
-              onKeyPress={(e) => e.key === "Enter" && handleApiKeySubmit()}
-            />
-          </div>
-
-          <button
-            onClick={handleApiKeySubmit}
-            disabled={!apiKey.trim()}
-            style={{
-              width: "100%",
-              padding: "12px",
-              backgroundColor: apiKey.trim() ? "#3498db" : "#bdc3c7",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              fontSize: "16px",
-              cursor: apiKey.trim() ? "pointer" : "not-allowed",
-              transition: "background-color 0.3s",
-            }}
-          >
-            Initialize Map
-          </button>
-
-          <div
-            style={{
-              marginTop: "20px",
-              padding: "15px",
-              backgroundColor: "#f8f9fa",
-              borderRadius: "6px",
-            }}
-          >
-            <h4 style={{ margin: "0 0 10px 0", color: "#2c3e50" }}>
-              How to get a free API key:
-            </h4>
-            <ol
-              style={{
-                margin: 0,
-                paddingLeft: "20px",
-                color: "#7f8c8d",
-                fontSize: "14px",
-              }}
-            >
-              <li>
-                Go to{" "}
-                <a
-                  href="https://www.maptiler.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  maptiler.com
-                </a>
-              </li>
-              <li>Sign up for a free account</li>
-              <li>Go to your account dashboard</li>
-              <li>Copy your API key</li>
-              <li>Paste it above and click "Initialize Map"</li>
-            </ol>
-          </div>
-
-          <button
-            onClick={() => {
-              setShowKeyInput(false);
-              setStatus(
-                "Initializing without MapTiler (using OpenStreetMap)..."
-              );
-              setTimeout(initializeMap, 100);
-            }}
-            style={{
-              width: "100%",
-              padding: "8px",
-              backgroundColor: "transparent",
-              color: "#7f8c8d",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              fontSize: "12px",
-              cursor: "pointer",
-              marginTop: "15px",
-            }}
-          >
-            Skip and use OpenStreetMap instead
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        fontFamily: "Arial, sans-serif",
-        backgroundColor: "#f5f5f5",
-      }}
-    >
+    <div className="app-container">
       {/* Control Panel */}
-      <div
-        style={{
-          width: "350px",
-          padding: "20px",
-          backgroundColor: "white",
-          boxShadow: "2px 0 10px rgba(0,0,0,0.1)",
-          overflowY: "auto",
-          zIndex: 1000,
-        }}
-      >
-        <h1
-          style={{
-            color: "#2c3e50",
-            fontSize: "24px",
-            marginBottom: "10px",
-            borderBottom: "3px solid #3498db",
-            paddingBottom: "10px",
-          }}
-        >
-          Sabah Attractions Map
-        </h1>
-        <p style={{ color: "#7f8c8d", marginBottom: "20px" }}>
-          Powered by MapTiler & OpenStreetMap
-        </p>
+      <div className="panel">
+        <div className="panel-header">
+          <h1>Sabah Attractions Map</h1>
+          <p>Powered by Leaflet & OpenStreetMap</p>
+        </div>
 
-        <div
-          style={{
-            padding: "10px",
-            backgroundColor: mapLoaded ? "#e8f5e8" : "#fff3cd",
-            borderRadius: "5px",
-            marginBottom: "20px",
-            fontSize: "14px",
-            color: mapLoaded ? "#27ae60" : "#856404",
-          }}
-        >
+        <div className={`status-box ${mapLoaded ? "loaded" : "loading"}`}>
           {status}
         </div>
 
         {/* Search Controls */}
-        <div style={{ marginBottom: "20px" }}>
+        <div className="search-controls">
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search attractions..."
-            style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ddd",
-              borderRadius: "5px",
-              marginBottom: "10px",
-            }}
             onKeyPress={(e) => e.key === "Enter" && searchPlace()}
           />
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div className="search-buttons">
             <button
               onClick={searchPlace}
               disabled={!mapLoaded}
-              style={{
-                flex: 1,
-                padding: "8px 12px",
-                backgroundColor: mapLoaded ? "#3498db" : "#bdc3c7",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: mapLoaded ? "pointer" : "not-allowed",
-              }}
+              className="search-button"
             >
               Search
             </button>
             <button
               onClick={locateUser}
               disabled={!mapLoaded}
-              style={{
-                flex: 1,
-                padding: "8px 12px",
-                backgroundColor: mapLoaded ? "#e74c3c" : "#bdc3c7",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: mapLoaded ? "pointer" : "not-allowed",
-              }}
+              className="locate-button"
             >
               My Location
             </button>
@@ -606,29 +421,10 @@ export default function MapTilerMap() {
 
         {/* Selected Attraction Info */}
         {selectedAttraction && (
-          <div
-            style={{
-              backgroundColor: "#f8f9fa",
-              padding: "15px",
-              borderRadius: "8px",
-              marginBottom: "20px",
-              border: "2px solid #3498db",
-            }}
-          >
-            <h3 style={{ color: "#2c3e50", marginBottom: "8px" }}>
-              {selectedAttraction.name}
-            </h3>
-            <p
-              style={{
-                fontSize: "14px",
-                lineHeight: "1.4",
-                marginBottom: "10px",
-                color: "#555",
-              }}
-            >
-              {selectedAttraction.description}
-            </p>
-            <p style={{ fontSize: "12px", color: "#7f8c8d" }}>
+          <div className="selected-attraction">
+            <h3>{selectedAttraction.name}</h3>
+            <p>{selectedAttraction.description}</p>
+            <p className="coords">
               <strong>Coordinates:</strong> {selectedAttraction.lat.toFixed(4)},{" "}
               {selectedAttraction.lng.toFixed(4)}
             </p>
@@ -636,121 +432,43 @@ export default function MapTilerMap() {
         )}
 
         {/* Attractions List */}
-        <div>
-          <h3 style={{ color: "#2c3e50", marginBottom: "15px" }}>
-            Popular Attractions ({sabahAttractions.length})
-          </h3>
+        <div className="attractions-list">
+          <h3>Popular Attractions ({sabahAttractions.length})</h3>
           {sabahAttractions.map((attraction, index) => (
             <button
               key={index}
               onClick={() => centerOnAttraction(attraction)}
               disabled={!mapLoaded}
-              style={{
-                display: "block",
-                width: "100%",
-                padding: "12px",
-                marginBottom: "8px",
-                backgroundColor:
-                  selectedAttraction?.name === attraction.name
-                    ? "#3498db"
-                    : "white",
-                color:
-                  selectedAttraction?.name === attraction.name
-                    ? "white"
-                    : "#2c3e50",
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                textAlign: "left",
-                cursor: mapLoaded ? "pointer" : "not-allowed",
-                opacity: mapLoaded ? 1 : 0.6,
-                transition: "all 0.2s",
-                fontSize: "14px",
-              }}
+              className={`attraction-btn ${
+                selectedAttraction?.name === attraction.name ? "selected" : ""
+              }`}
             >
               <strong>{attraction.name}</strong>
-              <div style={{ fontSize: "12px", opacity: 0.8, marginTop: "4px" }}>
+              <div className="description">
                 {attraction.description.substring(0, 60)}...
               </div>
             </button>
           ))}
         </div>
 
-        <div style={{ display: "flex", gap: "8px", marginTop: "20px" }}>
+        <div className="view-controls">
           <button
             onClick={resetMapView}
             disabled={!mapLoaded}
-            style={{
-              flex: 1,
-              padding: "12px",
-              backgroundColor: mapLoaded ? "#95a5a6" : "#bdc3c7",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: mapLoaded ? "pointer" : "not-allowed",
-              fontSize: "14px",
-            }}
+            className="reset-button"
           >
             Reset View
-          </button>
-          <button
-            onClick={() => {
-              setShowKeyInput(true);
-              setMapLoaded(false);
-              if (mapInstanceRef.current) {
-                mapInstanceRef.current.remove();
-                mapInstanceRef.current = null;
-              }
-            }}
-            style={{
-              flex: 1,
-              padding: "12px",
-              backgroundColor: "#f39c12",
-              color: "white",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Change API Key
           </button>
         </div>
       </div>
 
       {/* Map Container */}
-      <div
-        ref={mapRef}
-        style={{
-          flex: 1,
-          height: "100vh",
-          backgroundColor: "#e8f4f8",
-        }}
-      >
+      <div ref={mapRef} className="map-container">
         {!mapLoaded && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              flexDirection: "column",
-              backgroundColor: "#f8f9fa",
-              color: "#666",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "48px",
-                marginBottom: "20px",
-                animation: "spin 1s linear infinite",
-              }}
-            >
-              🌐
-            </div>
-            <div style={{ fontSize: "18px", marginBottom: "10px" }}>
-              Loading MapTiler Map...
-            </div>
-            <div style={{ fontSize: "14px", color: "#999" }}>{status}</div>
+          <div className="loading-overlay">
+            <div className="loading-icon">🌐</div>
+            <div className="loading-text">Loading Leaflet Map...</div>
+            <div className="loading-status">{status}</div>
             <style>
               {`
                 @keyframes spin {

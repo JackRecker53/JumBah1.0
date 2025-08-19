@@ -1,169 +1,241 @@
-:root {
-  --primary-color: #007bff;
-  --light-gray: #f8f9fa;
-  --medium-gray: #e9ecef;
-  --dark-gray: #343a40;
-  --text-color: #495057;
-}
-
+/* Main container for the entire map view */
 .app-container {
   display: flex;
-  height: calc(100vh - 80px); /* Match Navbar height (80px) */
-  font-family: "Inter", sans-serif;
-  background-color: var(--light-gray);
-  /* Let map calculate size; avoid clipping popups */
-  overflow: visible;
+  height: 100vh; /* Full viewport height */
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background-color: #f4f6f8;
+  overflow: hidden; /* Prevent scrolling on the main container */
 }
 
-.map-container {
-  flex-grow: 1;
-  /* Force a concrete height so Leaflet can size correctly inside flex layouts */
-  height: calc(100vh - 80px);
-  min-height: 400px; /* Ensure minimum height */
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-  /* Prevent flex min-height issues inside nested layouts */
-  min-width: 0;
-  position: relative; /* Ensure child absolute elements position correctly */
-  background: #f2f4f7;
-}
-
-/* Ensure Leaflet container fills the space */
-.map-container .leaflet-container {
-  width: 100% !important;
-  height: 100% !important;
-}
-
+/* Left control panel */
 .panel {
-  width: 350px;
-  min-width: 300px;
-  height: 100%;
+  width: 380px;
+  min-width: 350px;
+  padding: 20px;
   background-color: #ffffff;
-  padding: 25px;
-  box-sizing: border-box;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Allow scrolling within the panel */
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  z-index: 1000; /* Ensure panel is above the map */
 }
 
-.panel h1 {
-  font-size: 1.8rem;
-  color: var(--dark-gray);
-  margin-top: 0;
-  margin-bottom: 10px;
+.panel-header h1 {
+  color: #2c3e50;
+  font-size: 24px;
+  margin-bottom: 5px;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 10px;
 }
 
-.panel p {
-  color: var(--text-color);
-  line-height: 1.6;
+.panel-header p {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
-.location-info {
-  background-color: var(--light-gray);
-  border-radius: 8px;
-  padding: 15px;
-  margin-top: 20px;
+/* Status box for messages */
+.status-box {
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
-.location-info h3 {
-  margin-top: 0;
-  font-size: 1rem;
-  color: var(--dark-gray);
+.status-box.loading {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left: 5px solid #ffeeba;
 }
 
-.location-info .coords {
-  font-family: monospace;
-  background-color: var(--medium-gray);
-  padding: 3px 6px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  color: var(--dark-gray);
+.status-box.loaded {
+  background-color: #e8f5e8;
+  color: #27ae60;
+  border-left: 5px solid #c8e6c9;
 }
 
-.status {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #e7f3ff;
-  border: 1px solid #b3d7ff;
-  color: #004085;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.button-group {
-  margin-top: auto; /* Pushes buttons to the bottom */
-  padding-top: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.panel button {
-  flex-grow: 1;
-  padding: 12px 15px;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.panel button:hover {
-  transform: translateY(-2px);
-}
-
-.reset-btn {
-  background-color: var(--medium-gray);
-  color: var(--dark-gray);
-}
-.reset-btn:hover {
-  background-color: #d3d9df;
-}
-
-.attractions-list {
-  margin-top: 20px;
+/* Search controls section */
+.search-controls {
   margin-bottom: 20px;
 }
 
+.search-controls input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.search-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.search-button,
+.locate-button {
+  flex: 1;
+  padding: 10px 12px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-button {
+  background-color: #3498db;
+}
+
+.locate-button {
+  background-color: #e74c3c;
+}
+
+.search-button:disabled,
+.locate-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Selected attraction info box */
+.selected-attraction {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 2px solid #3498db;
+}
+
+.selected-attraction h3 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.selected-attraction p {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.selected-attraction .coords {
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+/* Attractions list section */
+.attractions-list {
+  margin-top: 15px;
+  flex-grow: 1; /* Allows this section to fill remaining space */
+}
+
 .attractions-list h3 {
+  color: #2c3e50;
   margin-bottom: 15px;
-  font-size: 1.1rem;
-  color: var(--dark-gray);
 }
 
 .attraction-btn {
+  display: block;
   width: 100%;
-  padding: 10px 15px;
+  padding: 12px;
   margin-bottom: 8px;
-  font-size: 0.9rem;
-  font-weight: 400;
-  border: 1px solid var(--medium-gray);
+  background-color: white;
+  color: #2c3e50;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: #ffffff;
-  color: var(--text-color);
   text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
 }
 
 .attraction-btn:hover {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-  transform: translateY(-1px);
+  border-color: #3498db;
+  background-color: #f0f8ff;
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .app-container {
-    flex-direction: column;
+.attraction-btn.selected {
+  background-color: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.attraction-btn .description {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.attraction-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* View controls section */
+.view-controls {
+  margin-top: 20px;
+}
+
+.reset-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.reset-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Map container */
+.map-container {
+  flex-grow: 1; /* This is the crucial part! */
+  height: 100%; /* Ensure it takes full height of the flex container */
+  background-color: #e0e0e0; /* Placeholder color */
+  z-index: 1;
+}
+
+/* Loading overlay for the map */
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  color: #666;
+}
+
+.loading-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  animation: spin 1.5s linear infinite;
+}
+
+.loading-text {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.loading-status {
+  font-size: 14px;
+  color: #999;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  .panel {
-    width: 100%;
-    height: 40%; /* Panel takes top 40% of the screen */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
-  .map-container {
-    height: 60%; /* Map takes bottom 60% */
+  to {
+    transform: rotate(360deg);
   }
 }
