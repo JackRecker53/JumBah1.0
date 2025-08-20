@@ -77,20 +77,20 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-/* 
+
 .form-group input {
   display: block;
   width: 100%;
   padding: 1rem;
   font-size: 1rem;
-  color: #d11d1d;
+  color: #f4f4f4;
   background-color: #2d3748;
   border: 2px solid #4a5568;
   border-radius: 10px;
   box-sizing: border-box;
   transition: all 0.3s ease;
   font-family: inherit;
-} */
+}
 
 .form-group input::placeholder {
   color: #a0aec0;
@@ -104,7 +104,7 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #fcc12b;
+  border-color: #f4f3f0;
   box-shadow: 0 0 0 4px rgba(252, 193, 43, 0.2);
   background-color: #1a202c;
   transform: translateY(-2px);
@@ -116,7 +116,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: #2d3748;
-  background-color: #fcc12b;
+  background-color: #ffffff;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -129,11 +129,11 @@
   z-index: 1;
 }
 
-.btn-primary:hover {
+/* .btn-primary:hover {
   background-color: #f59e0b;
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(252, 193, 43, 0.4);
-}
+} */
 
 .btn-primary:active {
   transform: translateY(-1px);
@@ -185,7 +185,7 @@
   z-index: 1;
 }
 
-.switch-auth a {
+/* .switch-auth a {
   color: #fcc12b;
   text-decoration: none;
   font-weight: 600;
@@ -196,9 +196,9 @@
 .switch-auth a:hover {
   color: #f59e0b;
   text-decoration: none;
-}
+} */
 
-.switch-auth a::after {
+/* .switch-auth a::after {
   content: "";
   position: absolute;
   width: 0;
@@ -211,7 +211,7 @@
 
 .switch-auth a:hover::after {
   width: 100%;
-}
+} */
 
 /* Loading state */
 .btn-primary.loading {
