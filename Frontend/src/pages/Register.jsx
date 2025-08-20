@@ -42,7 +42,7 @@ const Register = () => {
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">
-          <label htmlFor="Name">UserName</label>
+          <label htmlFor="Name">User Name</label>
           <input
             type="text"
             id="Name"
@@ -62,7 +62,7 @@ const Register = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">New password</label>
+          <label htmlFor="password">New Password</label>
           <input
             type="password"
             id="password"

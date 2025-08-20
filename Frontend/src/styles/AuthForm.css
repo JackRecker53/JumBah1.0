@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh; /* Better than padding for full height */
   padding: 2rem;
   background-color: #f9fafb;
 }
@@ -12,13 +13,15 @@
   padding: 2rem;
   background-color: #3e4879;
   border-radius: 8px;
-  box-shadow: 0 4px 12px lch(43.46% 82.11 37.11 / 0.1);
+  /* Fixed box-shadow - removed invalid lch() function */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .auth-form h2 {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 1rem;
+  color: #ffffff; /* Added color for consistency */
 }
 
 .auth-form p {
@@ -35,7 +38,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #374151;
+  color: #dee0e2;
 }
 
 .form-group input {
@@ -43,11 +46,19 @@
   width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
-  color: #111827;
+  color: #374151; /* Fixed: dark text on light background */
   background-color: #f9fafb;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  box-sizing: border-box; /* Important for consistent sizing */
+  box-sizing: border-box;
+  transition: border-color 0.2s ease; /* Added smooth transition */
+}
+
+/* Added focus state for better UX */
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .btn-primary {
@@ -60,24 +71,58 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s ease; /* Added smooth transition */
+}
+
+/* Added hover and active states */
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+.btn-primary:active {
+  background-color: #1d4ed8;
+}
+
+.btn-primary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }
 
 .error-message {
   color: #ef4444;
   text-align: center;
   margin-top: 1rem;
+  font-size: 0.875rem; /* Slightly smaller text */
 }
 
 .switch-auth {
   text-align: center;
   margin-top: 1.5rem;
-  color: #6b7280;
+  color: #d1d5db; /* Lighter color for better contrast on dark background */
 }
 
 .switch-auth a {
-  color: #3b82f6;
+  color: #60a5fa; /* Lighter blue for better contrast */
   text-decoration: none;
+  font-weight: 500;
 }
+
 .switch-auth a:hover {
   text-decoration: underline;
+  color: #93c5fd;
+}
+
+/* Added responsive design */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 1rem;
+  }
+
+  .auth-form {
+    padding: 1.5rem;
+  }
+
+  .auth-form h2 {
+    font-size: 1.75rem;
+  }
 }
