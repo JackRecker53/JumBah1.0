@@ -6,6 +6,7 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -41,7 +42,7 @@ const Register = () => {
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">
-          <label htmlFor="Name">Name</label>
+          <label htmlFor="Name">UserName</label>
           <input
             type="text"
             id="Name"
@@ -67,6 +68,16 @@ const Register = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            type="confrimPassword"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setconfirmPassword(e.target.value)}
             required
           />
         </div>
