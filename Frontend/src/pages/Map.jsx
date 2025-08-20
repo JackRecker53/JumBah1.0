@@ -22,18 +22,19 @@ L.Icon.Default.mergeOptions({
 
 export default function LeafletMap() {
   // --- STATE MANAGEMENT ---
-  const mapRef = useRef(null); // Ref for the map container DOM element
-  const mapInstanceRef = useRef(null); // Ref to store the map instance
-  const routingControlRef = useRef(null); // Ref to store the routing control instance
-  const userLocationMarkerRef = useRef(null); // Ref for the user's location marker
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const routingControlRef = useRef(null);
+  const userLocationMarkerRef = useRef(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [status, setStatus] = useState("Initializing map...");
   const [selectedAttraction, setSelectedAttraction] = useState(null);
-  const [userLocation, setUserLocation] = useState(null); // Will be [lat, lng]
+  const [userLocation, setUserLocation] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [navDestination, setNavDestination] = useState("");
 
   // --- DATA ---
-  // Using the data you provided earlier
   const sabahAttractions = [
     {
       name: "Mount Kinabalu",
@@ -77,11 +78,8 @@ export default function LeafletMap() {
   // --- MAP INITIALIZATION ---
   useEffect(() => {
     if (mapRef.current && !mapInstanceRef.current) {
-      // Create map instance
-      const map = L.map(mapRef.current).setView([5.9804, 116.0735], 8); // Centered on Kota Kinabalu
+      const map = L.map(mapRef.current).setView([5.9804, 116.0735], 8);
       mapInstanceRef.current = map;
-
-      // Add base tile layer
       const tiles = L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
@@ -89,7 +87,6 @@ export default function LeafletMap() {
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }
       );
-
       tiles.on("load", () => {
         setMapLoaded(true);
         setStatus(
@@ -97,21 +94,17 @@ export default function LeafletMap() {
         );
         addAttractionMarkers(map);
       });
-
       tiles.addTo(map);
     }
-
-    // Cleanup on component unmount
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
-  }, []); // Empty array ensures this effect runs only ONCE
+  }, []);
 
   // --- CORE FUNCTIONS ---
-
   const addAttractionMarkers = (map) => {
     sabahAttractions.forEach((attraction) => {
       const marker = L.marker([attraction.lat, attraction.lng]).addTo(map);
@@ -131,19 +124,14 @@ export default function LeafletMap() {
   const locateUser = () => {
     const map = mapInstanceRef.current;
     if (!map) return;
-
     setStatus("Getting your location...");
     map.locate({ setView: true, maxZoom: 14, enableHighAccuracy: true });
-
     map.on("locationfound", (e) => {
       setUserLocation([e.latlng.lat, e.latlng.lng]);
       setStatus("Your location has been found!");
-
-      // Add or move the user location marker
       if (userLocationMarkerRef.current) {
         userLocationMarkerRef.current.setLatLng(e.latlng);
       } else {
-        // Create a custom icon for the user's location
         const userIcon = L.divIcon({
           html: "<span>😀</span>",
           className: "user-location-icon",
@@ -155,7 +143,6 @@ export default function LeafletMap() {
       }
       map.stopLocate();
     });
-
     map.on("locationerror", (err) => {
       setStatus(`Error: ${err.message}`);
       map.stopLocate();
@@ -165,35 +152,27 @@ export default function LeafletMap() {
   const handleNavigation = (attraction) => {
     const map = mapInstanceRef.current;
     if (!map) return;
-
     if (!userLocation) {
       setStatus("Please find your location first before getting directions.");
       alert("Please click 'My Location' first to get directions.");
       return;
     }
-
-    // If a routing control already exists, remove it
     if (routingControlRef.current) {
       map.removeControl(routingControlRef.current);
     }
-
     setStatus(`Calculating route to ${attraction.name}...`);
-
-    // Create the routing control
     const routingControl = L.Routing.control({
       waypoints: [
-        L.latLng(userLocation[0], userLocation[1]), // Start: User's location
-        L.latLng(attraction.lat, attraction.lng), // End: Attraction
+        L.latLng(userLocation[0], userLocation[1]),
+        L.latLng(attraction.lat, attraction.lng),
       ],
       routeWhileDragging: true,
       lineOptions: {
         styles: [{ color: "#27ae60", opacity: 1, weight: 5 }],
       },
-      show: false, // Hides the turn-by-turn instructions panel
-      addWaypoints: false, // Prevents users from adding more points
+      show: false,
+      addWaypoints: false,
     }).addTo(map);
-
-    // Store the control instance in the ref
     routingControlRef.current = routingControl;
   };
 
@@ -206,25 +185,30 @@ export default function LeafletMap() {
     }
   };
 
+  // --- FILTERED ATTRACTIONS ---
+  const filteredAttractions = sabahAttractions.filter(
+    (a) =>
+      a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      a.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // --- RENDER ---
   return (
-    <div ref={mapRef} className="map-container">
-      {/* LEFT PANEL */}
+    <div className="app-container">
+      {/* SIDEBAR */}
       <div className="panel">
         <div className="panel-header">
           <h1>Sabah Attractions Map</h1>
           <p>Powered by Leaflet & OpenStreetMap</p>
         </div>
-
-        <div className={`status-box ${mapLoaded ? "loaded" : "loading"}`}>
+        <div className={"status-box " + (mapLoaded ? "loaded" : "loading")}>
           {status}
         </div>
-
-        <div className="search-buttons">
+        <div className="panel-controls">
           <button
             onClick={locateUser}
             disabled={!mapLoaded}
-            className="locate-button"
+            className="control-button"
           >
             My Location
           </button>
@@ -236,27 +220,71 @@ export default function LeafletMap() {
             Clear Route
           </button>
         </div>
-
+        {/* Navigation Dropdown */}
+        <div className="panel-controls" style={{ marginTop: 8 }}>
+          <select
+            value={navDestination}
+            onChange={(e) => setNavDestination(e.target.value)}
+            className="control-button"
+            disabled={!mapLoaded}
+          >
+            <option value="">Select destination...</option>
+            {sabahAttractions.map((attr, idx) => (
+              <option key={idx} value={attr.name}>
+                {attr.name}
+              </option>
+            ))}
+          </select>
+          <button
+            className="control-button"
+            disabled={!mapLoaded || !navDestination}
+            onClick={() => {
+              if (!userLocation) {
+                setStatus(
+                  "Please click 'My Location' first before navigating."
+                );
+                alert("Please click 'My Location' first before navigating.");
+                return;
+              }
+              const dest = sabahAttractions.find(
+                (a) => a.name === navDestination
+              );
+              if (dest) {
+                handleNavigation(dest);
+                setSelectedAttraction(dest);
+              }
+            }}
+          >
+            Navigate
+          </button>
+        </div>
         {selectedAttraction && (
           <div className="selected-attraction">
             <h3>{selectedAttraction.name}</h3>
             <p>{selectedAttraction.description}</p>
           </div>
         )}
-
         <div className="attractions-list">
-          <h3>Popular Attractions ({sabahAttractions.length})</h3>
-          {sabahAttractions.map((attraction, index) => (
-            <div key={index} className="attraction-item">
+          <h3>Popular Attractions ({filteredAttractions.length})</h3>
+          {filteredAttractions.map((attraction, index) => (
+            <div
+              key={index}
+              className={
+                "attraction-item" +
+                (selectedAttraction &&
+                selectedAttraction.name === attraction.name
+                  ? " selected"
+                  : "")
+              }
+            >
               <div
                 className="attraction-info"
                 onClick={() => centerOnAttraction(attraction)}
-                title={`Show ${attraction.name} on the map`}
+                title={"Show " + attraction.name + " on the map"}
               >
                 <strong>{attraction.name}</strong>
                 <p className="description">{attraction.description}</p>
               </div>
-
               <button
                 className="directions-button"
                 onClick={() => handleNavigation(attraction)}
@@ -264,7 +292,7 @@ export default function LeafletMap() {
                 title={
                   !userLocation
                     ? "Click 'My Location' first!"
-                    : `Get directions to ${attraction.name}`
+                    : "Get directions to " + attraction.name
                 }
               >
                 ➔
@@ -273,15 +301,25 @@ export default function LeafletMap() {
           ))}
         </div>
       </div>
-
-      {/* MAP CONTAINER */}
-      <div ref={mapRef} className="map-container">
-        {!mapLoaded && (
-          <div className="loading-overlay">
-            <div className="loading-icon">🌐</div>
-            <div className="loading-text">Loading Leaflet Map...</div>
-          </div>
-        )}
+      {/* MAP AREA */}
+      <div className="map-area">
+        {/* SEARCH BAR TOP RIGHT */}
+        <div className="map-search-bar">
+          <input
+            type="text"
+            placeholder="Search attractions..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="map-container" ref={mapRef}>
+          {!mapLoaded && (
+            <div className="loading-overlay">
+              <div className="loading-icon">🌐</div>
+              <div className="loading-text">Loading Leaflet Map...</div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

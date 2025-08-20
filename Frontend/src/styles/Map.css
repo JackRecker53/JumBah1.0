@@ -308,22 +308,85 @@
   cursor: not-allowed;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .app-container {
   display: flex;
-  height: calc(
-    100vh - 80px
-  ); /* Adjust 80px if your navbar height is different */
+  flex-direction: row;
+  height: 100%;
   width: 100%;
+  min-height: 0;
 }
 
 .panel {
-  width: 380px; /* Or your desired width */
-  min-width: 350px;
-  /* ... other panel styles ... */
-  overflow-y: auto;
+  min-height: 0;
+}
+
+.map-area {
+  flex-grow: 1;
+  position: relative;
+  height: calc(100vh - 80px); /* Match navbar height */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-search-bar {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 1100;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 8px 16px;
+}
+
+.map-search-bar input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 15px;
+  outline: none;
 }
 
 .map-container {
-  flex-grow: 1; /* This makes the map fill the remaining space */
-  height: 100%;
+  flex-grow: 1;
+  height: calc(100vh - 80px); /* Match navbar height */
+  min-height: 0;
 }
+
+.map-area {
+  flex-grow: 1;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-search-bar {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 1100;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 8px 16px;
+}
+
+.map-search-bar input {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Remove duplicate .map-container and .map-area rules below */
