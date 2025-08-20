@@ -84,7 +84,7 @@ const Navbar = () => {
               to="/about"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              About
+              About Sabah
             </NavLink>
           </li>
         </ul>
