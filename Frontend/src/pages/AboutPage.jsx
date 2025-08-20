@@ -8,35 +8,73 @@ const AboutPage = () => {
         <h1>About JumBah</h1>
       </header>
       <section className="content">
-        <h2>Our Mission</h2>
+        <h2>Geography</h2>
         <p>
-          "JumBah", it is a friendly local invitation meaning "Let's Go!" It was
-          born from a love for Sabah's rich culture, breathtaking nature, and
-          warm hospitality. Our mission is to create a seamless, enriching, and
-          fun travel experience for every tourist. We aim to be the single,
-          trusted platform where visitors can immerse themselves in Sabahan
-          culture, and local vendors can proudly showcase their unique
-          offerings.
+          Located on the northern part of the island of Borneo, Sabah is the
+          second largest state in Malaysia. It shares a border with Sarawak to
+          the southwest and Kalimantan, Indonesia to the south. Sabah's
+          coastline is washed by the South China, Sulu, and Celebes seas. The
+          state's landscape is a mix of mountainous regions, coastal plains, and
+          lush tropical rainforests. The Crocker Range, running through the
+          heart of Sabah, is home to Mount Kinabalu, the highest peak in
+          Malaysia and Southeast Asia, standing at 4,095 meters. The
+          Kinabatangan River, the longest in Sabah, flows from the Crocker Range
+          to the Sulu Sea.
         </p>
 
-        <h2>What We Do</h2>
+        <h2>Area and Climate</h2>
         <p>
-          We connect tourists directly with certified local businesses—from cozy
-          homestays and bustling cafes to unique gift shops and thrilling
-          events. By leveraging AI through our friendly chatbot, Madu, the
-          Sabah's sunbear, we offer personalized itineraries, cultural insights,
-          and even language help. The gamified elements like quests and stamp
-          collections are designed to make exploration more interactive and
-          rewarding.
+          Sabah covers an area of approximately 73,619 square kilometers. It
+          enjoys a warm tropical climate with temperatures generally ranging
+          from 23°C to 32°C. Known as the "Land Below the Wind," Sabah is
+          situated south of the typhoon belt, making it generally free from
+          major climatic disturbances. The state experiences a wet season from
+          November to April and a drier season from May to October, although
+          rainfall is common year-round.
         </p>
 
-        <h2>To be recognized and certified by Sabah Tourism Board </h2>
+        <h2>History and Economy</h2>
         <p>
-          Trust and authenticity are at our core. We work closely with the Sabah
-          Tourism Board website and catch up with their latest events that
-          ensure all listings and information on our platform are verified and
-          of high quality, giving you peace of mind as you plan your adventure
-          in the Land Below the Wind.
+          Sabah's history dates back over 20,000 years, with evidence of early
+          human settlements. Before the 15th century, it was influenced by the
+          Srivijaya and Majapahit empires. Later, it became part of the
+          Sultanates of Brunei and Sulu. In the late 19th century, the British
+          North Borneo Company was established, and the territory became a
+          British protectorate. After World War II, it became a British Crown
+          Colony. On September 16, 1963, Sabah joined with Malaya, Sarawak, and
+          Singapore to form the Federation of Malaysia. Sabah's economy has
+          traditionally been reliant on the export of natural resources. Today,
+          its key economic sectors are agriculture (especially palm oil),
+          tourism, and manufacturing. Eco-tourism is a major contributor, with
+          attractions like Mount Kinabalu, Sipadan Island, and numerous wildlife
+          conservation areas.
+        </p>
+
+        <h2>People and Culture</h2>
+        <p>
+          Sabah is a vibrant multicultural state with over 30 different ethnic
+          groups and more than 80 local dialects. The largest indigenous groups
+          are the Kadazan-Dusun, Bajau, and Murut. There is also a significant
+          Chinese population. The total population of Sabah is estimated to be
+          around 3.4 million people. This cultural diversity is reflected in the
+          state's unique blend of traditions, festivals, languages, and food.
+          The Kaamatan Harvest Festival, celebrated by the Kadazan-Dusun, is one
+          of the most significant cultural events in Sabah.
+        </p>
+
+        <h2>Official Religion</h2>
+        <p>
+          The official religion of Sabah is Islam. However, other religions,
+          including Christianity, Buddhism, and Hinduism, are widely and freely
+          practiced.
+        </p>
+
+        <h2>National Language</h2>
+        <p>
+          The official language is Bahasa Melayu (Malay), which is widely
+          spoken. English is also commonly used, especially in business and
+          tourism. The various indigenous groups also speak their own languages
+          and dialects.
         </p>
       </section>
     </div>
@@ -44,3 +82,5 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+
+// TRY OUT CODE BELOW ABOVE IS ORIGINAL

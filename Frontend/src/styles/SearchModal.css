@@ -97,7 +97,26 @@
 .resultItem {
   padding: 0.5rem 0.2rem;
   border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
+
+.resultItem.clickable:hover {
+  background-color: #f8f9fa;
+  transform: translateX(4px);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.resultItem.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.resultItem.clickable:active {
+  transform: translateX(2px);
+  background-color: #e9ecef;
+}
+
 .resultItem:last-child {
   border-bottom: none;
 }

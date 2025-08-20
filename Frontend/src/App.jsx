@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
-import ExplorePage from "./pages/ExplorePage";
 import AdventurePage from "./pages/AdventurePage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -19,7 +18,6 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/explore/:districtName" element={<ExplorePage />} />
           <Route path="/adventure" element={<AdventurePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/ai-planner" element={<AIPlanner />} />
