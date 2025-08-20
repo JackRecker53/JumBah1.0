@@ -166,9 +166,6 @@ const AdventurePage = () => {
     );
   }
 
-  // --- EDIT THIS VARIABLE TO CHANGE THE MAIN HEADER TEXT ---
-  const mainHeaderText = `${formattedName.toUpperCase()} PLACES`;
-
   return (
     <div className="explorePage">
       <header
@@ -177,7 +174,11 @@ const AdventurePage = () => {
       >
         <div className="headerOverlay"></div>
         <div className="headerContent">
-          <h1>{mainHeaderText}</h1>
+          <h1>
+            {formattedName === "Kota Kinabalu"
+              ? "Kota Kinabalu Attractions"
+              : `${formattedName} Places`}
+          </h1>
           <p>{districtData.description}</p>
         </div>
       </header>
