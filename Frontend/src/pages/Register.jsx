@@ -6,7 +6,7 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // Fixed naming
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -14,24 +14,51 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
+    // Add password confirmation validation
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    // Add basic validation
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(useremail)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5000/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        // Fixed: Include all form fields in the request
+        body: JSON.stringify({
+          username,
+          email: useremail, // Changed to 'email' for consistency
+          password,
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // Optional: Show success message before navigating
+        alert("Registration successful! Please login.");
         navigate("/login");
       } else {
         setError(data.msg || "Registration failed");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
+      console.error("Registration error:", err);
     }
   };
 
@@ -39,28 +66,35 @@ const Register = () => {
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Register</h2>
+        <p>Create your account to get started</p>
+
         {error && <p className="error-message">{error}</p>}
 
         <div className="form-group">
-          <label htmlFor="Name">User Name</label>
+          <label htmlFor="username">User Name</label> {/* Fixed htmlFor */}
           <input
             type="text"
-            id="Name"
+            id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
             required
+            minLength="3"
           />
         </div>
+
         <div className="form-group">
-          <label htmlFor="email address">Email address or phone number</label>
+          <label htmlFor="email">Email Address</label> {/* Fixed htmlFor */}
           <input
-            type="text"
-            id="email address"
+            type="email"
+            id="email"
             value={useremail}
             onChange={(e) => setUseremail(e.target.value)}
+            placeholder="Enter your email address"
             required
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="password">New Password</label>
           <input
@@ -68,22 +102,32 @@ const Register = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
             required
+            minLength="6"
           />
         </div>
+
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input
-            type="confrimPassword"
+            type="password"
             id="confirmPassword"
             value={confirmPassword}
-            onChange={(e) => setconfirmPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm your password"
             required
+            minLength="6"
           />
         </div>
+
         <button type="submit" className="btn-primary">
           Sign Up
         </button>
+
+        <div className="switch-auth">
+          Already have an account? <a href="/login">Sign in</a>
+        </div>
       </form>
     </div>
   );
