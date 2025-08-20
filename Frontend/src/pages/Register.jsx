@@ -4,6 +4,7 @@ import "../styles/AuthForm.css";
 
 const Register = () => {
   const [username, setUsername] = useState("");
+  const [useremail, setUseremail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -38,18 +39,29 @@ const Register = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2>Register</h2>
         {error && <p className="error-message">{error}</p>}
+
         <div className="form-group">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="Name">Name</label>
           <input
             type="text"
-            id="username"
+            id="Name"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="email address">Email address or phone number</label>
+          <input
+            type="text"
+            id="email address"
+            value={useremail}
+            onChange={(e) => setUseremail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">New password</label>
           <input
             type="password"
             id="password"
