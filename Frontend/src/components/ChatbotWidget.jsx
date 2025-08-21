@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/Chatbot.css";
 import { runChat } from "../services/geminiService";
-import {
-  FaCommentDots,
-  FaPaperPlane,
-  FaTimes,
-  FaSpinner,
-} from "react-icons/fa";
+import { FaCommentDots, FaTimes, FaSpinner } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
 import "../styles/DropdownMenu.css";
 
@@ -117,8 +112,18 @@ const ChatbotWidget = () => {
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
               placeholder="Ask about your trip..."
             />
-            <button onClick={handleSend}>
-              <FaPaperPlane />
+            <button
+              onClick={handleSend}
+              aria-label="Send"
+              className="chatSendButton"
+            >
+              {/* Simple send SVG icon */}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M2 21L23 12L2 3V10L17 12L2 14V21Z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
           </div>
         </div>

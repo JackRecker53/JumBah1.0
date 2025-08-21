@@ -1,3 +1,21 @@
+/* Circular send button for chat input */
+.chatSendButton {
+  background: #23395d;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chatSendButton:hover {
+  background: #0484d6;
+}
 .fab {
   width: 64px;
   height: 64px;
@@ -359,7 +377,7 @@
   color: #9ca3af;
 }
 
-.sendButton {
+.chatSendButton {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   color: white;
@@ -375,16 +393,16 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.sendButton:hover {
+.chatSendButton:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
-.sendButton:active {
+.chatSendButton:active {
   transform: scale(0.95);
 }
 
-.sendButton:disabled {
+.chatSendButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
