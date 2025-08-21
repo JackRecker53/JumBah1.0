@@ -21,9 +21,7 @@ const HomePage = () => {
         <div className="heroOverlay"></div>
         <div className="heroContent">
           <h1>Welcome to Sabah, Land Below the Wind</h1>
-          <p>
-            Your unforgettable adventure starts with JumBah. Let's explore! 🗺️
-          </p>
+          <p>Your unforgettable adventure starts with JumBah!</p>
           <Link to="/adventure" className="btn-primary">
             Start Your Adventure
           </Link>

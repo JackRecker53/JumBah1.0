@@ -36,7 +36,11 @@
 }
 
 .footerAbout h3 {
-  color: #2ec4b6;
+  background: linear-gradient(135deg, #f5362e, #0484d6, #072b80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
   margin: 0 0 0.5rem 0;
   font-size: 1.8rem;
 }
