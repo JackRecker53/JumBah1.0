@@ -316,77 +316,73 @@ body,
   padding: 0;
 }
 
+/* Main app container for map and panel */
 .app-container {
   display: flex;
   flex-direction: row;
-  height: 100%;
-  width: 100%;
+  height: 100vh; /* Full viewport height */
+  width: 100vw; /* Full viewport width */
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
+/* Sidebar/panel */
 .panel {
-  min-height: 0;
+  width: 380px;
+  min-width: 320px;
+  max-width: 420px;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
+/* Map area */
 .map-area {
   flex-grow: 1;
   position: relative;
-  height: calc(100vh - 80px); /* Match navbar height */
+  height: 100vh;
+  min-width: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-.map-search-bar {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  z-index: 1100;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 8px 16px;
-}
-
-.map-search-bar input {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 15px;
-  outline: none;
-}
-
+/* The actual map container (Leaflet) */
 .map-container {
   flex-grow: 1;
-  height: calc(100vh - 80px); /* Match navbar height */
-  min-height: 0;
-}
-
-.map-area {
-  flex-grow: 1;
-  position: relative;
+  width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
 }
 
-.map-search-bar {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  z-index: 1100;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 8px 16px;
+/* Responsive adjustments for smaller screens */
+@media (max-width: 900px) {
+  .panel {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+    height: 320px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1100;
+  }
+  .map-area {
+    height: calc(100vh - 320px);
+  }
 }
 
-.map-search-bar input {
-  border: 1px solid #ccc;
+.control-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 1em;
   border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 15px;
-  outline: none;
+  border: 1px solid #ccc;
+  margin-bottom: 8px;
+  box-sizing: border-box;
 }
-
-/* Remove duplicate .map-container and .map-area rules below */

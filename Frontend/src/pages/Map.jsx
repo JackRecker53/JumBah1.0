@@ -33,6 +33,7 @@ export default function LeafletMap() {
   const [userLocation, setUserLocation] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [navDestination, setNavDestination] = useState("");
+  const [externalResults, setExternalResults] = useState([]);
 
   // --- DATA ---
   const sabahAttractions = [
@@ -192,13 +193,36 @@ export default function LeafletMap() {
       a.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // --- EXTERNAL SEARCH ---
+  const sabahBoundingBox = "4.0,115.0,7.5,119.0"; // south, west, north, east
+
+  const searchExternalLocations = async (query) => {
+    if (!query) return;
+    // Use Sabah bounding box for location search
+    // viewbox=west,north,east,south (approximate Sabah: 115.0,7.5,119.0,4.0)
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+      query
+    )}&bounded=1&viewbox=115.0,7.5,119.0,4.0`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setExternalResults(data);
+  };
+
+  useEffect(() => {
+    if (searchTerm.length > 2) {
+      searchExternalLocations(searchTerm);
+    } else {
+      setExternalResults([]);
+    }
+  }, [searchTerm]);
+
   // --- RENDER ---
   return (
     <div className="app-container">
       {/* SIDEBAR */}
       <div className="panel">
         <div className="panel-header">
-          <h1>Sabah Attractions Map</h1>
+          <h1>Sabah Map</h1>
           <p>Powered by Leaflet & OpenStreetMap</p>
         </div>
         <div className={"status-box " + (mapLoaded ? "loaded" : "loading")}>
@@ -258,6 +282,25 @@ export default function LeafletMap() {
             Navigate
           </button>
         </div>
+        {/* Search Box for Locations */}
+        <div className="panel-controls" style={{ marginTop: 16 }}>
+          <input
+            type="text"
+            className="control-input"
+            placeholder="Search for a place or location..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={!mapLoaded}
+            style={{
+              width: "100%",
+              padding: "8px",
+              fontSize: "1em",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              marginBottom: "8px",
+            }}
+          />
+        </div>
         {selectedAttraction && (
           <div className="selected-attraction">
             <h3>{selectedAttraction.name}</h3>
@@ -299,19 +342,47 @@ export default function LeafletMap() {
               </button>
             </div>
           ))}
+          {/* External Search Results */}
+          {externalResults.length > 0 && (
+            <>
+              <h3>Other Locations</h3>
+              {externalResults.map((place, idx) => (
+                <div key={idx} className="attraction-item">
+                  <div className="attraction-info">
+                    <strong>{place.display_name}</strong>
+                    <p>
+                      Lat: {place.lat}, Lon: {place.lon}
+                    </p>
+                  </div>
+                  <button
+                    className="directions-button"
+                    onClick={() => {
+                      // Center map on external location
+                      const map = mapInstanceRef.current;
+                      if (map) {
+                        map.setView(
+                          [parseFloat(place.lat), parseFloat(place.lon)],
+                          13
+                        );
+                        setSelectedAttraction({
+                          name: place.display_name,
+                          lat: parseFloat(place.lat),
+                          lng: parseFloat(place.lon),
+                          description: "External location from OpenStreetMap",
+                        });
+                      }
+                    }}
+                  >
+                    ➔
+                  </button>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
       {/* MAP AREA */}
       <div className="map-area">
-        {/* SEARCH BAR TOP RIGHT */}
-        <div className="map-search-bar">
-          <input
-            type="text"
-            placeholder="Search attractions..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
         <div className="map-container" ref={mapRef}>
           {!mapLoaded && (
             <div className="loading-overlay">
