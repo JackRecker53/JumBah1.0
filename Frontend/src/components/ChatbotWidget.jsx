@@ -71,14 +71,14 @@ const ChatbotWidget = () => {
   return (
     <div className="fab-container">
       {showTooltip && !isOpen && (
-        <div className="fab-tooltip">Chat with Madu</div>
+        <div className="fab-tooltip">Hi, i'm Madu</div>
       )}
       <button className="fab" onClick={toggleOpen} aria-label="Open Chatbot">
         {isOpen ? (
           <FaTimes />
         ) : (
           <img
-            src="/backgrounds/madu-icon.png"
+            src="/backgrounds/sunbear.jpg"
             alt="Madu Chat"
             className="fabIcon"
           />
