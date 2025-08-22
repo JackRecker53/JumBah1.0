@@ -1,6 +1,12 @@
 import React from "react";
 import "../styles/Footer.css";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaTwitter,
+  FaYoutube,
+  FaTiktok,
+} from "react-icons/fa";
 
 const Footer = () => {
   // Get the current year dynamically
@@ -13,7 +19,7 @@ const Footer = () => {
           <h3>JumBah</h3>
           <p>
             Your AI-powered adventure in Sabah, certified by the Sabah Tourism
-            Board -One day nanti :D
+            Board
           </p>
         </div>
         <div className="socialLinks">
@@ -25,6 +31,12 @@ const Footer = () => {
           </a>
           <a href="#" aria-label="Twitter">
             <FaTwitter />
+          </a>
+          <a href="#" aria-label="Youtube">
+            <FaYoutube />
+          </a>
+          <a href="#" aria-label="Tiktok">
+            <FaTiktok />
           </a>
         </div>
       </div>
