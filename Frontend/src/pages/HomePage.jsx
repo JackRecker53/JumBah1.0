@@ -28,6 +28,34 @@ const HomePage = () => {
         </div>
       </header>
 
+      {/* Sabah Highlights Section */}
+      <section className="section highlightsSection container">
+        <h2 className="sectionTitle">Top Sabah Highlights</h2>
+        <div className="highlightsGrid">
+          <div className="highlightCard">
+            <img
+              src="/jumbah image/gunung kinabalu.jpg"
+              alt="Mount Kinabalu"
+            />
+            <h3>Mount Kinabalu</h3>
+            <p>Climb Southeast Asia's highest peak for sunrise views.</p>
+          </div>
+          <div className="highlightCard">
+            <img src="/jumbah image/pulau sipadan.jpg" alt="Sipadan Island" />
+            <h3>Sipadan Island</h3>
+            <p>Dive into crystal waters filled with turtles and barracudas.</p>
+          </div>
+          <div className="highlightCard">
+            <img
+              src="/jumbah image/kinabatangan river cruise.jpg"
+              alt="Kinabatangan River"
+            />
+            <h3>Kinabatangan River</h3>
+            <p>Spot orangutans and proboscis monkeys along the riverbanks.</p>
+          </div>
+        </div>
+      </section>
+
       {/* Explore Districts Section */}
       <section className="section container">
         <h2 className="sectionTitle">Explore Our Districts</h2>
