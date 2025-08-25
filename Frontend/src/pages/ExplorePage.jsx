@@ -1,4 +1,8 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useGame } from "../contexts/GameContext";
+import "../styles/ExplorePage.css";
+
 // Embedded districts data
 const districts = {
   "Kota Kinabalu": {
@@ -93,21 +97,79 @@ const districts = {
       { id: 10, name: "Tawau Hills Stamp", location: "Tawau Hills Park" },
     ],
   },
+  Ranau: {
+    description: "Home to Mount Kinabalu and beautiful highland scenery.",
+    attractions: [
+      {
+        name: "Mount Kinabalu",
+        desc: "Malaysia's highest peak and a UNESCO World Heritage Site.",
+        image: "/jumbah image/ranau-kinabalu.jpg",
+      },
+      // Add more attractions as needed
+    ],
+    stamps: [{ id: 11, name: "Kinabalu Stamp", location: "Mount Kinabalu" }],
+  },
+  Sandakan: {
+    description: "Known for its wildlife and conservation centers.",
+    attractions: [
+      {
+        name: "Sepilok Orangutan Rehabilitation Centre",
+        desc: "Famous for orangutan conservation and rehabilitation.",
+        image: "/jumbah image/sandakan-orangutan.jpg",
+      },
+      // Add more attractions as needed
+    ],
+    stamps: [
+      { id: 12, name: "Sepilok Stamp", location: "Sepilok Orangutan Centre" },
+    ],
+  },
 };
-import { useGame } from "../contexts/GameContext";
-import { useAuth } from "../contexts/AuthContext";
-import "../styles/ExplorePage.css";
+
+const getDistrictKey = (districtNameParam) => {
+  // Try exact match first
+  if (districts[districtNameParam]) return districtNameParam;
+  // Try replacing hyphens with spaces and capitalizing each word
+  if (!districtNameParam) return null;
+  const formatted = districtNameParam
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return districts[formatted] ? formatted : null;
+};
 
 const ExplorePage = () => {
   const { districtName } = useParams();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const district = searchParams.get("district");
   const attractionQuery = searchParams.get("attraction");
-  const formattedName = districtName.replace(/-/g, " ");
-  const districtData = districts[formattedName];
   const { isAuthenticated } = useAuth();
   const { collectStamp, collectedStamps } = useGame();
+
+  // If no districtName, show all districts
+  if (!districtName) {
+    return (
+      <div className="explore-list">
+        <h2>Explore Sabah Districts</h2>
+        <ul>
+          {Object.keys(districts).map((name) => (
+            <li key={name}>
+              <Link to={`/explore/${name.replace(/ /g, "-")}`}>
+                <strong>{name}</strong>: {districts[name].description}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  // Fix: Use getDistrictKey to handle capitalization and hyphens
+  const districtKey = getDistrictKey(districtName);
+  const districtData = districtKey ? districts[districtKey] : null;
+
+  if (!districtData) {
+    return <div>District not found.</div>;
+  }
+
   // Find the attraction if query param is present
   const foundAttraction =
     attractionQuery && districtData
@@ -116,82 +178,28 @@ const ExplorePage = () => {
         )
       : null;
 
-  if (!districtData) {
-    return (
-      <div className="container">
-        <h2>District not found!</h2>
-      </div>
-    );
-  }
-
+  // FIX: Use districtKey for the title instead of undefined formattedName
   return (
-    <div className="explorePage">
-      <header
-        className="header"
-        style={{ backgroundImage: `url(${districtData.attractions[1].image})` }}
-      >
-        <div className="headerOverlay"></div>
-        <div className="headerContent">
-          <h1>{formattedName}</h1>
-          <p>{districtData.description}</p>
-        </div>
-      </header>
-
-      <div className="container">
-        <section>
-          <h2 className="sectionTitle">Key Attractions</h2>
-          <div className="attractionsGrid">
-            {/* If an attraction is searched, show only that card */}
-            {foundAttraction ? (
-              <div
-                key={foundAttraction.name}
-                className="attractionCard highlight"
-              >
-                <img src={foundAttraction.image} alt={foundAttraction.name} />
-                <div className="cardContent">
-                  <h3>{foundAttraction.name}</h3>
-                  <p>{foundAttraction.desc}</p>
-                </div>
-              </div>
-            ) : (
-              districtData.attractions.map((attraction) => (
-                <div key={attraction.name} className="attractionCard">
-                  <img src={attraction.image} alt={attraction.name} />
-                  <div className="cardContent">
-                    <h3>{attraction.name}</h3>
-                    <p>{attraction.desc}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="sectionTitle">Digital Stamps</h2>
-          <div className="stampsGrid">
-            {districtData.stamps.map((stamp) => (
-              <div key={stamp.id} className="stampCard">
-                <h3>{stamp.name}</h3>
-                <p>Location: {stamp.location}</p>
-                {isAuthenticated ? (
-                  <button
-                    onClick={() => collectStamp(stamp.id)}
-                    disabled={collectedStamps.has(stamp.id)}
-                    className="stampButton"
-                  >
-                    {collectedStamps.has(stamp.id)
-                      ? "Collected!"
-                      : "Collect Stamp (Simulate Scan)"}
-                  </button>
-                ) : (
-                  <p className="loginPrompt">Log in to collect stamps!</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+    <div className="explore-details">
+      <h2>{districtKey}</h2>
+      <p>{districtData.description}</p>
+      <h3>Attractions</h3>
+      <ul>
+        {districtData.attractions.map((a) => (
+          <li key={a.name}>
+            <img src={a.image} alt={a.name} style={{ width: "120px" }} />
+            <strong>{a.name}</strong>: {a.desc}
+          </li>
+        ))}
+      </ul>
+      <h3>Stamps</h3>
+      <ul>
+        {districtData.stamps.map((s) => (
+          <li key={s.id}>
+            {s.name} ({s.location})
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
