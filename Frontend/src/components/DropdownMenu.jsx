@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaEllipsisV,
+  FaBars,
   FaMoon,
   FaSun,
   FaCog,
@@ -77,41 +77,41 @@ const DropdownMenu = () => {
     navigate("/profile");
   };
 
-  const menuItems = [
-    {
-      icon: FaMap,
-      label: "Interactive Map",
-      to: "/map",
-      color: "#4285f4",
-    },
-    {
-      icon: FaLanguage,
-      label: "Bahasa Malaysia Translator",
-      onClick: handleItemClick,
-      color: "#34a853",
-    },
-  ];
+const menuItems = [
+  {
+    icon: <FaMap />,
+    label: "Interactive Map",
+    to: "/map",
+    color: "#4285f4",
+  },
+  {
+    icon: <FaLanguage />,
+    label: "Bahasa Malaysia Translator",
+    onClick: handleItemClick,
+    color: "#34a853",
+  },
+];
 
-  const authenticatedItems = [
-    {
-      icon: FaUser,
-      label: "My Profile",
-      to: "/profile",
-      color: "#6366f1",
-    },
-    {
-      icon: FaTrophy,
-      label: "My Adventures",
-      to: "/adventure",
-      color: "#f59e0b",
-    },
-    {
-      icon: FaCog,
-      label: "Settings",
-      to: "/settings",
-      color: "#6b7280",
-    },
-  ];
+const authenticatedItems = [
+  {
+    icon: <FaUser />,
+    label: "My Profile",
+    to: "/profile",
+    color: "#6366f1",
+  },
+  {
+    icon: <FaTrophy />,
+    label: "My Adventures",
+    to: "/adventure",
+    color: "#f59e0b",
+  },
+  {
+    icon: <FaCog />,
+    label: "Settings",
+    to: "/settings",
+    color: "#6b7280",
+  },
+];
 
   return (
     <div className="dropdown-container">
@@ -122,8 +122,8 @@ const DropdownMenu = () => {
         onClick={() => (isOpen ? handleClose() : handleOpen())}
         aria-label="Open menu"
       >
-        <FaEllipsisV />
-      </button>
+          <FaBars />
+        </button>
 
       {/* Backdrop */}
       {isOpen && (
@@ -262,7 +262,7 @@ const DropdownMenu = () => {
   );
 };
 
-const MenuItem = ({ icon: Icon, label, to, onClick, color }) => {
+const MenuItem = ({ icon, label, to, onClick, color }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -275,7 +275,7 @@ const MenuItem = ({ icon: Icon, label, to, onClick, color }) => {
   return (
     <button className="menu-item" onClick={handleClick}>
       <div className="menu-item-content">
-        <Icon style={{ color }} />
+        {React.cloneElement(icon, { style: { color } })}
         <span>{label}</span>
       </div>
     </button>
