@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import "../styles/TranslatorPage.css";
 
 const dictionary = {
-  "hello": "kounsikou",
-  "thank you": "kotohuadan",
-  "how are you": "koposionanku",
-  "good morning": "kopivosian",
+  hello: "Kopivosian ",
+  "thank you": "Pounsikou",
+  "how are you": "Onu habar nu?",
+  "good morning": "Kopivosian do tadau",
 };
 
 const TranslatorPage = () => {
@@ -29,9 +29,7 @@ const TranslatorPage = () => {
         />
         <button onClick={handleTranslate}>Translate</button>
       </div>
-      {translation && (
-        <p className="translation">Dusun: {translation}</p>
-      )}
+      {translation && <p className="translation">Dusun: {translation}</p>}
       <p className="note">*Basic dictionary – more phrases coming soon!</p>
     </div>
   );
