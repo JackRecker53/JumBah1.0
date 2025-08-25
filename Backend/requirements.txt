@@ -4,6 +4,8 @@ uvicorn[standard]==0.24.0
 python-dotenv==1.0.0
 pydantic==2.5.0
 google-generativeai==0.3.2
+SQLAlchemy==2.0.29
+alembic==1.13.1
 
 # Optional: for production deployment
 gunicorn==21.2.0

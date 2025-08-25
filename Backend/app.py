@@ -13,9 +13,18 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import jwt
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+from sqlalchemy import func
+
+from database import Base, engine, get_db
+from models import Score, ChatSession as ChatSessionModel
+from chat_utils import fetch_recent_history
 
 # Load environment variables
 load_dotenv()
+
+# Initialize database tables
+Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -49,11 +58,9 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-change-in-pr
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
-# In-memory storage (replace with database in production)
+# In-memory storage for demonstration (user persistence not implemented)
 users_db: Dict[str, Dict[str, Any]] = {}
-chat_sessions: Dict[str, List[Dict[str, Any]]] = {}
 user_contexts: Dict[str, Dict[str, Any]] = {}
-user_scores: Dict[str, List[Dict[str, Any]]] = {}
 
 # Pydantic models
 class UserRegister(BaseModel):
@@ -75,11 +82,14 @@ class ChatResponse(BaseModel):
     timestamp: datetime
     context: Optional[Dict[str, Any]] = None
 
-class ChatSession(BaseModel):
+class ChatSessionData(BaseModel):
     session_id: str
     messages: List[Dict[str, Any]]
     created_at: datetime
     last_activity: datetime
+
+    class Config:
+        orm_mode = True
 
 class ScoreSubmission(BaseModel):
     score: int = Field(..., ge=0, le=100)
@@ -154,7 +164,7 @@ def generate_session_id():
     """Generate a unique session ID."""
     return str(uuid.uuid4())
 
-def build_conversation_context(session_id: str, new_message: str) -> str:
+def build_conversation_context(db: Session, session_id: str, new_message: str) -> str:
     """Build conversation context from chat history with strict off-topic handling."""
     system_prompt = create_system_prompt()
 
@@ -171,11 +181,9 @@ Keep responses conversational and short. Avoid bullet points unless the user ask
 
     full_system_prompt = system_prompt + "\n" + off_topic_instruction
 
-    if session_id not in chat_sessions:
+    recent_messages = fetch_recent_history(db, session_id)
+    if not recent_messages:
         return f"{full_system_prompt}\n\nUser: {new_message}"
-
-    # Use only the last few turns to keep the context focused
-    recent_messages = chat_sessions[session_id][-8:]
 
     conversation = f"{full_system_prompt}\n\nRecent conversation:\n"
     for msg in recent_messages:
@@ -313,8 +321,6 @@ async def register(user_data: UserRegister):
         "created_at": datetime.now().isoformat()
     }
     
-    user_scores[user_id] = []
-    
     return {"message": "User registered successfully", "user_id": user_id}
 
 @app.post("/login")
@@ -351,36 +357,32 @@ async def get_quiz():
     return {"questions": quiz_questions}
 
 @app.post("/scores")
-async def submit_score(score_data: ScoreSubmission, current_user: dict = Depends(verify_token)):
-    user_id = current_user["user_id"]
-    
-    if user_id not in user_scores:
-        user_scores[user_id] = []
-    
-    user_scores[user_id].append({
-        "score": score_data.score,
-        "timestamp": datetime.now().isoformat(),
-        "username": current_user["username"]
-    })
-    
+async def submit_score(
+    score_data: ScoreSubmission,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(verify_token),
+):
+    new_score = Score(
+        user_id=current_user["user_id"],
+        username=current_user["username"],
+        score=score_data.score,
+        timestamp=datetime.now(),
+    )
+    db.add(new_score)
+    db.commit()
     return {"message": "Score submitted successfully", "score": score_data.score}
 
+
 @app.get("/leaderboard")
-async def get_leaderboard():
-    leaderboard = []
-    
-    for user_id, scores in user_scores.items():
-        if scores:
-            max_score = max(score["score"] for score in scores)
-            username = scores[0]["username"]  # Get username from first score
-            leaderboard.append({
-                "username": username,
-                "score": max_score
-            })
-    
-    # Sort by score descending
-    leaderboard.sort(key=lambda x: x["score"], reverse=True)
-    return leaderboard[:10]  # Top 10
+async def get_leaderboard(db: Session = Depends(get_db)):
+    results = (
+        db.query(Score.username, func.max(Score.score).label("score"))
+        .group_by(Score.user_id, Score.username)
+        .order_by(func.max(Score.score).desc())
+        .limit(10)
+        .all()
+    )
+    return [{"username": r.username, "score": r.score} for r in results]
 
 # Attractions endpoint
 @app.get("/attractions")
@@ -412,116 +414,134 @@ async def get_chatbot_info():
     }
 
 @app.post("/chatbot/session/new")
-async def create_chat_session():
+async def create_chat_session(db: Session = Depends(get_db)):
     session_id = generate_session_id()
-    chat_sessions[session_id] = []
+    chat_session = ChatSessionModel(
+        session_id=session_id,
+        messages="[]",
+        created_at=datetime.now(),
+        last_activity=datetime.now(),
+    )
+    db.add(chat_session)
+    db.commit()
     user_contexts[session_id] = {
         "created_at": datetime.now(),
         "preferences": {},
-        "user_info": {}
+        "user_info": {},
     }
-    
     return {
         "session_id": session_id,
         "message": "🌺 Hello! I'm JumBah AI, your intelligent travel assistant for Sabah, Malaysia! I'm powered by advanced AI to help you discover the incredible beauty and experiences that Sabah has to offer. How can I help you plan your perfect Sabah adventure today?",
-        "created_at": datetime.now()
+        "created_at": datetime.now(),
     }
 
 @app.get("/chatbot/session/{session_id}")
-async def get_chat_session(session_id: str):
-    if session_id not in chat_sessions:
+async def get_chat_session(session_id: str, db: Session = Depends(get_db)):
+    chat_session = db.query(ChatSessionModel).filter_by(session_id=session_id).first()
+    if not chat_session:
         raise HTTPException(status_code=404, detail="Chat session not found")
-    
-    return ChatSession(
-        session_id=session_id,
-        messages=chat_sessions[session_id],
-        created_at=user_contexts[session_id]["created_at"],
-        last_activity=datetime.now()
+
+    messages = json.loads(chat_session.messages or "[]")
+    return ChatSessionData(
+        session_id=chat_session.session_id,
+        messages=messages,
+        created_at=chat_session.created_at,
+        last_activity=chat_session.last_activity,
     )
 
 @app.post("/chatbot/chat", response_model=ChatResponse)
-async def chat_with_bot(message: ChatMessage):
+async def chat_with_bot(message: ChatMessage, db: Session = Depends(get_db)):
     model = get_gemini_model()
     if model is None:
         raise HTTPException(
             status_code=503,
-            detail="AI service is not available. Please check Gemini API configuration."
+            detail="AI service is not available. Please check Gemini API configuration.",
         )
-    
+
     # Create session if not provided
     session_id = message.session_id or generate_session_id()
-    
-    if session_id not in chat_sessions:
-        chat_sessions[session_id] = []
+
+    chat_session = db.query(ChatSessionModel).filter_by(session_id=session_id).first()
+    if not chat_session:
+        chat_session = ChatSessionModel(
+            session_id=session_id,
+            messages="[]",
+            created_at=datetime.now(),
+            last_activity=datetime.now(),
+        )
+        db.add(chat_session)
+        db.commit()
+        db.refresh(chat_session)
         user_contexts[session_id] = {
             "created_at": datetime.now(),
             "preferences": {},
-            "user_info": {}
+            "user_info": {},
         }
-    
-    # Update context if provided
+
     if message.context:
-        user_contexts[session_id].update(message.context)
-    
+        user_contexts.setdefault(
+            session_id,
+            {"created_at": datetime.now(), "preferences": {}, "user_info": {}},
+        ).update(message.context)
+
     try:
         # Build conversation context
-        conversation_prompt = build_conversation_context(session_id, message.message)
-        
+        conversation_prompt = build_conversation_context(db, session_id, message.message)
+
         # Generate AI response
         response = model.generate_content(conversation_prompt)
         ai_response = response.text
-        
+
         # Store messages in session
         timestamp = datetime.now()
-        chat_sessions[session_id].extend([
-            {
-                "role": "user",
-                "content": message.message,
-                "timestamp": timestamp.isoformat()
-            },
-            {
-                "role": "assistant",
-                "content": ai_response,
-                "timestamp": timestamp.isoformat()
-            }
+        messages_list = json.loads(chat_session.messages or "[]")
+        messages_list.extend([
+            {"role": "user", "content": message.message, "timestamp": timestamp.isoformat()},
+            {"role": "assistant", "content": ai_response, "timestamp": timestamp.isoformat()},
         ])
-        
+        chat_session.messages = json.dumps(messages_list)
+        chat_session.last_activity = timestamp
+        db.commit()
+
         return ChatResponse(
             response=ai_response,
             session_id=session_id,
             timestamp=timestamp,
-            context=user_contexts.get(session_id)
+            context=user_contexts.get(session_id),
         )
-        
+
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to generate response: {str(e)}"
+            detail=f"Failed to generate response: {str(e)}",
         )
-
 @app.delete("/chatbot/session/{session_id}")
-async def delete_chat_session(session_id: str):
-    if session_id not in chat_sessions:
+async def delete_chat_session(session_id: str, db: Session = Depends(get_db)):
+    chat_session = db.query(ChatSessionModel).filter_by(session_id=session_id).first()
+    if not chat_session:
         raise HTTPException(status_code=404, detail="Chat session not found")
-    
-    del chat_sessions[session_id]
+
+    db.delete(chat_session)
+    db.commit()
     if session_id in user_contexts:
         del user_contexts[session_id]
-    
+
     return {"message": "Chat session deleted successfully"}
 
+
 @app.get("/chatbot/sessions")
-async def get_all_sessions():
+async def get_all_sessions(db: Session = Depends(get_db)):
+    sessions = db.query(ChatSessionModel).all()
     return {
-        "total_sessions": len(chat_sessions),
+        "total_sessions": len(sessions),
         "sessions": [
             {
-                "session_id": sid,
-                "message_count": len(messages),
-                "last_activity": messages[-1]["timestamp"] if messages else None
+                "session_id": s.session_id,
+                "message_count": len(json.loads(s.messages or "[]")),
+                "last_activity": s.last_activity.isoformat() if s.last_activity else None,
             }
-            for sid, messages in chat_sessions.items()
-        ]
+            for s in sessions
+        ],
     }
 
 # Specialized AI endpoints
