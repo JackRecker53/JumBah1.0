@@ -110,7 +110,7 @@ const ChatbotWidget = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Ask about your trip..."
+              placeholder="Ask me about Sabah..."
             />
             <button
               onClick={handleSend}
