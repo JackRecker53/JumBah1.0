@@ -1,0 +1,32 @@
+.translator-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.translator-box {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.translator-box input {
+  flex: 1;
+  padding: 0.5rem;
+}
+
+.translator-box button {
+  padding: 0.5rem 1rem;
+}
+
+.translation {
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.note {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
