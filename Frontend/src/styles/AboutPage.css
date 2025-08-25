@@ -77,31 +77,13 @@ body {
   margin: 0 auto;
 }
 
-
-/* Individual about card */
-.about-section {
-  background-color: var(--surface-color);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.section-image {
-  width: 100%;
-  max-height: 250px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-}
-
 .content h2 {
   font-family: "Montserrat", sans-serif;
   font-size: 2.2rem;
   font-weight: 700; /* Bold and clear */
   color: var(--text-color);
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
 
   /* A modern separator line that sits beside the heading */
   padding-left: 1.5rem;
