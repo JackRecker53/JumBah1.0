@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import jwt
 from passlib.context import CryptContext
+from logging_config import LoggingMiddleware, logger
 
 # Load environment variables
 load_dotenv()
@@ -39,6 +40,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Logging middleware
+app.add_middleware(LoggingMiddleware)
 
 # Security
 security = HTTPBearer()
@@ -148,6 +152,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
             raise HTTPException(status_code=401, detail="Invalid token")
         return {"username": username, "user_id": payload.get("user_id")}
     except jwt.PyJWTError:
+        logger.exception("Token verification failed")
         raise HTTPException(status_code=401, detail="Invalid token")
 
 def generate_session_id():
@@ -494,6 +499,7 @@ async def chat_with_bot(message: ChatMessage):
         )
         
     except Exception as e:
+        logger.exception("Failed to generate chat response")
         raise HTTPException(
             status_code=500,
             detail=f"Failed to generate response: {str(e)}"
@@ -537,6 +543,7 @@ async def generate_itinerary(request: ItineraryRequest):
         response = model.generate_content(prompt)
         return {"success": True, "itinerary": response.text}
     except Exception as e:
+        logger.exception("Failed to generate itinerary")
         raise HTTPException(status_code=500, detail=f"Failed to generate itinerary: {str(e)}")
 
 @app.post("/flight-recommendations")
@@ -551,6 +558,7 @@ async def flight_recommendations(request: FlightRequest):
         response = model.generate_content(prompt)
         return {"success": True, "recommendations": response.text}
     except Exception as e:
+        logger.exception("Failed to get flight recommendations")
         raise HTTPException(status_code=500, detail=f"Failed to get flight recommendations: {str(e)}")
 
 @app.post("/travel-recommendations")
@@ -565,6 +573,7 @@ async def travel_recommendations(request: TravelRecommendationRequest):
         response = model.generate_content(prompt)
         return {"success": True, "recommendations": response.text}
     except Exception as e:
+        logger.exception("Failed to get travel recommendations")
         raise HTTPException(status_code=500, detail=f"Failed to get travel recommendations: {str(e)}")
 
 # Root endpoint
