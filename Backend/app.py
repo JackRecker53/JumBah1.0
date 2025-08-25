@@ -5,6 +5,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from database import get_db
+from models import User
 import os
 import uuid
 import json
@@ -49,8 +54,7 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-change-in-pr
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
-# In-memory storage (replace with database in production)
-users_db: Dict[str, Dict[str, Any]] = {}
+# In-memory storage
 chat_sessions: Dict[str, List[Dict[str, Any]]] = {}
 user_contexts: Dict[str, Dict[str, Any]] = {}
 user_scores: Dict[str, List[Dict[str, Any]]] = {}
@@ -299,50 +303,57 @@ async def health_check():
 
 # Authentication endpoints
 @app.post("/register")
-async def register(user_data: UserRegister):
-    if user_data.username in users_db:
+async def register(
+    user_data: UserRegister, db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(select(User).where(User.username == user_data.username))
+    if result.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Username already exists")
-    
-    hashed_password = pwd_context.hash(user_data.password)
-    user_id = str(uuid.uuid4())
-    
-    users_db[user_data.username] = {
-        "user_id": user_id,
-        "username": user_data.username,
-        "password": hashed_password,
-        "created_at": datetime.now().isoformat()
-    }
-    
+
+    user = User(
+        username=user_data.username,
+        hashed_password=pwd_context.hash(user_data.password),
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    user_id = str(user.id)
     user_scores[user_id] = []
-    
+
     return {"message": "User registered successfully", "user_id": user_id}
 
 @app.post("/login")
-async def login(user_data: UserLogin):
-    user = users_db.get(user_data.username)
-    if not user or not pwd_context.verify(user_data.password, user["password"]):
+async def login(user_data: UserLogin, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.username == user_data.username))
+    user = result.scalar_one_or_none()
+    if not user or not pwd_context.verify(user_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    
-    access_token = create_access_token({
-        "username": user["username"],
-        "user_id": user["user_id"]
-    })
-    
+
+    access_token = create_access_token(
+        {"username": user.username, "user_id": str(user.id)}
+    )
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "user": {
-            "username": user["username"],
-            "user_id": user["user_id"]
-        }
+        "user": {"username": user.username, "user_id": str(user.id)},
     }
 
 @app.get("/profile")
-async def get_profile(current_user: dict = Depends(verify_token)):
+async def get_profile(
+    current_user: dict = Depends(verify_token),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(User).where(User.id == int(current_user["user_id"])))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
     return {
-        "username": current_user["username"],
-        "user_id": current_user["user_id"],
-        "message": "Profile retrieved successfully"
+        "username": user.username,
+        "user_id": str(user.id),
+        "message": "Profile retrieved successfully",
     }
 
 # Quiz endpoints
