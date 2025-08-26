@@ -6,6 +6,11 @@ const dictionary = {
   "thank you": "Pounsikou",
   "how are you": "Onu habar nu?",
   "good morning": "Kopivosian do tadau",
+  goodbye: "Kotohuadan",
+  please: "Ongoi",
+  yes: "Oou",
+  no: "Aran",
+  "excuse me": "Oduo",
 };
 
 const TranslatorPage = () => {
@@ -30,7 +35,9 @@ const TranslatorPage = () => {
         <button onClick={handleTranslate}>Translate</button>
       </div>
       {translation && <p className="translation">Dusun: {translation}</p>}
-      <p className="note">*Basic dictionary – more phrases coming soon!</p>
+      <p className="note">
+        *Basic dictionary – more phrases available on the Dusun Dictionary page!
+      </p>
     </div>
   );
 };
