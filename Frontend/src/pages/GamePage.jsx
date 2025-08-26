@@ -69,6 +69,7 @@ const GamePage = () => {
   };
 
   const submitScore = async (finalScore) => {
+    if (!isAuthenticated) return; // Only submit if user is authenticated
     try {
       await fetch("http://localhost:5000/scores", {
         method: "POST",
@@ -91,24 +92,6 @@ const GamePage = () => {
     setSelectedAnswer(null);
     setIsCorrect(null);
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="container loginWall">
-        <h2>Join the Adventure!</h2>
-        <p>
-          Log in or create an account to track your quests, earn points, and
-          collect stamps!
-        </p>
-        <button
-          className="btn-primary"
-          onClick={() => (window.location.href = "/login")}
-        >
-          Login to Begin
-        </button>
-      </div>
-    );
-  }
 
   if (questions.length === 0) {
     return <div>Loading questions...</div>;
@@ -175,6 +158,17 @@ const GamePage = () => {
         {/* Quiz Section */}
         <section className="game-section">
           <h2>Quiz Game</h2>
+          {!isAuthenticated && (
+            <div className="login-reminder">
+              <p>Log in to save your progress and submit your score!</p>
+              <button
+                className="btn-primary"
+                onClick={() => (window.location.href = "/login")}
+              >
+                Login
+              </button>
+            </div>
+          )}
           {showScore ? (
             <div className="score-section">
               <h2>
