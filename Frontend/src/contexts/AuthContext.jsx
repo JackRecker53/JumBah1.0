@@ -5,6 +5,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [isGuest, setIsGuest] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -13,6 +14,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
         setUser(decodedToken.sub);
+        setIsGuest(false);
       } catch (e) {
         console.error("Invalid token", e);
         logout();
@@ -33,6 +35,7 @@ export const AuthProvider = ({ children }) => {
       setToken(data.access_token);
       const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
       setUser(decodedToken.sub);
+      setIsGuest(false);
     } else {
       const errorData = await response.json();
       throw new Error(errorData.msg || "Login failed");
@@ -43,9 +46,25 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     setToken(null);
     setUser(null);
+    setIsGuest(false);
   };
 
-  const value = { user, isAuthenticated: !!user, token, login, logout };
+  const loginAsGuest = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser("Guest");
+    setIsGuest(true);
+  };
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isGuest,
+    token,
+    login,
+    loginAsGuest,
+    logout,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
