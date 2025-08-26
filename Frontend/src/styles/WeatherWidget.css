@@ -1,0 +1,43 @@
+.weatherWidget {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+  text-align: left;
+  z-index: 2;
+}
+
+.weatherWidget h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.weatherWidget .temp {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.weatherWidget .condition {
+  margin: 0.25rem 0 0.75rem;
+  text-transform: capitalize;
+}
+
+.weatherWidget .seasonNote {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.weatherWidget .error {
+  color: #b00020;
+}
+
+[data-theme="dark"] .weatherWidget {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
