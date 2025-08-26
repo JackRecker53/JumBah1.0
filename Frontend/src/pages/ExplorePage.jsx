@@ -1,5 +1,4 @@
 import { useLocation, useParams, Link } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
 import { useGame } from "../contexts/GameContext";
 import "../styles/ExplorePage.css";
 
@@ -141,8 +140,8 @@ const ExplorePage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const attractionQuery = searchParams.get("attraction");
-  const { isAuthenticated } = useAuth();
   const { collectStamp, collectedStamps } = useGame();
+  // Reintroduce authentication checks here if guest-specific restrictions are required.
 
   // If no districtName, show all districts
   if (!districtName) {
