@@ -13,7 +13,7 @@ const GamePage = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
-  const { isAuthenticated, token, user } = useAuth();
+  const { isAuthenticated, token, user, guestLogin } = useAuth();
   const { points, completedQuests, collectedStamps } = useGame();
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const GamePage = () => {
         setIsCorrect(null);
       } else {
         setShowScore(true);
-        if (isAuthenticated) {
+        if (isAuthenticated && !user?.is_guest) {
           submitScore(score + (isAnswerCorrect ? 1 : 0));
         }
       }
@@ -97,14 +97,16 @@ const GamePage = () => {
       <div className="container loginWall">
         <h2>Join the Adventure!</h2>
         <p>
-          Log in or create an account to track your quests, earn points, and
-          collect stamps!
+          Log in or continue as a guest to track your quests and earn points!
         </p>
         <button
           className="btn-primary"
           onClick={() => (window.location.href = "/login")}
         >
           Login to Begin
+        </button>
+        <button className="btn-secondary" onClick={guestLogin}>
+          Continue as Guest
         </button>
       </div>
     );

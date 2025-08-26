@@ -12,7 +12,11 @@ export const AuthProvider = ({ children }) => {
       // For simplicity, we'll just decode it (not secure for production)
       try {
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        setUser(decodedToken.sub);
+        setUser({
+          username: decodedToken.username,
+          user_id: decodedToken.user_id,
+          is_guest: decodedToken.is_guest,
+        });
       } catch (e) {
         console.error("Invalid token", e);
         logout();
@@ -31,12 +35,21 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       localStorage.setItem("token", data.access_token);
       setToken(data.access_token);
-      const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
-      setUser(decodedToken.sub);
+      setUser(data.user);
     } else {
       const errorData = await response.json();
       throw new Error(errorData.msg || "Login failed");
     }
+  };
+
+  const guestLogin = async () => {
+    const response = await fetch("http://localhost:5000/guest-login", {
+      method: "POST",
+    });
+    const data = await response.json();
+    localStorage.setItem("token", data.access_token);
+    setToken(data.access_token);
+    setUser(data.user);
   };
 
   const logout = () => {
@@ -45,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const value = { user, isAuthenticated: !!user, token, login, logout };
+  const value = { user, isAuthenticated: !!user, token, login, guestLogin, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
