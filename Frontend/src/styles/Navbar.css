@@ -34,7 +34,7 @@
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #f5362e, #0484d6, #072b80);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -86,7 +86,7 @@
 }
 
 .loginButton {
-  background-color: #073b80; /* Changed from var(--primary-color) */
+  background-color: var(--primary-color);
   color: #ffffff !important; /* Set login text color to white */
   padding: 8px 20px;
   border-radius: 20px;
@@ -95,7 +95,7 @@
 }
 
 .loginButton:hover {
-  background-color: #f5362e; /* Changed from var(--accent-color) */
+  background-color: var(--accent-color);
   color: #ffffff !important;
   transform: scale(1.05); /* This could cause layout shift */
 }
@@ -112,7 +112,7 @@
   transition: color 0.2s, transform 0.2s;
 }
 .searchButton:hover {
-  color: #073b80;
+  color: var(--primary-color);
   transform: scale(1.15); /* This could cause layout shift */
 }
 

@@ -1,4 +1,6 @@
-"""This module fetches attraction data from the Sabah Tourism website and
+"""Utility for scraping Sabah tourism attractions.
+
+This module fetches attraction data from the Sabah Tourism website and
 any additional sources.  It extracts attraction names, descriptions, image
 URLs and the district each attraction belongs to.  Results can either be
 stored in a database (via the `save_to_database` hook) or written to the

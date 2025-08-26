@@ -382,6 +382,14 @@ async def get_leaderboard():
     leaderboard.sort(key=lambda x: x["score"], reverse=True)
     return leaderboard[:10]  # Top 10
 
+# Attractions endpoint
+@app.get("/attractions")
+async def get_attractions():
+    """Return tourism attractions grouped by district."""
+    data_path = os.path.join(os.path.dirname(__file__), "data", "attractions.json")
+    with open(data_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
 # Chatbot endpoints
 @app.get("/chatbot/info")
 async def get_chatbot_info():
@@ -630,9 +638,9 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        "main:app",
+        app,
         host="127.0.0.1",
         port=8000,
         reload=True,
-        log_level="info"
+        log_level="info",
     )
