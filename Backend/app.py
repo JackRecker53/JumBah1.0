@@ -142,11 +142,17 @@ def create_access_token(data: dict):
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Verify JWT token and return user info."""
     try:
-        payload = jwt.decode(credentials.credentials, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(
+            credentials.credentials, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM]
+        )
         username: str = payload.get("username")
         if username is None:
             raise HTTPException(status_code=401, detail="Invalid token")
-        return {"username": username, "user_id": payload.get("user_id")}
+        return {
+            "username": username,
+            "user_id": payload.get("user_id"),
+            "is_guest": payload.get("is_guest", False),
+        }
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
@@ -323,18 +329,45 @@ async def login(user_data: UserLogin):
     if not user or not pwd_context.verify(user_data.password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     
-    access_token = create_access_token({
-        "username": user["username"],
-        "user_id": user["user_id"]
-    })
+    access_token = create_access_token(
+        {"username": user["username"], "user_id": user["user_id"], "is_guest": False}
+    )
     
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "user": {
             "username": user["username"],
-            "user_id": user["user_id"]
+            "user_id": user["user_id"],
+            "is_guest": False,
         }
+    }
+
+
+@app.post("/guest-login")
+async def guest_login():
+    """Create a temporary guest account and return access token."""
+    guest_username = f"guest_{uuid.uuid4().hex[:8]}"
+    user_id = str(uuid.uuid4())
+
+    users_db[guest_username] = {
+        "user_id": user_id,
+        "username": guest_username,
+        "password": None,
+        "created_at": datetime.now().isoformat(),
+        "is_guest": True,
+    }
+
+    user_scores[user_id] = []
+
+    access_token = create_access_token(
+        {"username": guest_username, "user_id": user_id, "is_guest": True}
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {"username": guest_username, "user_id": user_id, "is_guest": True},
     }
 
 @app.get("/profile")
@@ -352,17 +385,24 @@ async def get_quiz():
 
 @app.post("/scores")
 async def submit_score(score_data: ScoreSubmission, current_user: dict = Depends(verify_token)):
+    if current_user.get("is_guest"):
+        return {
+            "message": "Guest scores are not saved. Create an account to join the leaderboard."
+        }
+
     user_id = current_user["user_id"]
-    
+
     if user_id not in user_scores:
         user_scores[user_id] = []
-    
-    user_scores[user_id].append({
-        "score": score_data.score,
-        "timestamp": datetime.now().isoformat(),
-        "username": current_user["username"]
-    })
-    
+
+    user_scores[user_id].append(
+        {
+            "score": score_data.score,
+            "timestamp": datetime.now().isoformat(),
+            "username": current_user["username"],
+        }
+    )
+
     return {"message": "Score submitted successfully", "score": score_data.score}
 
 @app.get("/leaderboard")
