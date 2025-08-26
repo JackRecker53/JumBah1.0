@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
+=======
 import { districts } from "../data/attractions";
 import { upcomingEvents } from "../data/events";
 import { FaArrowRight } from "react-icons/fa";
