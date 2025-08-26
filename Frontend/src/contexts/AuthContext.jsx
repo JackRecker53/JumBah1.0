@@ -45,11 +45,30 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const value = { user, isAuthenticated: !!user, token, login, logout };
+  const loginAsGuest = () => {
+    const guestUser = {
+      name: "Guest",
+      email: "guest@example.com",
+      username: "Guest",
+    };
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(guestUser);
+  };
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    token,
+    login,
+    loginAsGuest,
+    logout,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === null) {

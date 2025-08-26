@@ -9,7 +9,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { login, loginAsGuest } = useAuth();
   const { completeQuest, completedQuests } = useGame();
   const navigate = useNavigate();
 
@@ -26,6 +26,11 @@ const Login = () => {
     } catch (err) {
       setError(err.message || "Login failed. Please check your password.");
     }
+  };
+
+  const handleGuestLogin = () => {
+    loginAsGuest();
+    navigate("/game");
   };
 
   return (
@@ -63,6 +68,13 @@ const Login = () => {
             Log In
           </button>
         </form>
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={handleGuestLogin}
+        >
+          Continue as Guest
+        </button>
         <p className="switch-auth">
           Don't have an account? <Link to="/register">Register here</Link>
         </p>
