@@ -1,19 +1,3 @@
-"""Utility for scraping Sabah tourism attractions.
-
-This module fetches attraction data from the Sabah Tourism website and
-any additional sources.  It extracts attraction names, descriptions, image
-URLs and the district each attraction belongs to.  Results can either be
-stored in a database (via the `save_to_database` hook) or written to the
-JSON file used by the application.
-
-The module also exposes a small command line interface.  Running the module
-directly performs a single scrape and updates ``data/attractions.json``.
-Passing the ``--interval`` option will keep the process alive and repeat the
-scrape every N hours – this can be used as a lightweight scheduler.  For
-production deployments the script may also be triggered via ``cron`` or any
-external scheduler by executing ``python Backend/scraper.py``.
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -27,8 +11,8 @@ import requests
 from bs4 import BeautifulSoup
 
 
-BASE_URL = "https://www.sabahtourism.com"
-DESTINATION_LIST = f"{BASE_URL}/destination/"
+BASE_URL = "https://www.infosabah.com.my/en"
+DESTINATION_LIST = f"{BASE_URL}/destinations/"
 DEFAULT_OUTPUT = Path(__file__).parent / "data" / "attractions.json"
 
 
