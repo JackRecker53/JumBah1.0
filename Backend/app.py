@@ -13,6 +13,11 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import jwt
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+from sqlalchemy import func
+
+from database import Base, engine, get_db
+from models import User, Score
 
 # Load environment variables
 load_dotenv()
@@ -49,11 +54,12 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-change-in-pr
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
-# In-memory storage (replace with database in production)
-users_db: Dict[str, Dict[str, Any]] = {}
+# Initialize database
+Base.metadata.create_all(bind=engine)
+
+# In-memory storage for chat sessions only
 chat_sessions: Dict[str, List[Dict[str, Any]]] = {}
 user_contexts: Dict[str, Dict[str, Any]] = {}
-user_scores: Dict[str, List[Dict[str, Any]]] = {}
 
 # Pydantic models
 class UserRegister(BaseModel):
@@ -299,49 +305,48 @@ async def health_check():
 
 # Authentication endpoints
 @app.post("/register")
-async def register(user_data: UserRegister):
-    if user_data.username in users_db:
+async def register(user_data: UserRegister, db: Session = Depends(get_db)):
+    existing_user = db.query(User).filter(User.username == user_data.username).first()
+    if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
-    
+
     hashed_password = pwd_context.hash(user_data.password)
-    user_id = str(uuid.uuid4())
-    
-    users_db[user_data.username] = {
-        "user_id": user_id,
-        "username": user_data.username,
-        "password": hashed_password,
-        "created_at": datetime.now().isoformat()
-    }
-    
-    user_scores[user_id] = []
-    
-    return {"message": "User registered successfully", "user_id": user_id}
+    user = User(username=user_data.username, password=hashed_password)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {"message": "User registered successfully", "user_id": user.id}
+
 
 @app.post("/login")
-async def login(user_data: UserLogin):
-    user = users_db.get(user_data.username)
-    if not user or not pwd_context.verify(user_data.password, user["password"]):
+async def login(user_data: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == user_data.username).first()
+    if not user or not pwd_context.verify(user_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    
+
     access_token = create_access_token({
-        "username": user["username"],
-        "user_id": user["user_id"]
+        "username": user.username,
+        "user_id": user.id
     })
-    
+
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "user": {
-            "username": user["username"],
-            "user_id": user["user_id"]
+            "username": user.username,
+            "user_id": user.id
         }
     }
 
 @app.get("/profile")
-async def get_profile(current_user: dict = Depends(verify_token)):
+async def get_profile(current_user: dict = Depends(verify_token), db: Session = Depends(get_db)):
+    user = db.get(User, current_user["user_id"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     return {
-        "username": current_user["username"],
-        "user_id": current_user["user_id"],
+        "username": user.username,
+        "user_id": user.id,
         "message": "Profile retrieved successfully"
     }
 
@@ -351,35 +356,29 @@ async def get_quiz():
     return {"questions": quiz_questions}
 
 @app.post("/scores")
-async def submit_score(score_data: ScoreSubmission, current_user: dict = Depends(verify_token)):
-    user_id = current_user["user_id"]
-    
-    if user_id not in user_scores:
-        user_scores[user_id] = []
-    
-    user_scores[user_id].append({
-        "score": score_data.score,
-        "timestamp": datetime.now().isoformat(),
-        "username": current_user["username"]
-    })
-    
+async def submit_score(
+    score_data: ScoreSubmission,
+    current_user: dict = Depends(verify_token),
+    db: Session = Depends(get_db),
+):
+    score = Score(user_id=current_user["user_id"], score=score_data.score)
+    db.add(score)
+    db.commit()
     return {"message": "Score submitted successfully", "score": score_data.score}
 
+
 @app.get("/leaderboard")
-async def get_leaderboard():
-    leaderboard = []
-    
-    for user_id, scores in user_scores.items():
-        if scores:
-            max_score = max(score["score"] for score in scores)
-            username = scores[0]["username"]  # Get username from first score
-            leaderboard.append({
-                "username": username,
-                "score": max_score
-            })
-    
-    # Sort by score descending
-    leaderboard.sort(key=lambda x: x["score"], reverse=True)
+async def get_leaderboard(db: Session = Depends(get_db)):
+    results = (
+        db.query(User.username, func.max(Score.score).label("score"))
+        .join(Score)
+        .group_by(User.id)
+        .order_by(func.max(Score.score).desc())
+        .all()
+    )
+    leaderboard = [
+        {"username": username, "score": score} for username, score in results
+    ]
     return leaderboard[:10]  # Top 10
 
 # Attractions endpoint
