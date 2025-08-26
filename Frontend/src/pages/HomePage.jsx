@@ -1,5 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { districts } from "../data/attractions";
+import { upcomingEvents } from "../data/events";
+import { FaArrowRight } from "react-icons/fa";
+import WeatherWidget from "../components/WeatherWidget";
+>>>>>>> codex/create-weatherwidget-component
 
 // Import Swiper React components and modules
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -29,6 +34,7 @@ const HomePage = () => {
             Start Your Adventure
           </Link>
         </div>
+        <WeatherWidget />
       </header>
 
       {/* --- Explore Districts Section --- */}
