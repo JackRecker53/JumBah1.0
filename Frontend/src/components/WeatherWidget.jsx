@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/WeatherWidget.css";
 
-const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+const API_KEY = import.meta.env.VITE_WEATHERAPI_KEY;
 
 const WeatherWidget = () => {
   const [weather, setWeather] = useState(null);
@@ -15,15 +15,15 @@ const WeatherWidget = () => {
       }
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=Kota+Kinabalu&units=metric&appid=${API_KEY}`
+          `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=Kota Kinabalu&aqi=no`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch weather");
         }
         const data = await response.json();
         setWeather({
-          temp: data.main.temp,
-          condition: data.weather[0].description,
+          temp: data.current.temp_c,
+          condition: data.current.condition.text,
         });
       } catch (err) {
         setError(err.message);
