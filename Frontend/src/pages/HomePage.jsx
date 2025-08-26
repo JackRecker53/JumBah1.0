@@ -1,22 +1,25 @@
-import "../styles/HomePage.css";
+import React from "react";
 import { Link } from "react-router-dom";
-import { districts } from "../data/attractions";
-import { upcomingEvents } from "../data/events";
-import { FaArrowRight } from "react-icons/fa";
 
-// Import Swiper for sliding feature (run: npm install swiper)
+// Import Swiper React components and modules
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+
+// Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+
+// Import local styles and data
+import "../styles/HomePage.css";
+import { districts } from "../data/attractions";
 
 const HomePage = () => {
   const districtList = Object.keys(districts);
 
   return (
     <div className="homePage">
-      {/* Hero Section */}
+      {/* --- Hero Section --- */}
       <header className="heroSection">
         <div className="heroOverlay"></div>
         <div className="heroContent">
@@ -28,7 +31,7 @@ const HomePage = () => {
         </div>
       </header>
 
-      {/* Explore Districts Section */}
+      {/* --- Explore Districts Section --- */}
       <section className="section container">
         <h2 className="sectionTitle">Explore Our Districts</h2>
         <Swiper
@@ -57,23 +60,6 @@ const HomePage = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-      </section>
-
-      {/* Upcoming Events Section */}
-      <section className="section eventsSection container">
-        <h2 className="sectionTitle">Upcoming Events</h2>
-        <div className="eventList">
-          {upcomingEvents.slice(0, 3).map((event) => (
-            <div key={event.id} className="eventCard">
-              <div className="eventDate">{event.date}</div>
-              <h3 className="eventTitle">{event.title}</h3>
-              <p className="eventLocation">{event.location}</p>
-              <Link to="/events" className="readMore">
-                See More <FaArrowRight />
-              </Link>
-            </div>
-          ))}
-        </div>
       </section>
     </div>
   );
