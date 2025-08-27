@@ -123,7 +123,8 @@ const districts = {
       {
         name: "Mount Kinabalu",
         desc: "Malaysia's highest peak and a UNESCO World Heritage Site.",
-        image: "/jumbah image/ranau-kinabalu.jpg",
+        image:
+          "https://upload.wikimedia.org/wikipedia/commons/5/51/Gunung_Kinabalu_Sabah.jpg",
         price: 0,
         rating: 4.9,
       },
@@ -136,7 +137,8 @@ const districts = {
       {
         name: "Sepilok Orangutan Rehabilitation Centre",
         desc: "Famous for orangutan conservation and rehabilitation.",
-        image: "/jumbah image/sandakan-orangutan.jpg",
+        image:
+          "https://www.amazingborneo.com/uploads/images/packages/49/medium/1a_sepilok-orang-utan-rehabilitation-centre-sandakan-amazing-borneo-1.jpg",
         price: 30,
         rating: 4.8,
       },
