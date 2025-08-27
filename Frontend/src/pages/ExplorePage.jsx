@@ -263,7 +263,11 @@ const ExplorePage = () => {
                   )}
                   <div className="actions">
                     <button
-                      className={`add-btn ${itinerary.some((a) => a.name === attraction.name) ? "selected" : ""}`}
+                      className={`add-btn ${
+                        itinerary.some((a) => a.name === attraction.name)
+                          ? "selected"
+                          : ""
+                      }`}
                       onClick={() => toggleItinerary(attraction)}
                     >
                       {itinerary.some((a) => a.name === attraction.name)
