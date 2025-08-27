@@ -4,6 +4,7 @@ import { useGame } from "../contexts/GameContext";
 import { quests } from "../data/quests";
 import { FaCheckCircle, FaAward, FaTicketAlt } from "react-icons/fa";
 import "../styles/GamePage.css";
+import { API_BASE_URL } from "../config";
 
 const GamePage = () => {
   const [questions, setQuestions] = useState([]);
@@ -23,7 +24,7 @@ const GamePage = () => {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch("http://localhost:5000/quiz");
+      const response = await fetch(`${API_BASE_URL}/quiz`);
       const data = await response.json();
       setQuestions(data);
     } catch (error) {
@@ -33,7 +34,7 @@ const GamePage = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await fetch("http://localhost:5000/leaderboard");
+      const response = await fetch(`${API_BASE_URL}/leaderboard`);
       const data = await response.json();
       setLeaderboard(data);
     } catch (error) {
@@ -71,7 +72,7 @@ const GamePage = () => {
   const submitScore = async (finalScore) => {
     if (!isAuthenticated) return; // Only submit if user is authenticated
     try {
-      await fetch("http://localhost:5000/scores", {
+      await fetch(`${API_BASE_URL}/scores`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
