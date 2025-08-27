@@ -147,6 +147,11 @@ const ExplorePage = () => {
   if (!districtName) {
     return (
       <div className="explore-list">
+        <img
+          src="/backgrounds/MountKinabalu.png"
+          alt="Mount Kinabalu in Sabah"
+          className="exploreHero"
+        />
         <h2>Explore Sabah Districts</h2>
         <ul>
           {Object.keys(districts).map((name) => (
@@ -180,6 +185,11 @@ const ExplorePage = () => {
   // FIX: Use districtKey for the title instead of undefined formattedName
   return (
     <div className="explore-details">
+      <img
+        src="/backgrounds/MountKinabalu.png"
+        alt="Mount Kinabalu in Sabah"
+        className="exploreHero"
+      />
       <h2>{districtKey}</h2>
       <p>{districtData.description}</p>
       <h3>Attractions</h3>

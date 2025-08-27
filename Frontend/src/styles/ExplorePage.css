@@ -1,4 +1,10 @@
 /* Styling for ExplorePage */
+.exploreHero {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
 .header {
     height: 50vh;
     position: relative;
