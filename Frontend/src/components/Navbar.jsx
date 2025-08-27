@@ -74,14 +74,6 @@ const Navbar = () => {
               to="/dictionary"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              Dusun Dictionary
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/translator"
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
               Translator
             </NavLink>
           </li>

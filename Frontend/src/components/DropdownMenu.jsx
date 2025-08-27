@@ -14,6 +14,7 @@ import {
   FaUserCircle,
   FaTimes,
   FaChevronRight,
+  FaBook,
 } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -33,6 +34,16 @@ const DropdownMenu = () => {
   // For demo: completedQuests and points can be part of user or context
   const completedQuests = user?.completedQuests || new Set([1, 2, 3]);
   const points = user?.points ?? 1250;
+
+  // Dusun dictionary phrases
+  const dusunPhrases = [
+    { english: "hello", dusun: "Kopivosian" },
+    { english: "thank you", dusun: "Pounsikou" },
+    { english: "goodbye", dusun: "Kotohuadan" },
+    { english: "yes", dusun: "Oou" },
+    { english: "no", dusun: "Aran" },
+    { english: "excuse me", dusun: "Oduo" },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -77,41 +88,47 @@ const DropdownMenu = () => {
     navigate("/profile");
   };
 
-const menuItems = [
-  {
-    icon: <FaMap />,
-    label: "Interactive Map",
-    to: "/map",
-    color: "#4285f4",
-  },
-  {
-    icon: <FaLanguage />,
-    label: "Bahasa Malaysia Translator",
-    onClick: handleItemClick,
-    color: "#34a853",
-  },
-];
+  const menuItems = [
+    {
+      icon: <FaMap />,
+      label: "Interactive Map",
+      to: "/map",
+      color: "#4285f4",
+    },
+    {
+      icon: <FaLanguage />,
+      label: "Bahasa Malaysia Translator",
+      to: "/translator",
+      color: "#34a853",
+    },
+    {
+      icon: <FaBook />,
+      label: "Dusun Dictionary",
+      to: "/dictionary",
+      color: "#10b981",
+    },
+  ];
 
-const authenticatedItems = [
-  {
-    icon: <FaUser />,
-    label: "My Profile",
-    to: "/profile",
-    color: "#6366f1",
-  },
-  {
-    icon: <FaTrophy />,
-    label: "My Adventures",
-    to: "/adventure",
-    color: "#f59e0b",
-  },
-  {
-    icon: <FaCog />,
-    label: "Settings",
-    to: "/settings",
-    color: "#6b7280",
-  },
-];
+  const authenticatedItems = [
+    {
+      icon: <FaUser />,
+      label: "My Profile",
+      to: "/profile",
+      color: "#6366f1",
+    },
+    {
+      icon: <FaTrophy />,
+      label: "My Adventures",
+      to: "/adventure",
+      color: "#f59e0b",
+    },
+    {
+      icon: <FaCog />,
+      label: "Settings",
+      to: "/settings",
+      color: "#6b7280",
+    },
+  ];
 
   return (
     <div className="dropdown-container">
@@ -122,8 +139,8 @@ const authenticatedItems = [
         onClick={() => (isOpen ? handleClose() : handleOpen())}
         aria-label="Open menu"
       >
-          <FaBars />
-        </button>
+        <FaBars />
+      </button>
 
       {/* Backdrop */}
       {isOpen && (

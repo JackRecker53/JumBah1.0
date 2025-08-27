@@ -34,7 +34,11 @@
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -196,12 +200,17 @@
 .ai-planner-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white !important;
-  padding: 8px 16px;
+  padding: 5px 16px;
   border-radius: 20px;
   font-weight: 600;
   text-decoration: none;
   transition: background 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .ai-planner-button:hover {
