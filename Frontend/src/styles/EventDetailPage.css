@@ -1,0 +1,22 @@
+.eventDetail {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.eventImage {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.eventActivities ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #0077cc;
+}
