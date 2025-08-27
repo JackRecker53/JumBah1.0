@@ -5,17 +5,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
-import os
 import uuid
 import json
+import os
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 import google.generativeai as genai
 import jwt
 from passlib.context import CryptContext
-
-# Load environment variables
-load_dotenv()
+from settings import settings
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -27,14 +24,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8000",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:8000"
-    ],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -45,7 +35,7 @@ security = HTTPBearer()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Configuration
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-change-in-production")
+JWT_SECRET_KEY = settings.jwt_secret_key
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
@@ -107,7 +97,7 @@ class FlightRequest(BaseModel):
 # Initialize Gemini AI
 def get_gemini_model():
     """Configure and return Gemini model if key exists; else None."""
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = settings.gemini_api_key
     if not api_key:
         return None
     genai.configure(api_key=api_key)
