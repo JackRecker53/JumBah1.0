@@ -133,11 +133,55 @@ const AIPlanner = () => {
   };
 
   const generateItinerary = async () => {
-    // Logic remains the same...
+    if (isLoading) return;
+    addMessage(
+      "user",
+      `Plan itinerary for ${itineraryForm.duration} with RM${itineraryForm.budget} budget`
+    );
+    setIsLoading(true);
+    try {
+      const response = await aiPlannerService.generateItinerary(itineraryForm);
+      if (response.success && response.itinerary) {
+        addMessage("bot", response.itinerary);
+      } else {
+        addMessage("bot", "I couldn't generate an itinerary. Please try again.");
+      }
+    } catch (error) {
+      console.error("Itinerary error:", error);
+      addMessage(
+        "bot",
+        "I'm having trouble generating the itinerary. Please ensure the backend server is running and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getFlightRecommendations = async () => {
-    // Logic remains the same...
+    if (isLoading) return;
+    addMessage(
+      "user",
+      `Find flights from ${flightForm.origin} on ${flightForm.departure_date}`
+    );
+    setIsLoading(true);
+    try {
+      const response = await aiPlannerService.getFlightRecommendations(
+        flightForm
+      );
+      if (response.success && response.recommendations) {
+        addMessage("bot", response.recommendations);
+      } else {
+        addMessage("bot", "I couldn't find flights. Please try again.");
+      }
+    } catch (error) {
+      console.error("Flight error:", error);
+      addMessage(
+        "bot",
+        "I'm having trouble fetching flights. Please ensure the backend server is running and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const copyMessage = (content) => {
@@ -195,8 +239,179 @@ const AIPlanner = () => {
               <FaPlane /> Find Flights
             </button>
           </div>
+          <div className="sidebar-form">
+            {activeMode === "itinerary" && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  generateItinerary();
+                }}
+              >
+                <div className="form-group">
+                  <label>Duration</label>
+                  <select
+                    value={itineraryForm.duration}
+                    onChange={(e) =>
+                      setItineraryForm({
+                        ...itineraryForm,
+                        duration: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="1-3 days">1-3 days</option>
+                    <option value="3-5 days">3-5 days</option>
+                    <option value="5-7 days">5-7 days</option>
+                    <option value="7+ days">7+ days</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Budget (MYR)</label>
+                  <input
+                    type="number"
+                    value={itineraryForm.budget}
+                    onChange={(e) =>
+                      setItineraryForm({
+                        ...itineraryForm,
+                        budget: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Interests</label>
+                  <div className="interest-options">
+                    {interestOptions.map((interest) => (
+                      <label key={interest}>
+                        <input
+                          type="checkbox"
+                          checked={itineraryForm.interests.includes(interest)}
+                          onChange={() => handleInterestToggle(interest)}
+                        />
+                        {interest}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Accommodation</label>
+                  <select
+                    value={itineraryForm.accommodation}
+                    onChange={(e) =>
+                      setItineraryForm({
+                        ...itineraryForm,
+                        accommodation: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="budget">Budget</option>
+                    <option value="mid-range">Mid-range</option>
+                    <option value="luxury">Luxury</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Group Size</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={itineraryForm.group_size}
+                    onChange={(e) =>
+                      setItineraryForm({
+                        ...itineraryForm,
+                        group_size: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={isLoading}
+                >
+                  Generate Itinerary
+                </button>
+              </form>
+            )}
 
-          {/* Form Content will be rendered here based on activeMode */}
+            {activeMode === "flights" && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  getFlightRecommendations();
+                }}
+              >
+                <div className="form-group">
+                  <label>Origin</label>
+                  <input
+                    type="text"
+                    value={flightForm.origin}
+                    onChange={(e) =>
+                      setFlightForm({ ...flightForm, origin: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Departure Date</label>
+                  <input
+                    type="date"
+                    value={flightForm.departure_date}
+                    onChange={(e) =>
+                      setFlightForm({
+                        ...flightForm,
+                        departure_date: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Return Date</label>
+                  <input
+                    type="date"
+                    value={flightForm.return_date}
+                    onChange={(e) =>
+                      setFlightForm({
+                        ...flightForm,
+                        return_date: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Passengers</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={flightForm.passengers}
+                    onChange={(e) =>
+                      setFlightForm({
+                        ...flightForm,
+                        passengers: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Class</label>
+                  <select
+                    value={flightForm.class}
+                    onChange={(e) =>
+                      setFlightForm({ ...flightForm, class: e.target.value })
+                    }
+                  >
+                    <option value="economy">Economy</option>
+                    <option value="business">Business</option>
+                    <option value="first">First</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={isLoading}
+                >
+                  Search Flights
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* Main Chat Area */}
