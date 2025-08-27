@@ -67,9 +67,9 @@
   margin-right: 12px;
   font-size: 1.2rem;
 }
-.sidebar-modes .mode-btn:hover {
+/* .sidebar-modes .mode-btn:hover {
   background-color: #4a627a;
-}
+} */
 .sidebar-modes .mode-btn.active {
   background-color: #3498db;
   color: white;
@@ -96,7 +96,7 @@
   padding: 8px;
   border-radius: 6px;
   border: none;
-  background-color: #ecf0f1;
+  /* background-color: #ecf0f1; */
 }
 .interest-options {
   display: flex;
