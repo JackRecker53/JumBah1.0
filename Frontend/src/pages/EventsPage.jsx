@@ -29,6 +29,7 @@
 // export default EventsPage;
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { upcomingEvents } from "../data/events";
 import { FaArrowRight } from "react-icons/fa"; // Import the arrow icon
 import "../styles/EventsPage.css";
@@ -51,15 +52,10 @@ const EventsPage = () => {
               <p className="eventLocation">{event.location}</p>
               <p className="eventDescription">{event.description}</p>
             </div>
-            {/* "See More" link is now a separate element */}
-            <a
-              href={event.link}
-              className="readMore"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            {/* "See More" link navigates to detail page */}
+            <Link to={`/events/${event.id}`} className="readMore">
               See More <FaArrowRight size="0.8em" />
-            </a>
+            </Link>
           </div>
         ))}
       </div>

@@ -4,20 +4,50 @@ export const upcomingEvents = [
         title: "Kaamatan Festival Finale",
         date: "May 30-31, 2026",
         location: "KDCA, Penampang",
-        description: "Experience the grand finale of Sabah's most important cultural harvest festival with traditional music, dance, and food."
+        description: "Experience the grand finale of Sabah's most important cultural harvest festival with traditional music, dance, and food.",
+        image: "https://via.placeholder.com/600x400?text=Kaamatan+Festival",
+        history: "A celebration of rice harvest by the Kadazan-Dusun community, culminating the month-long festivities.",
+        activities: [
+            "Traditional music and dance",
+            "Unduk Ngadau pageant",
+            "Local food stalls"
+        ],
+        price: "Free entry",
+        dressCode: "Casual or traditional attire",
+        exactLocation: "KDCA Cultural Village, Penampang"
     },
     {
         id: 2,
         title: "Regatta Lepa Semporna",
         date: "April 19-21, 2026",
         location: "Semporna",
-        description: "A spectacular festival of decorated traditional sailing boats from the Bajau Laut community."
+        description: "A spectacular festival of decorated traditional sailing boats from the Bajau Laut community.",
+        image: "https://via.placeholder.com/600x400?text=Regatta+Lepa",
+        history: "Annual festival honoring the Bajau Laut's houseboats.",
+        activities: [
+            "Lepa boat parade",
+            "Cultural performances",
+            "Handicraft markets"
+        ],
+        price: "Free viewing",
+        dressCode: "Casual",
+        exactLocation: "Seafront, Semporna"
     },
     {
         id: 3,
         title: "Borneo Arts Festival",
         date: "September 5-7, 2025",
         location: "Kota Kinabalu",
-        description: "A celebration of local and regional art, featuring exhibitions, workshops, and performances."
+        description: "A celebration of local and regional art, featuring exhibitions, workshops, and performances.",
+        image: "https://via.placeholder.com/600x400?text=Borneo+Arts+Festival",
+        history: "Showcase of Borneo's diverse artistic heritage.",
+        activities: [
+            "Art exhibitions",
+            "Workshops",
+            "Live performances"
+        ],
+        price: "RM10 per day",
+        dressCode: "Smart casual",
+        exactLocation: "City centre, Kota Kinabalu"
     }
 ];

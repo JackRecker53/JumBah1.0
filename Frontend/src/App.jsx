@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import EventsPage from "./pages/EventsPage";
+import EventDetailPage from "./pages/EventDetailPage";
 import Login from "./pages/Login";
 import UserProfile from "./pages/UserProfile";
 import AIPlanner from "./pages/AIPlanner";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/adventure" element={<ExplorePage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/events/:id" element={<EventDetailPage />} />
           <Route path="/ai-planner" element={<AIPlanner />} />
           <Route path="/map" element={<Map />} />
           <Route path="/game" element={<GamePage />} />
