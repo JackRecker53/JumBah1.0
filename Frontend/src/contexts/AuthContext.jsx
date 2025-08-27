@@ -7,15 +7,25 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
+  const decodeToken = (jwt) => {
+    try {
+      const payload = JSON.parse(atob(jwt.split(".")[1]));
+      return {
+        username: payload.username,
+        userId: payload.user_id,
+      };
+    } catch (e) {
+      console.error("Invalid token", e);
+      return null;
+    }
+  };
+
   useEffect(() => {
     if (token) {
-      // You might want to verify the token with the backend here
-      // For simplicity, we'll just decode it (not secure for production)
-      try {
-        const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        setUser(decodedToken.sub);
-      } catch (e) {
-        console.error("Invalid token", e);
+      const decoded = decodeToken(token);
+      if (decoded) {
+        setUser(decoded);
+      } else {
         logout();
       }
     }
@@ -32,8 +42,8 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       localStorage.setItem("token", data.access_token);
       setToken(data.access_token);
-      const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
-      setUser(decodedToken.sub);
+      const decoded = decodeToken(data.access_token);
+      setUser(decoded);
     } else {
       const errorData = await response.json();
       throw new Error(errorData.msg || "Login failed");
