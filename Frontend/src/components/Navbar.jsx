@@ -55,14 +55,6 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
-              to="/adventure"
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              Adventure
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to="/game"
               className={({ isActive }) => (isActive ? "active" : "")}
             >

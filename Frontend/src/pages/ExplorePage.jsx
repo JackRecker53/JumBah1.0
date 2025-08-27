@@ -1,4 +1,5 @@
-import { useLocation, useParams, Link } from "react-router-dom";
+import React from "react";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
 import "../styles/ExplorePage.css";
 
@@ -11,27 +12,37 @@ const districts = {
       {
         name: "Gaya Street",
         desc: "Famous Sunday market with local food, crafts, and souvenirs.",
-        image: "/jumbah image/gaya street.JPG",
+        image: "/adventure/gaya street.JPG",
+        price: 0,
+        rating: 4.5,
       },
       {
         name: "Signal Hill Observatory",
         desc: "Best city view and sunset spot in Kota Kinabalu.",
-        image: "/jumbah image/gunung kinabalu.jpg",
+        image: "/adventure/gunung kinabalu.jpg",
+        price: 5,
+        rating: 4.7,
       },
       {
         name: "Sabah Art Gallery",
         desc: "Modern art museum showcasing local artists.",
-        image: "/jumbah image/sabah-art-gallery.jpg",
+        image: "/adventure/sabah-art-gallery.jpg",
+        price: 10,
+        rating: 4.2,
       },
       {
         name: "Muzium Sabah",
         desc: "Museum of Sabah's history and culture.",
-        image: "/jumbah image/Muzium Sabah.jpg",
+        image: "/adventure/Muzium Sabah.jpg",
+        price: 8,
+        rating: 4.3,
       },
       {
         name: "Tanjung Aru Beach",
         desc: "Popular beach for sunset and picnics.",
-        image: "/jumbah image/Tanjung Aru.jpg",
+        image: "/adventure/Tanjung Aru.jpg",
+        price: 0,
+        rating: 4.8,
       },
     ],
     stamps: [
@@ -49,17 +60,23 @@ const districts = {
       {
         name: "Kinabatangan River Cruise",
         desc: "River cruise for wildlife spotting: proboscis monkeys, orangutans, and more.",
-        image: "/jumbah image/kinabatangan river cruise.jpg",
+        image: "/adventure/kinabatangan river cruise.jpg",
+        price: 50,
+        rating: 4.9,
       },
       {
         name: "Poring Hot Springs",
         desc: "Natural hot springs and canopy walk.",
-        image: "/jumbah image/poring2.jpg",
+        image: "/adventure/poring2.jpg",
+        price: 15,
+        rating: 4.4,
       },
       {
         name: "Mari Mari Cultural Village",
         desc: "Experience traditional Sabahan culture and food.",
-        image: "/jumbah image/mari2 cv.jpg",
+        image: "/adventure/mari2 cv.jpg",
+        price: 30,
+        rating: 4.6,
       },
     ],
     stamps: [
@@ -78,7 +95,9 @@ const districts = {
       {
         name: "Pulau Sipadan",
         desc: "Top diving spot in Malaysia, known for turtles and barracuda.",
-        image: "/jumbah image/pulau sipadan.jpg",
+        image: "/adventure/pulau sipadan.jpg",
+        price: 200,
+        rating: 5.0,
       },
     ],
     stamps: [{ id: 9, name: "Sipadan Stamp", location: "Pulau Sipadan" }],
@@ -89,7 +108,9 @@ const districts = {
       {
         name: "Tawau Hills Park",
         desc: "Rainforest park with waterfalls and giant trees.",
-        image: "/jumbah image/tawau hills.jfif",
+        image: "/adventure/tawau hills.jfif",
+        price: 10,
+        rating: 4.5,
       },
     ],
     stamps: [
@@ -103,8 +124,9 @@ const districts = {
         name: "Mount Kinabalu",
         desc: "Malaysia's highest peak and a UNESCO World Heritage Site.",
         image: "/jumbah image/ranau-kinabalu.jpg",
+        price: 0,
+        rating: 4.9,
       },
-      // Add more attractions as needed
     ],
     stamps: [{ id: 11, name: "Kinabalu Stamp", location: "Mount Kinabalu" }],
   },
@@ -115,8 +137,9 @@ const districts = {
         name: "Sepilok Orangutan Rehabilitation Centre",
         desc: "Famous for orangutan conservation and rehabilitation.",
         image: "/jumbah image/sandakan-orangutan.jpg",
+        price: 30,
+        rating: 4.8,
       },
-      // Add more attractions as needed
     ],
     stamps: [
       { id: 12, name: "Sepilok Stamp", location: "Sepilok Orangutan Centre" },
@@ -125,9 +148,6 @@ const districts = {
 };
 
 const getDistrictKey = (districtNameParam) => {
-  // Try exact match first
-  if (districts[districtNameParam]) return districtNameParam;
-  // Try replacing hyphens with spaces and capitalizing each word
   if (!districtNameParam) return null;
   const formatted = districtNameParam
     .replace(/-/g, " ")
@@ -141,12 +161,36 @@ const ExplorePage = () => {
   const searchParams = new URLSearchParams(location.search);
   const attractionQuery = searchParams.get("attraction");
   const { collectStamp, collectedStamps } = useGame();
-  // Reintroduce authentication checks here if guest-specific restrictions are required.
 
-  // If no districtName, show all districts
+  const [itinerary, setItinerary] = React.useState([]);
+
+  const toggleItinerary = (attraction) => {
+    setItinerary((prev) => {
+      if (prev.some((a) => a.name === attraction.name)) {
+        return prev.filter((a) => a.name !== attraction.name);
+      } else {
+        return [...prev, attraction];
+      }
+    });
+  };
+
+  const totalPrice = itinerary.reduce((sum, a) => sum + (a.price || 0), 0);
+
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} style={{ color: rating >= i ? "#FFD700" : "#ccc" }}>
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
   if (!districtName) {
     return (
-      <div className="explore-list">
+      <div className="explore-list container">
         <h2>Explore Sabah Districts</h2>
         <ul>
           {Object.keys(districts).map((name) => (
@@ -161,15 +205,13 @@ const ExplorePage = () => {
     );
   }
 
-  // Fix: Use getDistrictKey to handle capitalization and hyphens
   const districtKey = getDistrictKey(districtName);
   const districtData = districtKey ? districts[districtKey] : null;
 
   if (!districtData) {
-    return <div>District not found.</div>;
+    return <div className="container">District not found.</div>;
   }
 
-  // Find the attraction if query param is present
   const foundAttraction =
     attractionQuery && districtData
       ? districtData.attractions.find(
@@ -177,28 +219,115 @@ const ExplorePage = () => {
         )
       : null;
 
-  // FIX: Use districtKey for the title instead of undefined formattedName
   return (
-    <div className="explore-details">
-      <h2>{districtKey}</h2>
-      <p>{districtData.description}</p>
-      <h3>Attractions</h3>
-      <ul>
-        {districtData.attractions.map((a) => (
-          <li key={a.name}>
-            <img src={a.image} alt={a.name} style={{ width: "120px" }} />
-            <strong>{a.name}</strong>: {a.desc}
-          </li>
-        ))}
-      </ul>
-      <h3>Stamps</h3>
-      <ul>
-        {districtData.stamps.map((s) => (
-          <li key={s.id}>
-            {s.name} ({s.location})
-          </li>
-        ))}
-      </ul>
+    <div className="explorePage">
+      <header
+        className="header"
+        style={{
+          backgroundImage: `url(${districtData.attractions[0]?.image})`,
+        }}
+      >
+        <div className="headerOverlay"></div>
+        <div className="headerContent">
+          <h1>{districtKey} Attractions</h1>
+          <p>{districtData.description}</p>
+        </div>
+      </header>
+
+      <div className="container">
+        <section>
+          <h2 className="sectionTitle">All Places</h2>
+          <div className="attractionsGrid">
+            {(foundAttraction
+              ? [foundAttraction]
+              : districtData.attractions
+            ).map((attraction) => (
+              <div key={attraction.name} className="attractionCard">
+                <img src={attraction.image} alt={attraction.name} />
+                <div className="cardContent">
+                  <h3>{attraction.name}</h3>
+                  <p>{attraction.desc}</p>
+                  {attraction.price !== undefined && (
+                    <div className="price">
+                      <strong>Price:</strong>{" "}
+                      {attraction.price === 0
+                        ? "Free"
+                        : `RM ${attraction.price}`}
+                    </div>
+                  )}
+                  {attraction.rating !== undefined && (
+                    <div className="rating">
+                      <strong>Rating:</strong> {renderStars(attraction.rating)}
+                      <span>({attraction.rating})</span>
+                    </div>
+                  )}
+                  <div className="actions">
+                    <button
+                      className={`add-btn ${itinerary.some((a) => a.name === attraction.name) ? "selected" : ""}`}
+                      onClick={() => toggleItinerary(attraction)}
+                    >
+                      {itinerary.some((a) => a.name === attraction.name)
+                        ? "Remove"
+                        : "Add to Itinerary"}
+                    </button>
+                    <button
+                      className="book-btn"
+                      onClick={() =>
+                        window.alert(
+                          `Booking for ${attraction.name} (RM ${attraction.price})`
+                        )
+                      }
+                    >
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="itinerary-section">
+          <h2 className="sectionTitle">Your Itinerary</h2>
+          {itinerary.length === 0 ? (
+            <p>No places added yet.</p>
+          ) : (
+            <div>
+              <ul>
+                {itinerary.map((a) => (
+                  <li key={a.name}>
+                    {a.name} - {a.price === 0 ? "Free" : `RM ${a.price}`}{" "}
+                    {renderStars(a.rating)}
+                  </li>
+                ))}
+              </ul>
+              <div className="total-price">
+                <strong>Total Price:</strong> RM {totalPrice}
+              </div>
+              <button
+                className="book-all-btn"
+                onClick={() =>
+                  window.alert(`Booking all places! Total: RM ${totalPrice}`)
+                }
+              >
+                Book All
+              </button>
+            </div>
+          )}
+        </section>
+
+        <section className="stamps-section">
+          <h2 className="sectionTitle">Stamps</h2>
+          <ul>
+            {districtData.stamps &&
+              districtData.stamps.map((s) => (
+                <li key={s.id}>
+                  {s.name} ({s.location})
+                </li>
+              ))}
+          </ul>
+        </section>
+      </div>
     </div>
   );
 };

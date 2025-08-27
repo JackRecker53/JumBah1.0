@@ -1,99 +1,460 @@
-/* Styling for ExplorePage */
+body {
+  background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+}
+
+.explorePage .container {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 43, 127, 0.08);
+  padding: 2.5rem 2rem;
+  margin-top: -4rem;
+  margin-bottom: 2rem;
+}
+
 .header {
-    height: 50vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-    background-size: cover;
-    background-position: center;
+  height: 48vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 4px 24px rgba(0, 43, 127, 0.1);
 }
 
 .headerOverlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 43, 127, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(0, 43, 127, 0.7) 0%,
+    rgba(4, 132, 214, 0.5) 100%
+  );
+  border-radius: 0 0 24px 24px;
 }
 
 .headerContent {
-    position: relative;
-    z-index: 2;
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem 0;
 }
 
 .headerContent h1 {
-    font-size: 3rem;
-    color: white;
+  font-size: 3rem;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0, 43, 127, 0.18);
+}
+
+.headerContent p {
+  font-size: 1.2rem;
+  color: #e0eafc;
+  margin-top: 0.5rem;
 }
 
 .sectionTitle {
-    font-size: 2.2rem;
-    text-align: center;
-    margin: 3rem 0;
+  font-size: 2rem;
+  text-align: left;
+  margin: 2.5rem 0 1.5rem 0;
+  color: #0484D6;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .attractionsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
 }
 
 .attractionCard {
-    background: var(--surface-color);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
+  background: #f7fbff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 5px 18px rgba(4, 132, 214, 0.1);
+  border: 1.5px solid #e0eafc;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.2s;
+  position: relative;
 }
 .attractionCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  transform: translateY(-7px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(4, 132, 214, 0.18);
+  border-color: #0484D6;
 }
 .attractionCard img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 2px 8px rgba(4, 132, 214, 0.1);
 }
 .cardContent {
-    padding: 1.5rem;
+  padding: 1.2rem 1rem 0.5rem 1rem;
 }
 .cardContent h3 {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #0484D6;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.cardContent p {
+  color: #444;
+  margin-bottom: 10px;
+}
+.cardContent .price {
+  margin: 8px 0;
+  font-weight: 500;
+  color: #0a6cbd;
+}
+.cardContent .rating {
+  margin-bottom: 10px;
+  color: #f59e0b;
+  font-weight: 600;
+}
+.cardContent .actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.cardContent button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  transition: background 0.2s, color 0.2s;
+}
+.cardContent .add-btn {
+  background: #e0eafc;
+  color: #0484D6;
+}
+.cardContent .add-btn.selected {
+  background: #f44336;
+  color: #fff;
+}
+.cardContent .add-btn:hover {
+  background: #0484D6;
+  color: #fff;
+}
+.cardContent .book-btn {
+  background: linear-gradient(90deg, #0484D6 60%, #00c6fb 100%);
+  color: #fff;
+}
+.cardContent .book-btn:hover {
+  background: linear-gradient(90deg, #0056b3 60%, #00aaff 100%);
+}
+
+/* Itinerary Section */
+.itinerary-section {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1.5px solid #e0eafc;
+}
+.itinerary-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.itinerary-section li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+  color: #0484D6;
+  font-weight: 500;
+}
+.itinerary-section li:last-child {
+  border-bottom: none;
+}
+.itinerary-section .total-price {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #0a6cbd;
+}
+.itinerary-section .book-all-btn {
+  margin-top: 1rem;
+  background: #0484D6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s;
+}
+.itinerary-section .book-all-btn:hover {
+  background: #0056b3;
+}
+
+/* Stamps Section */
+.stamps-section {
+  background: #f7fbff;
+  border-radius: 10px;
+  padding: 1.2rem 1rem;
+  margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(4, 132, 214, 0.08);
+  border: 1.5px solid #e0eafc;
+}
+.stamps-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.stamps-section li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+  color: #0a6cbd;
+  font-weight: 500;
+}
+.stamps-section li:last-child {
+  border-bottom: none;
+}
+/* Itinerary Section */
+.itinerary-section {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.itinerary-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.itinerary-section li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+}
+.itinerary-section li:last-child {
+  border-bottom: none;
+}
+.itinerary-section .total-price {
+  margin-top: 1rem;
+  font-weight: 600;
+}
+.itinerary-section .book-all-btn {
+  margin-top: 1rem;
+  background: #0484D6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s;
+}
+.itinerary-section .book-all-btn:hover {
+  background: #0056b3;
+}
+/* Styling for ExplorePage */
+.header {
+  height: 50vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.headerOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 43, 127, 0.6);
+}
+
+.headerContent {
+  position: relative;
+  z-index: 2;
+}
+
+.headerContent h1 {
+  font-size: 3rem;
+  color: white;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.attractionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.attractionCard {
+  background: var(--surface-color);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.attractionCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+.attractionCard img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+.cardContent {
+  padding: 1.5rem;
+}
+.cardContent h3 {
+  margin-bottom: 0.5rem;
 }
 
 /* Stamps Section */
 .stampsGrid {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
 }
 .stampCard {
-    background: var(--surface-color);
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    border: 2px dashed var(--accent-color);
+  background: var(--surface-color);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  border: 2px dashed var(--accent-color);
 }
 .stampButton {
-    margin-top: 1rem;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: var(--secondary-color);
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  margin-top: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--secondary-color);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 .stampButton:hover:not(:disabled) {
-    background-color: var(--primary-color);
+  background-color: var(--primary-color);
 }
 .stampButton:disabled {
-    background-color: #888;
-    cursor: not-allowed;
+  background-color: #888;
+  cursor: not-allowed;
 }
 .loginPrompt {
-    margin-top: 1rem;
+  margin-top: 1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Adventure Page Styles */
+.loginWall {
+    text-align: center;
+    padding: 5rem 0;
+}
+
+.loginWall h2 {
+    font-size: 2.5rem;
+}
+
+.loginWall p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 1.5rem;
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.statItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.statItem .icon {
+    color: var(--primary-color);
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.section {
+    background-color: var(--surface-color);
+    padding: 2rem;
+    border-radius: 10px;
+}
+
+.section h2 {
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.questList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.questItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid var(--background-color);
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+.questItem.completed {
+    border-left: 5px solid #28a745; /* Green for completed */
+    background-color: var(--background-color);
+}
+.questItem.completed h3 {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.questReward {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.checkIcon {
+    color: #28a745;
+}
+
+.comingSoon {
     font-style: italic;
     color: var(--text-secondary);
 }
