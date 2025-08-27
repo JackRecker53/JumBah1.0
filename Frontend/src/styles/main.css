@@ -2,15 +2,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
 /* CSS Variables for Theming */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 :root {
   --font-main: "Poppins", sans-serif;
 
   /* Light Theme */
-  --primary-color: #00A8E8;
-  --secondary-color: #3B8D43;
-  --accent-color: #90D8F4;
-  --background-color: #F8F6F1;
-  --surface-color: #FFFFFF;
+  --primary-color: #00a8e8;
+  --secondary-color: #3b8d43;
+  --accent-color: #90d8f4;
+  --background-color: #f8f6f1;
+  --surface-color: #ffffff;
   --text-primary: #333333;
   --text-secondary: #666666;
   --glow-color: rgba(0, 168, 232, 0.5);
@@ -18,13 +25,13 @@
 
 [data-theme="dark"] {
   /* Dark Theme */
-  --primary-color: #90D8F4;
-  --secondary-color: #76C893;
-  --accent-color: #00A8E8;
-  --background-color: #001F3F; /* Dark Navy */
-  --surface-color: #002B5C; /* Darker Navy */
-  --text-primary: #F8F6F1;
-  --text-secondary: #B0C4DE;
+  --primary-color: #90d8f4;
+  --secondary-color: #76c893;
+  --accent-color: #00a8e8;
+  --background-color: #001f3f; /* Dark Navy */
+  --surface-color: #002b5c; /* Darker Navy */
+  --text-primary: #f8f6f1;
+  --text-secondary: #b0c4de;
   --glow-color: rgba(144, 216, 244, 0.6);
 }
 

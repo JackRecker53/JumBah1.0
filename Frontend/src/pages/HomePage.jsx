@@ -21,7 +21,7 @@ const HomePage = () => {
   const districtList = Object.keys(districts);
 
   return (
-    <div className="homePage">
+    <div className="homePage full-height-page">
       {/* --- Hero Section --- */}
       <header className="heroSection">
         <div className="heroOverlay"></div>
