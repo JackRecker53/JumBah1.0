@@ -63,7 +63,7 @@ const Navbar = () => {
           </li>
           <li>
             <NavLink
-              to="/dictionary"
+              to="/translator"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
               Translator

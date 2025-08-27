@@ -101,8 +101,10 @@ const AIPlanner = () => {
     setIsLoading(true);
 
     try {
+      // When sending a request:
       const response = await aiPlannerService.getTravelRecommendations(
-        userMessage
+        userMessage,
+        { short_answer: true }
       );
       if (response.success) {
         addMessage("bot", response.recommendations);
@@ -168,7 +170,7 @@ const AIPlanner = () => {
           <div className="sidebar-header">
             <FaRobot className="header-icon" />
             <div>
-              <h1>SabahAI</h1>
+              <h1>MaduAI</h1>
               <p>Your personal travel planner</p>
             </div>
           </div>

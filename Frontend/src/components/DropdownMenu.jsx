@@ -91,15 +91,9 @@ const DropdownMenu = () => {
   const menuItems = [
     {
       icon: <FaMap />,
-      label: "Interactive Map",
+      label: "Map of Interests",
       to: "/map",
       color: "#4285f4",
-    },
-    {
-      icon: <FaLanguage />,
-      label: "Bahasa Malaysia Translator",
-      to: "/translator",
-      color: "#34a853",
     },
     {
       icon: <FaBook />,

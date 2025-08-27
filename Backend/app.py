@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import google.generativeai as genai
 import jwt
-from passlib.context import CryptContext
 
 # Load environment variables
 load_dotenv()
@@ -40,9 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Security
 security = HTTPBearer()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Configuration
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-key-change-in-production")
@@ -303,31 +300,26 @@ async def register(user_data: UserRegister):
     if user_data.username in users_db:
         raise HTTPException(status_code=400, detail="Username already exists")
     
-    hashed_password = pwd_context.hash(user_data.password)
     user_id = str(uuid.uuid4())
-    
+    # Store password in plain text (NOT recommended for production)
     users_db[user_data.username] = {
         "user_id": user_id,
         "username": user_data.username,
-        "password": hashed_password,
+        "password": user_data.password,
         "created_at": datetime.now().isoformat()
     }
-    
     user_scores[user_id] = []
-    
     return {"message": "User registered successfully", "user_id": user_id}
 
 @app.post("/login")
 async def login(user_data: UserLogin):
     user = users_db.get(user_data.username)
-    if not user or not pwd_context.verify(user_data.password, user["password"]):
+    if not user or user_data.password != user["password"]:
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    
     access_token = create_access_token({
         "username": user["username"],
         "user_id": user["user_id"]
     })
-    
     return {
         "access_token": access_token,
         "token_type": "bearer",
