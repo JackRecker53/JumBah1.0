@@ -45,7 +45,7 @@ const WeatherWidget = () => {
         </>
       )}
       <p className="seasonNote">
-        Ideal visiting season: March to May and September.
+        Ideal visit season: March to May and September.
       </p>
     </div>
   );

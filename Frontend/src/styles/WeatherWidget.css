@@ -4,12 +4,12 @@
   right: 1.5rem;
   background-color: rgba(255, 255, 255, 0.9);
   color: #333;
-  padding: 0.1rem 1.5rem; /* less vertical, more horizontal padding */
+  padding: 0.1rem 1.2rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 260px; /* wider box */
-  min-width: 180px; /* wider box */
-  min-height: 24px; /* shorter height */
+  max-width: 180px;
+  min-width: 120px;
+  min-height: 28px;
   text-align: left;
   z-index: 2;
   display: flex;
