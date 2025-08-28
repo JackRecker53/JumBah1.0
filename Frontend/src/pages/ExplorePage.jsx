@@ -19,7 +19,8 @@ const districts = {
       {
         name: "Signal Hill Observatory",
         desc: "Best city view and sunset spot in Kota Kinabalu.",
-        image: "/adventure/gunung kinabalu.jpg",
+        image:
+          "https://www.iloveborneo.my/wp-content/uploads/2023/10/Featured-Image-3-11.png.webp",
         price: 5,
         rating: 4.7,
       },
@@ -65,16 +66,18 @@ const districts = {
         rating: 4.9,
       },
       {
-        name: "Poring Hot Springs",
-        desc: "Natural hot springs and canopy walk.",
-        image: "/adventure/poring2.jpg",
+        name: "Gomantong Cave",
+        desc: "Explore the largest cave system in Sabah with unique limestone formations.",
+        image:
+          "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/f6/54/01/sun-rays-in-gomantong.jpg?w=900&h=500&s=1",
         price: 15,
         rating: 4.4,
       },
       {
-        name: "Mari Mari Cultural Village",
-        desc: "Experience traditional Sabahan culture and food.",
-        image: "/adventure/mari2 cv.jpg",
+        name: "Tungog Rainforest Eco Camp",
+        desc: "Experience the beauty of Sabah's rainforest up close.",
+        image:
+          "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqLR25K3XUp8_Gzihl5CpD5_DKAkenCpuLVstXCHmKiVmN9z76pioLxcuPoCTKkayXnZU3ImcdLrsgA408_MCPAlYxDDSPhT952qt6QC4sp3eg9eYNY77pS4wIG8LlVvapTjzFF=s1360-w1360-h1020-rw",
         price: 30,
         rating: 4.6,
       },
@@ -89,7 +92,7 @@ const districts = {
       },
     ],
   },
-  Sipadan: {
+  Semporna: {
     description: "World-famous diving destination with crystal clear waters.",
     attractions: [
       {
@@ -99,8 +102,24 @@ const districts = {
         price: 200,
         rating: 5.0,
       },
+      {
+        name: "Bohey Dulang",
+        desc: "hike to the island's volcanic peak for panoramic views of the surrounding islands and turquoise lagoon.",
+        image:
+          "https://sabahtourism.com/assets/uploads/RS282_unnamed-1-1-1.jpg",
+        price: 200,
+        rating: 5.0,
+      },
+      {
+        name: "Bukit Tengkorak Archeological Site",
+        desc: "explore a museum displaying prehistoric artifacts, hike a hill with approximately 600 steps for panoramic views.",
+        image:
+          "https://www.pulaumabul.com/wp-content/uploads/Galeri-Warisan-Arkeologi-Bukit-Tengkorak-Semporna.webp",
+        price: 200,
+        rating: 5.0,
+      },
     ],
-    stamps: [{ id: 9, name: "Sipadan Stamp", location: "Pulau Sipadan" }],
+    stamps: [{ id: 9, name: "Semporna Stamp", location: "Pulau Sipadan" }],
   },
   Tawau: {
     description: "Gateway to Tawau Hills Park and lush rainforest.",
@@ -109,6 +128,30 @@ const districts = {
         name: "Tawau Hills Park",
         desc: "Rainforest park with waterfalls and giant trees.",
         image: "/adventure/tawau hills.jfif",
+        price: 10,
+        rating: 4.5,
+      },
+      {
+        name: "Maliau Basin Conservation Area",
+        desc: " the adventure thrills in one of the remaining untouched tropical rainforest wilderness area in the world.",
+        image:
+          "https://sabahtourism.com/assets/uploads/RS33336_Maliau-Fall-scr.jpg",
+        price: 10,
+        rating: 4.5,
+      },
+      {
+        name: "Balung River Eco Resort",
+        desc: "Experience the tranquility of nature at this eco-friendly resort.",
+        image:
+          "https://static.where-e.com/Malaysia/Sabah/Balung-River-Eco-Resort_471f1c75cbc987a4fe17a3ee13baf8bb.jpg",
+        price: 10,
+        rating: 4.5,
+      },
+      {
+        name: "Teck Guan Cocoa Museum",
+        desc: "Learn about cocoa production and enjoy chocolate tasting.",
+        image:
+          "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/28/06/ac/37/teck-guan-cocoa-village.jpg?w=900&h=500&s=1",
         price: 10,
         rating: 4.5,
       },
@@ -123,7 +166,39 @@ const districts = {
       {
         name: "Mount Kinabalu",
         desc: "Malaysia's highest peak and a UNESCO World Heritage Site.",
-        image: "/jumbah image/ranau-kinabalu.jpg",
+        image:
+          "https://iugs-geoheritage.org/wp-content/uploads/2022/07/050-1_Mount-Kinabalu-Neogene-Granite.jpg",
+        price: 0,
+        rating: 4.9,
+      },
+      {
+        name: "Poring Hot Spring",
+        desc: "Relax in natural hot springs surrounded by lush rainforest.",
+        image:
+          "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqfSiBKq-xTmpf3efPIDpVDEompfMYfE0vmtFrnpp2ksTkiQ5DItYCZ6SoLY_zpMy6fgUYZfDSM4BGb_CdG2zmtsxnlgHibPtvSPmxLryC2clJWz8olP1tZfO4meUU3ihdRSElIOw=s1360-w1360-h1020-rw",
+        price: 0,
+        rating: 4.9,
+      },
+      {
+        name: "Desa Dairy Farm",
+        desc: "The little 'New Zealand' of Malaysia. Experience farm life by interacting with the calves and goats while enjoying fresh dairy products.",
+        image: "https://sabahtourism.com/assets/uploads/20230729_090233-1.jpg",
+        price: 0,
+        rating: 4.9,
+      },
+      {
+        name: "Kinabalu GeoPark",
+        desc: "Large, forested nature preserve with upscale lodging & Mt. Kinabalu, Borneo's highest mountain.",
+        image:
+          "https://lh3.googleusercontent.com/gpms-cs-s/AB8u6HaelBk2SNjkHuAl1_UoN-hnZva8eF2yPbsCJJElTecPqKiuqGIA2cGJvnA0jodTd75IQ51nrCFKh7buJAU9lnXukFJz7H6uzgUsQQKbqMbvwVUvPvnpIYXO4req5MdAqvAZgHgz=s1360-w1360-h1020-rw",
+        price: 0,
+        rating: 4.9,
+      },
+      {
+        name: "Sabah Tea Resort",
+        desc: " is a plantation and retreat located in Ranau, Sabah, Malaysia, known for its large organic tea garden, stunning views of Mount Kinabalu, and commitment to conservation",
+        image:
+          "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/30/6b/16/ed/caption.jpg?w=900&h=500&s=1",
         price: 0,
         rating: 4.9,
       },
@@ -136,7 +211,32 @@ const districts = {
       {
         name: "Sepilok Orangutan Rehabilitation Centre",
         desc: "Famous for orangutan conservation and rehabilitation.",
-        image: "/jumbah image/sandakan-orangutan.jpg",
+        image:
+          "https://www.familiesworldwide.co.uk/images/teasers/asia_borneo_sepilok_orangutan_thumbnail.jpg",
+        price: 30,
+        rating: 4.8,
+      },
+      {
+        name: "Bornean Sun Bear Conservation Centre (BSBCC)",
+        desc: "a wildlife conservation and research facility in Sabah, Malaysia, focused on the care, rehabilitation, and release of Malayan sun bears.",
+        image:
+          "https://milas.travel/wp-content/uploads/2025/05/what-is-the-BSBCC-by-Andre-Schneider-1290x878.webp",
+        price: 30,
+        rating: 4.8,
+      },
+      {
+        name: "Agnes Keith House",
+        desc: "a historic house museum and named after Agnes Newton Keith, an American author known for her three autobiographical accounts of life in British North Borneo.",
+        image:
+          "https://sabahtourism.com/assets/uploads/RS356_RS4807_akhm002.stb_.me_.f-1.jpg",
+        price: 30,
+        rating: 4.8,
+      },
+      {
+        name: "Labuk Bay Proboscis Monkey Sanctuary",
+        desc: "a sanctuary for the endangered proboscis monkeys, offering visitors a chance to see these unique primates in their natural habitat.",
+        image:
+          "https://www.borneodream.com/wp-content/uploads/1/proboscis-monkey.jpg",
         price: 30,
         rating: 4.8,
       },
@@ -196,7 +296,7 @@ const ExplorePage = () => {
           {Object.keys(districts).map((name) => (
             <li key={name}>
               <Link to={`/explore/${name.replace(/ /g, "-")}`}>
-                <strong>{name}</strong>: {districts[name].description}
+                <strong>{name}</strong> {districts[name].description}
               </Link>
             </li>
           ))}
@@ -221,12 +321,7 @@ const ExplorePage = () => {
 
   return (
     <div className="explorePage">
-      <header
-        className="header"
-        style={{
-          backgroundImage: `url(${districtData.attractions[0]?.image})`,
-        }}
-      >
+      <header className="header">
         <div className="headerOverlay"></div>
         <div className="headerContent">
           <h1>{districtKey} Attractions</h1>
@@ -263,7 +358,11 @@ const ExplorePage = () => {
                   )}
                   <div className="actions">
                     <button
-                      className={`add-btn ${itinerary.some((a) => a.name === attraction.name) ? "selected" : ""}`}
+                      className={`add-btn ${
+                        itinerary.some((a) => a.name === attraction.name)
+                          ? "selected"
+                          : ""
+                      }`}
                       onClick={() => toggleItinerary(attraction)}
                     >
                       {itinerary.some((a) => a.name === attraction.name)

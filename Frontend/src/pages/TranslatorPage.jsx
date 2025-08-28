@@ -45,7 +45,7 @@ export default function TranslatorPage() {
     setError("");
     setIsLoading(true);
     setOutputText("");
-    const model = "gemini-pro";
+    const model = "gemini-2.5-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
     const prompt = `Translate the following text from ${
       sourceLang === "auto"

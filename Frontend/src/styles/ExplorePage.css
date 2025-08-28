@@ -2,17 +2,73 @@ body {
   background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
 }
 
-.explorePage .container {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0, 43, 127, 0.08);
-  padding: 2.5rem 2rem;
-  margin-top: -4rem;
-  margin-bottom: 2rem;
+/* --- Folded Brochure Style (CSS-Only Changes) --- */
+
+/* 1. Reset the main list container (<ul>) */
+.explore-list ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+
+/* 2. Style the link (<a>) as the main "paper" card */
+.explore-list li a {
+  display: block;
+  position: relative; /* This is the anchor for the corner element */
+  padding: 1.25rem;
+  margin-bottom: 1rem; /* Space between each brochure */
+
+  /* The Paper Appearance */
+  background-color: #f7fbff; /* A clean, slightly off-white paper color */
+  border-radius: 4px 0 4px 4px; /* Note the 0 on the top-right for a sharp corner */
+  box-shadow: 0 3px 8px rgba(0, 43, 127, 0.06);
+
+  /* Text and Link Styling */
+  text-decoration: none;
+  color: #444;
+
+  /* A smooth transition for the hover effect */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+/* 3. The magic: create the folded corner with a pseudo-element */
+.explore-list li a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  /* This creates the triangle shape */
+  border-left: 24px solid transparent;
+  border-bottom: 24px solid transparent;
+  border-right: 24px solid #cfdef3; /* Color of the folded corner */
+  border-top: 24px solid #cfdef3; /* Color of the folded corner */
+
+  border-top-right-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* 4. Define a nice hover effect */
+.explore-list li a:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 43, 127, 0.1);
+}
+/* Make the corner more vibrant on hover */
+.explore-list li a:hover::before {
+  border-right-color: #0484d6;
+  border-top-color: #0484d6;
+}
+
+/* 5. Style the district name (<strong>) */
+.explore-list li a strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1.2rem;
+  color: #0a6cbd;
 }
 
 .header {
-  height: 48vh;
+  height: 30vh;
   position: relative;
   display: flex;
   align-items: center;
@@ -58,13 +114,33 @@ body {
   margin-top: 0.5rem;
 }
 
+/* --- Modern Style for the Section Title --- */
 .sectionTitle {
-  font-size: 2rem;
-  text-align: left;
-  margin: 2.5rem 0 1.5rem 0;
-  color: #0484D6;
+  position: relative; /* This is needed to position the underline */
+  text-align: center;
+  font-size: 2.2rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  color: #0a6cbd; /* A deep blue from your theme */
+
+  /* Adjusts the space above and below the title */
+  margin: 3rem auto 3.5rem auto;
+}
+
+/* This creates the decorative accent underline */
+.sectionTitle::after {
+  content: "";
+  position: absolute;
+
+  /* Positioning the line */
+  bottom: -1rem; /* 1rem below the text */
+  left: 50%;
+  transform: translateX(-50%); /* This is the trick to center the line */
+
+  /* The line's appearance */
+  width: 80px; /* How wide the line is */
+  height: 4px; /* How thick the line is */
+  background-color: #0484d6; /* Your theme's primary blue color */
+  border-radius: 2px;
 }
 
 .attractionsGrid {
@@ -85,7 +161,7 @@ body {
 .attractionCard:hover {
   transform: translateY(-7px) scale(1.03);
   box-shadow: 0 12px 32px rgba(4, 132, 214, 0.18);
-  border-color: #0484D6;
+  border-color: #0484d6;
 }
 .attractionCard img {
   width: 100%;
@@ -99,7 +175,7 @@ body {
 }
 .cardContent h3 {
   margin-bottom: 0.5rem;
-  color: #0484D6;
+  color: #0484d6;
   font-size: 1.25rem;
   font-weight: 700;
 }
@@ -134,18 +210,18 @@ body {
 }
 .cardContent .add-btn {
   background: #e0eafc;
-  color: #0484D6;
+  color: #0484d6;
 }
 .cardContent .add-btn.selected {
   background: #f44336;
   color: #fff;
 }
 .cardContent .add-btn:hover {
-  background: #0484D6;
+  background: #0484d6;
   color: #fff;
 }
 .cardContent .book-btn {
-  background: linear-gradient(90deg, #0484D6 60%, #00c6fb 100%);
+  background: linear-gradient(90deg, #0484d6 60%, #00c6fb 100%);
   color: #fff;
 }
 .cardContent .book-btn:hover {
@@ -169,7 +245,7 @@ body {
 .itinerary-section li {
   padding: 0.5rem 0;
   border-bottom: 1px solid #e9ecef;
-  color: #0484D6;
+  color: #0484d6;
   font-weight: 500;
 }
 .itinerary-section li:last-child {
@@ -182,7 +258,7 @@ body {
 }
 .itinerary-section .book-all-btn {
   margin-top: 1rem;
-  background: #0484D6;
+  background: #0484d6;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -245,7 +321,7 @@ body {
 }
 .itinerary-section .book-all-btn {
   margin-top: 1rem;
-  background: #0484D6;
+  background: #0484d6;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -363,98 +439,96 @@ body {
 
 /* Adventure Page Styles */
 .loginWall {
-    text-align: center;
-    padding: 5rem 0;
+  text-align: center;
+  padding: 5rem 0;
 }
 
 .loginWall h2 {
-    font-size: 2.5rem;
+  font-size: 2.5rem;
 }
 
 .loginWall p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
 }
 
-
-
 .stats {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin-top: 1.5rem;
-    background-color: var(--surface-color);
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 1.5rem;
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .statItem {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 1.5rem;
-    font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .statItem .icon {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .contentGrid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
 }
 
 .section {
-    background-color: var(--surface-color);
-    padding: 2rem;
-    border-radius: 10px;
+  background-color: var(--surface-color);
+  padding: 2rem;
+  border-radius: 10px;
 }
 
 .section h2 {
-    border-bottom: 2px solid var(--accent-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .questList {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .questItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border: 1px solid var(--background-color);
-    border-radius: 8px;
-    transition: border-color 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--background-color);
+  border-radius: 8px;
+  transition: border-color 0.3s;
 }
 
 .questItem.completed {
-    border-left: 5px solid #28a745; /* Green for completed */
-    background-color: var(--background-color);
+  border-left: 5px solid #28a745; /* Green for completed */
+  background-color: var(--background-color);
 }
 .questItem.completed h3 {
-    text-decoration: line-through;
-    color: var(--text-secondary);
+  text-decoration: line-through;
+  color: var(--text-secondary);
 }
 
 .questReward {
-    font-weight: 700;
-    color: var(--primary-color);
+  font-weight: 700;
+  color: var(--primary-color);
 }
 
 .checkIcon {
-    color: #28a745;
+  color: #28a745;
 }
 
 .comingSoon {
-    font-style: italic;
-    color: var(--text-secondary);
+  font-style: italic;
+  color: var(--text-secondary);
 }
