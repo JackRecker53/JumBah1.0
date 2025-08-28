@@ -49,7 +49,7 @@ const AboutPage = () => {
 
         <div className="about-section">
           <img
-            src="/adventure/Muzium%20Sabah.jpg"
+            src="https://media.freemalaysiatoday.com/wp-content/uploads/2021/02/Pasar-Kraftangan-Kota-Kinabalu-Sabah-120221.jpg"
             alt="Sabah State Museum"
             className="section-image"
           />
@@ -73,7 +73,7 @@ const AboutPage = () => {
 
         <div className="about-section">
           <img
-            src="/adventure/sabah-art-gallery.jpg"
+            src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Sabah_Malaysia_Welcoming-Contingent_Hari-Merdeka-2013-15.jpg"
             alt="Sabah Art Gallery"
             className="section-image"
           />
@@ -107,7 +107,7 @@ const AboutPage = () => {
 
         <div className="about-section">
           <img
-            src="/adventure/kinabatangan%20river%20cruise.jpg"
+            src="https://assets.bharian.com.my/images/articles/BM2_1562036536.jpg"
             alt="Kinabatangan River Cruise"
             className="section-image"
           />
