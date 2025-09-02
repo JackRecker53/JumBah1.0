@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Eye, Volume2, Copy, RefreshCw } from "lucide-react";
+import React, { useState } from "react";
+import { FiVolume2, FiCopy, FiRefreshCw } from "react-icons/fi";
 import "../styles/TranslatorPage.css";
 
 // --- IMPORTANT: API Key Configuration ---
@@ -133,14 +133,14 @@ export default function TranslatorPage() {
           <div className="char-count">{inputText.length} / 5000</div>
           <div className="card-actions">
             <button className="icon-btn" onClick={handleSpeak} title="Speak">
-              <Volume2 size={20} />
+              <FiVolume2 size={20} />
             </button>
             <button
               className="icon-btn"
               onClick={() => handleCopy(inputText)}
               title="Copy"
             >
-              <Copy size={20} />
+              <FiCopy size={20} />
             </button>
             <button
               className="clear-btn"
@@ -165,7 +165,7 @@ export default function TranslatorPage() {
           ></textarea>
           {isLoading && (
             <div className="loader-overlay">
-              <RefreshCw className="spinner" size={32} />
+              <FiRefreshCw className="spinner" size={32} />
             </div>
           )}
           <div className="card-actions">
@@ -174,7 +174,7 @@ export default function TranslatorPage() {
               onClick={() => handleCopy(outputText)}
               title="Copy"
             >
-              <Copy size={20} />
+              <FiCopy size={20} />
             </button>
           </div>
         </div>

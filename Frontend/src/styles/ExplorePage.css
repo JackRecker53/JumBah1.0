@@ -67,6 +67,45 @@ body {
   color: #0a6cbd;
 }
 
+/* Grid of districts on the main Explore page */
+.districtGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.districtCard {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.districtImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 5px 18px rgba(4, 132, 214, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.districtCard:hover .districtImage {
+  transform: translateY(-7px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(4, 132, 214, 0.18);
+}
+
+.districtName {
+  margin-top: 0.75rem;
+  color: #0484d6;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+
 .header {
   height: 30vh;
   position: relative;

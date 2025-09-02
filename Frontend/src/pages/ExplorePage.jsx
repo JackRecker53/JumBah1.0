@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
-import { useGame } from "../contexts/GameContext";
 import "../styles/ExplorePage.css";
 
 // Embedded districts data
@@ -8,6 +7,7 @@ const districts = {
   "Kota Kinabalu": {
     description:
       "Capital city of Sabah, known for its vibrant markets and waterfront.",
+    image: "/adventure/Tanjung Aru.jpg",
     attractions: [
       {
         name: "Gaya Street",
@@ -57,6 +57,7 @@ const districts = {
   Kinabatangan: {
     description:
       "Home to the Kinabatangan River and amazing wildlife experiences.",
+    image: "/adventure/kinabatangan river cruise.jpg",
     attractions: [
       {
         name: "Kinabatangan River Cruise",
@@ -94,6 +95,7 @@ const districts = {
   },
   Semporna: {
     description: "World-famous diving destination with crystal clear waters.",
+    image: "/adventure/pulau sipadan.jpg",
     attractions: [
       {
         name: "Pulau Sipadan",
@@ -123,6 +125,7 @@ const districts = {
   },
   Tawau: {
     description: "Gateway to Tawau Hills Park and lush rainforest.",
+    image: "/adventure/tawau hills.jfif",
     attractions: [
       {
         name: "Tawau Hills Park",
@@ -162,6 +165,8 @@ const districts = {
   },
   Ranau: {
     description: "Home to Mount Kinabalu and beautiful highland scenery.",
+    image:
+      "https://iugs-geoheritage.org/wp-content/uploads/2022/07/050-1_Mount-Kinabalu-Neogene-Granite.jpg",
     attractions: [
       {
         name: "Mount Kinabalu",
@@ -207,6 +212,8 @@ const districts = {
   },
   Sandakan: {
     description: "Known for its wildlife and conservation centers.",
+    image:
+      "https://www.familiesworldwide.co.uk/images/teasers/asia_borneo_sepilok_orangutan_thumbnail.jpg",
     attractions: [
       {
         name: "Sepilok Orangutan Rehabilitation Centre",
@@ -260,7 +267,6 @@ const ExplorePage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const attractionQuery = searchParams.get("attraction");
-  const { collectStamp, collectedStamps } = useGame();
 
   const [itinerary, setItinerary] = React.useState([]);
 
@@ -292,15 +298,23 @@ const ExplorePage = () => {
     return (
       <div className="explore-list container">
         <h2>Explore Sabah Districts</h2>
-        <ul>
+        <div className="districtGrid">
           {Object.keys(districts).map((name) => (
-            <li key={name}>
-              <Link to={`/explore/${name.replace(/ /g, "-")}`}>
-                <strong>{name}</strong> {districts[name].description}
-              </Link>
-            </li>
+            <Link
+              key={name}
+              to={`/explore/${name.toLowerCase().replace(/ /g, "-")}`}
+              className="districtCard"
+              aria-label={`View attractions in ${name}`}
+            >
+              <img
+                src={districts[name].image}
+                alt={name}
+                className="districtImage"
+              />
+              <span className="districtName">{name}</span>
+            </Link>
           ))}
-        </ul>
+        </div>
       </div>
     );
   }
