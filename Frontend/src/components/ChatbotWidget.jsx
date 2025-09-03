@@ -3,7 +3,7 @@ import "../styles/Chatbot.css";
 import { runChat } from "../services/geminiService";
 import { FaCommentDots, FaTimes, FaSpinner } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
-import "../styles/DropdownMenu.css";
+import "../styles/Sidebar.css";
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);

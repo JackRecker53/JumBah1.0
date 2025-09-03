@@ -16,6 +16,9 @@ import jwt
 # Load environment variables
 load_dotenv()
 
+# Import routers
+from Routers.translator import router as translator_router
+
 # Initialize FastAPI app
 app = FastAPI(
     title="JumBah AI Travel Chatbot",
@@ -38,6 +41,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(translator_router, prefix="/api", tags=["translator"])
 
 security = HTTPBearer()
 

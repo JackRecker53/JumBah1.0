@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { upcomingEvents } from "../data/events";
-import { FaArrowRight } from "react-icons/fa";
 import WeatherWidget from "../components/WeatherWidget";
 
 // Import Swiper React components and modules

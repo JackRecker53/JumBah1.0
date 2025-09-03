@@ -292,15 +292,24 @@ const ExplorePage = () => {
     return (
       <div className="explore-list container">
         <h2>Explore Sabah Districts</h2>
-        <ul>
+        <div className="districts-grid">
           {Object.keys(districts).map((name) => (
-            <li key={name}>
+            <div key={name} className="district-card">
               <Link to={`/explore/${name.replace(/ /g, "-")}`}>
-                <strong>{name}</strong> {districts[name].description}
+                <div className="district-content">
+                  <h3>{name}</h3>
+                  <p>{districts[name].description}</p>
+                  <div className="district-stats">
+                    <span>
+                      {districts[name].attractions.length} attractions
+                    </span>
+                    <span>{districts[name].stamps.length} stamps</span>
+                  </div>
+                </div>
               </Link>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     );
   }

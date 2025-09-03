@@ -1,28 +1,78 @@
-.dropdown-container {
+.sidebar-container {
   position: relative;
   display: inline-block;
 }
 
 /* Toggle Button */
-.dropdown-toggle {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none;
-  color: #ffffff;
-  font-size: 1.2rem;
+.sidebar-toggle {
+  background: none;
+  border: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 1.4rem;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.dropdown-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+.sidebar-toggle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+.sidebar-toggle:hover {
+  color: white;
+  transform: translateY(-1px);
+  border-color: var(--primary-color);
+}
+
+.sidebar-toggle:hover::before {
+  opacity: 1;
+}
+
+.sidebar-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Add pulse animation when sidebar is open */
+.sidebar-toggle.active {
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.sidebar-toggle.active::before {
+  opacity: 1;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0);
+  }
 }
 
 /* Backdrop */

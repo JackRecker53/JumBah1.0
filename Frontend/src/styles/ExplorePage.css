@@ -5,10 +5,65 @@ body {
 /* --- Folded Brochure Style (CSS-Only Changes) --- */
 
 /* 1. Reset the main list container (<ul>) */
-.explore-list ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 1.5rem;
+.explore-list {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.districts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+.district-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.district-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.district-card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.district-content {
+  padding: 1.5rem;
+}
+
+.district-content h3 {
+  color: #1a2c42;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.district-content p {
+  color: #666;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.district-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.district-stats span {
+  background: #f0f4f8;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #4a5568;
 }
 
 /* 2. Style the link (<a>) as the main "paper" card */

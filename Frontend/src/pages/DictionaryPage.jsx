@@ -34,13 +34,12 @@ const AIAssistant = () => {
     setAnswer(""); // Clear previous answer
 
     try {
-      // This fetch call goes to our new backend function in /api/generate.js
-      const response = await fetch("/api/generate", {
+      const response = await fetch("http://localhost:8000/api/translate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ text: question, from_lang: "en" }),
       });
 
       if (!response.ok) {
@@ -48,7 +47,7 @@ const AIAssistant = () => {
       }
 
       const data = await response.json();
-      setAnswer(data.answer);
+      setAnswer(data.translation);
     } catch (error) {
       console.error(error);
       setAnswer("Sorry, something went wrong. Please try again.");
@@ -59,22 +58,28 @@ const AIAssistant = () => {
 
   return (
     <div className="ai-assistant">
-      <h2>Ask the AI Language Tutor</h2>
-      <p>Ask for example sentences, grammar, or cultural context.</p>
+      <h2>AI Translation Assistant</h2>
+      <p>Enter text in English to translate to Dusun</p>
       <form onSubmit={handleSubmit}>
         <textarea
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="e.g., 'Use Kopivosian in a sentence'"
+          placeholder="Enter English text to translate..."
           rows="3"
+          className="translation-input"
         />
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? "Thinking..." : "Ask AI"}
+        <button
+          className={`ask-ai-btn ${isLoading ? "loading" : ""}`}
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? "Translating..." : "Translate with AI"}
         </button>
       </form>
       {answer && (
-        <div className="ai-answer">
-          <p>{answer}</p>
+        <div className="translation-result">
+          <h3>Translation:</h3>
+          <p className="dusun-translation">{answer}</p>
         </div>
       )}
     </div>
@@ -84,46 +89,146 @@ const AIAssistant = () => {
 // --- Main Dictionary Page Component ---
 const DictionaryPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [translationText, setTranslationText] = useState("");
+  const [translationResult, setTranslationResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const filteredPhrases = phrases.filter(
     (p) =>
       p.english.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.dusun.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleTranslate = async (e) => {
+    e.preventDefault();
+    if (!translationText.trim()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/translate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: translationText, from_lang: "en" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Translation failed");
+      }
+
+      const data = await response.json();
+      setTranslationResult(data);
+    } catch (error) {
+      console.error("Translation error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="dictionary-container">
       <header className="dictionary-header">
-        <h1>Dusun Dictionary & Phrases</h1>
-        <p>Your quick guide to basic Kadazandusun words.</p>
+        <h1>Dusun Dictionary & Translator</h1>
+        <p>Translate and explore Kadazandusun words</p>
       </header>
 
-      {/* --- Dictionary Section --- */}
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search in English or Dusun..."
-          className="search-bar"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      <main className="dictionary-main">
-        <ul className="dictionary-list">
-          {filteredPhrases.length > 0 ? (
-            filteredPhrases.map((p) => (
-              <li className="dictionary-item" key={p.english}>
-                <span className="english-word">{p.english}</span>
-                <span className="dusun-word">{p.dusun}</span>
-              </li>
-            ))
-          ) : (
-            <li className="no-results">No phrases found.</li>
-          )}
-        </ul>
-      </main>
+      {/* --- Translator Section --- */}
+      <section className="translator-section">
+        <h2>Text Translation</h2>
+        <form onSubmit={handleTranslate} className="translator-form">
+          <textarea
+            value={translationText}
+            onChange={(e) => setTranslationText(e.target.value)}
+            placeholder="Enter English text to translate to Dusun..."
+            rows="4"
+            className="translation-input"
+          />
+          <button
+            type="submit"
+            className={`translate-btn ${isLoading ? "loading" : ""}`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Translating..." : "Translate"}
+          </button>
+        </form>
 
-      {/* --- AI Assistant Section --- */}
-      <AIAssistant />
+        {translationResult && (
+          <div className="translation-results">
+            <div className="dictionary-translation">
+              <h3>Dictionary Translation</h3>
+              <p>{translationResult.basic_translation}</p>
+              {translationResult.found_words &&
+                translationResult.found_words.length > 0 && (
+                  <div className="found-words">
+                    <h4>Words found in dictionary:</h4>
+                    <ul>
+                      {translationResult.found_words.map((word, idx) => (
+                        <li key={idx}>
+                          {word.english} → {word.dusun}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              {translationResult.not_found_words &&
+                translationResult.not_found_words.length > 0 && (
+                  <div className="not-found-words">
+                    <h4>Words not found in dictionary:</h4>
+                    <ul>
+                      {translationResult.not_found_words.map((word, idx) => (
+                        <li key={idx}>{word}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+            </div>
+            {translationResult.enhanced_translation && (
+              <div className="ai-translation">
+                <h3>
+                  AI-Enhanced Translation
+                  {translationResult.ai_provider && (
+                    <span className="ai-provider">
+                      {translationResult.ai_provider === "openai"
+                        ? "(ChatGPT)"
+                        : "(Gemini)"}
+                    </span>
+                  )}
+                </h3>
+                <p>{translationResult.enhanced_translation}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* --- Dictionary Section --- */}
+      <section className="dictionary-section">
+        <h2>Dictionary Search</h2>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search phrases in English or Dusun..."
+            className="search-bar"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="dictionary-main">
+          <ul className="dictionary-list">
+            {filteredPhrases.length > 0 ? (
+              filteredPhrases.map((p) => (
+                <li className="dictionary-item" key={p.english}>
+                  <span className="english-word">{p.english}</span>
+                  <span className="dusun-word">{p.dusun}</span>
+                </li>
+              ))
+            ) : (
+              <li className="no-results">No phrases found.</li>
+            )}
+          </ul>
+        </div>
+      </section>
 
       {/* --- Tips Section --- */}
       <aside className="tips-card">

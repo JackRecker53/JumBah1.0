@@ -16,7 +16,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container footerContainer">
         <div className="footerAbout">
-          {/* <h3>JumBah</h3> */}
+          <h3>JumBah</h3>
           <p>
             Your AI-powered adventure in Sabah, certified by the Sabah Tourism
             Board

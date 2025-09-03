@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 
@@ -20,7 +25,8 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/adventure" element={<ExplorePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/ai-planner" element={<AIPlanner />} />

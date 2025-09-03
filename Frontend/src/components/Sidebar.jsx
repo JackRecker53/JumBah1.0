@@ -18,9 +18,9 @@ import {
 } from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
-import "../styles/DropdownMenu.css";
+import "../styles/Sidebar.css";
 
-const DropdownMenu = () => {
+const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const dropdownRef = useRef(null);
@@ -137,15 +137,15 @@ const DropdownMenu = () => {
   ];
 
   return (
-    <div className="dropdown-container">
-      {/* Dropdown Toggle Button */}
+    <div className="sidebar-container">
+      {/* Sidebar Toggle Button */}
       <button
         ref={dropdownRef}
-        className="dropdown-toggle"
+        className={`sidebar-toggle ${isOpen ? "active" : ""}`}
         onClick={() => (isOpen ? handleClose() : handleOpen())}
-        aria-label="Open menu"
+        aria-label={isOpen ? "Close menu" : "Open menu"}
       >
-        <FaBars />
+        {isOpen ? <FaTimes /> : <FaBars />}
       </button>
 
       {/* Backdrop */}
@@ -305,4 +305,4 @@ const MenuItem = ({ icon, label, to, onClick, color }) => {
   );
 };
 
-export default DropdownMenu;
+export default Sidebar;
