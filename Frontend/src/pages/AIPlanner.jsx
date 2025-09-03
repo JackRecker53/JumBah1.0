@@ -168,9 +168,13 @@ const AIPlanner = () => {
         {/* Sidebar */}
         <div className="planner-sidebar">
           <div className="sidebar-header">
-            <FaRobot className="header-icon" />
+            <img
+              src="/backgrounds/sunbear.jpg"
+              alt="Madu Chat"
+              className="fabIcon"
+            />
             <div>
-              <h1>MaduAI</h1>
+              <h1>Madu</h1>
               <p>Your personal travel planner</p>
             </div>
           </div>
@@ -204,7 +208,7 @@ const AIPlanner = () => {
         {/* Main Chat Area */}
         <div className="planner-main">
           <div className="chat-header">
-            <h2>Chat with AI Assistant</h2>
+            <h2>Chat with Madu</h2>
             <div className="chat-status">
               <div className="status-indicator"></div>
               <span>Online</span>
@@ -217,7 +221,11 @@ const AIPlanner = () => {
               {messages.map((message) => (
                 <div key={message.id} className={`message ${message.type}`}>
                   <div className="message-avatar">
-                    {message.type === "bot" ? <FaRobot /> : <FaUser />}
+                    <img
+                      src="/backgrounds/sunbear.jpg"
+                      alt="Madu Chat"
+                      className="fabIcon"
+                    />
                   </div>
                   <div className="message-content">
                     <div className="message-text">

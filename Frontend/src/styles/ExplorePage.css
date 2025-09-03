@@ -155,6 +155,7 @@ body {
 
 /* --- Modern Style for the Section Title --- */
 .sectionTitle {
+  margin: 1.5rem 0;
   position: relative; /* This is needed to position the underline */
   text-align: center;
   font-size: 2.2rem;
@@ -162,7 +163,7 @@ body {
   color: #0a6cbd; /* A deep blue from your theme */
 
   /* Adjusts the space above and below the title */
-  margin: 3rem auto 3.5rem auto;
+  margin: 1rem auto 1.5rem auto;
 }
 
 /* This creates the decorative accent underline */
@@ -375,7 +376,7 @@ body {
 }
 /* Styling for ExplorePage */
 .header {
-  height: 50vh;
+  height: 30vh;
   position: relative;
   display: flex;
   align-items: center;

@@ -7,7 +7,8 @@ const districts = {
   "Kota Kinabalu": {
     description:
       "Capital city of Sabah, known for its vibrant markets and waterfront.",
-    image: "/adventure/Tanjung Aru.jpg",
+    image:
+      "https://www.amazingborneo.com/img/sabah-tours/sabah-kota-kinabalu-city-north-borneo-cruises-night.jpg",
     attractions: [
       {
         name: "Gaya Street",
@@ -57,7 +58,8 @@ const districts = {
   Kinabatangan: {
     description:
       "Home to the Kinabatangan River and amazing wildlife experiences.",
-    image: "/adventure/kinabatangan river cruise.jpg",
+    image:
+      "https://d18sx48tl6nre5.cloudfront.net/webp_xl_163c05a8d5819dad956e7e5b5a3455b3.webp",
     attractions: [
       {
         name: "Kinabatangan River Cruise",
@@ -95,7 +97,7 @@ const districts = {
   },
   Semporna: {
     description: "World-famous diving destination with crystal clear waters.",
-    image: "/adventure/pulau sipadan.jpg",
+    image: "https://wallpapercave.com/wp/wp14286738.jpg",
     attractions: [
       {
         name: "Pulau Sipadan",
@@ -125,7 +127,8 @@ const districts = {
   },
   Tawau: {
     description: "Gateway to Tawau Hills Park and lush rainforest.",
-    image: "/adventure/tawau hills.jfif",
+    image:
+      "https://www.tawaukini.com.my/wp-content/uploads/2022/08/1200px-Tawau_Sabah_Malaysia-20-1-.jpg",
     attractions: [
       {
         name: "Tawau Hills Park",
@@ -166,7 +169,7 @@ const districts = {
   Ranau: {
     description: "Home to Mount Kinabalu and beautiful highland scenery.",
     image:
-      "https://iugs-geoheritage.org/wp-content/uploads/2022/07/050-1_Mount-Kinabalu-Neogene-Granite.jpg",
+      "https://res.klook.com/image/upload/fl_lossy.progressive,q_60/Mobile/City/gamhvuw9e0uaqrjkkfq9.jpg",
     attractions: [
       {
         name: "Mount Kinabalu",
@@ -213,7 +216,7 @@ const districts = {
   Sandakan: {
     description: "Known for its wildlife and conservation centers.",
     image:
-      "https://www.familiesworldwide.co.uk/images/teasers/asia_borneo_sepilok_orangutan_thumbnail.jpg",
+      "https://image.kkday.com/v2/image/get/s1.kkday.com/product_139025/20230209092510_mNDfe/jpg",
     attractions: [
       {
         name: "Sepilok Orangutan Rehabilitation Centre",

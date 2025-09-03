@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../styles/Chatbot.css";
 import { runChat } from "../services/geminiService";
-import { FaCommentDots, FaTimes, FaSpinner } from "react-icons/fa";
+import { FaTimes, FaSpinner } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
 import "../styles/DropdownMenu.css";
 
@@ -11,22 +11,12 @@ const ChatbotWidget = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { completeQuest, completedQuests } = useGame();
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isOpen) {
-        setShowTooltip(true);
-      }
-    }, 2000); // Show tooltip after 2 seconds
-
-    return () => clearTimeout(timer);
-  }, [isOpen]);
 
   const toggleOpen = () => {
-    setIsOpen(!isOpen);
-    setShowTooltip(false); // Hide tooltip when chat is opened
-    if (!isOpen && messages.length === 0) {
+    const next = !isOpen;
+    setIsOpen(next);
+
+    if (next && messages.length === 0) {
       setMessages([
         {
           sender: "bot",
@@ -49,7 +39,6 @@ const ChatbotWidget = () => {
       const botMessage = { sender: "bot", text: botResponse };
       setMessages((prev) => [...prev, botMessage]);
 
-      // Gamification hook
       if (!completedQuests.has("q2")) completeQuest("q2");
       if (
         input.toLowerCase().includes("how to say") &&
@@ -58,11 +47,13 @@ const ChatbotWidget = () => {
         completeQuest("q4");
       }
     } catch (error) {
-      const errorMessage = {
-        sender: "bot",
-        text: "Oops! I'm having a little trouble connecting. Please try again.",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: "Oops! I'm having a little trouble connecting. Please try again.",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -70,10 +61,20 @@ const ChatbotWidget = () => {
 
   return (
     <div className="fab-container">
-      {showTooltip && !isOpen && (
-        <div className="fab-tooltip">Hi, i'm Madu</div>
+      {/* Tooltip: always in DOM, only shows on hover via CSS; hidden when chat is open */}
+      {!isOpen && (
+        <div className="fab-tooltip">
+          Hi, I'm Madu. Your AI Sabah companion.
+        </div>
       )}
-      <button className="fab" onClick={toggleOpen} aria-label="Open Chatbot">
+
+      <button
+        className="fab"
+        onClick={toggleOpen}
+        aria-label={isOpen ? "Close Chatbot" : "Open Chatbot"}
+        onFocus={(e) => e.currentTarget.classList.add("is-focus")} // a11y (keyboard)
+        onBlur={(e) => e.currentTarget.classList.remove("is-focus")}
+      >
         {isOpen ? (
           <FaTimes />
         ) : (
@@ -84,17 +85,19 @@ const ChatbotWidget = () => {
           />
         )}
       </button>
+
       {isOpen && (
         <div className="chatWindow">
           <div className="chatHeader">
             <h3>Chat with Madu</h3>
-            <button onClick={toggleOpen}>
+            <button onClick={toggleOpen} aria-label="Close">
               <FaTimes />
             </button>
           </div>
+
           <div className="chatBody">
-            {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.sender}`}>
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`message ${msg.sender}`}>
                 {msg.text}
               </div>
             ))}
@@ -104,12 +107,13 @@ const ChatbotWidget = () => {
               </div>
             )}
           </div>
+
           <div className="chatInput">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSend()}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
               placeholder="Ask me about Sabah..."
             />
             <button
@@ -117,7 +121,6 @@ const ChatbotWidget = () => {
               aria-label="Send"
               className="chatSendButton"
             >
-              {/* Simple send SVG icon */}
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M2 21L23 12L2 3V10L17 12L2 14V21Z"

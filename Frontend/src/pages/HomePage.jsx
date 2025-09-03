@@ -34,37 +34,6 @@ const HomePage = () => {
         </div>
         <WeatherWidget />
       </header>
-
-      {/* --- Explore Districts Section --- */}
-      <section className="section container">
-        <h2 className="sectionTitle">Explore Our Districts</h2>
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={30}
-          slidesPerView={1}
-          navigation
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-        >
-          {districtList.map((name) => (
-            <SwiperSlide key={name}>
-              <Link
-                to={`/explore/${name.replace(/\s+/g, "-")}`}
-                className="districtCard"
-              >
-                <img src={districts[name].attractions[0].image} alt={name} />
-                <div className="cardOverlay">
-                  <h3>{name}</h3>
-                </div>
-              </Link>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
     </div>
   );
 };
