@@ -1,6 +1,6 @@
 import uvicorn
 from multiprocessing import Process
-from app import app as main_app
+from app import app
 
 def run_main_app():
     """Run the main FastAPI application"""
