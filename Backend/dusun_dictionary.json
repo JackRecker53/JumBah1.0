@@ -1,94 +1,162 @@
 [
   {
-    "english": "hello",
-    "dusun": "Kopivosian"
+    "english": "berselirat",
+    "dusun": "mimborilit",
+    "category": ""
   },
   {
-    "english": "goodbye",
-    "dusun": "Kotohuadan"
+    "english": "menyumpah seranah",
+    "dusun": "minpopol",
+    "category": ""
   },
   {
-    "english": "thank you",
-    "dusun": "Pounsikou"
+    "english": "bergayut",
+    "dusun": "mintantaid",
+    "category": ""
   },
   {
-    "english": "yes",
-    "dusun": "Oou"
+    "english": "ketawa mengilai",
+    "dusun": "minkakak",
+    "category": ""
   },
   {
-    "english": "no",
-    "dusun": "Aran"
+    "english": "bersilat",
+    "dusun": "minkuntau",
+    "category": ""
   },
   {
-    "english": "good morning",
-    "dusun": "Kopivosian do kosuabon"
+    "english": "berbuih",
+    "dusun": "momiputa",
+    "category": ""
   },
   {
-    "english": "good afternoon",
-    "dusun": "Kopivosian do kotowonguon"
+    "english": "cari ikan",
+    "dusun": "momisada/monginsada",
+    "category": ""
   },
   {
-    "english": "good evening",
-    "dusun": "Kopivosian do minsosodop"
+    "english": "tungang terbalik",
+    "dusun": "minsomputul",
+    "category": ""
   },
   {
-    "english": "how are you",
-    "dusun": "Nunu abal"
+    "english": "mogoribas",
+    "dusun": "makan satu benda ja",
+    "category": ""
   },
   {
-    "english": "i am fine",
-    "dusun": "Avasi zio"
+    "english": "monday",
+    "dusun": "Tontolu",
+    "category": ""
   },
   {
-    "english": "what is your name",
-    "dusun": "Isai ngaran nu"
+    "english": "tuesday",
+    "dusun": "Mirod",
+    "category": ""
   },
   {
-    "english": "my name is",
-    "dusun": "Ngaran ku"
+    "english": "wednesday",
+    "dusun": "Madsa",
+    "category": ""
   },
   {
-    "english": "nice to meet you",
-    "dusun": "Aramai do kopupusaan dika"
+    "english": "thursday",
+    "dusun": "Tadtaru",
+    "category": ""
   },
   {
-    "english": "welcome",
-    "dusun": "Kopivosian"
+    "english": "friday",
+    "dusun": "Kurudu",
+    "category": ""
   },
   {
-    "english": "please",
-    "dusun": "Kalaja po"
+    "english": "saturday",
+    "dusun": "Kukuak",
+    "category": ""
   },
   {
-    "english": "sorry",
-    "dusun": "Posulimo"
+    "english": "isnin",
+    "dusun": "Hari Satu - Tadau Ko'iso",
+    "category": ""
   },
   {
-    "english": "excuse me",
-    "dusun": "Oduo"
+    "english": "selasa",
+    "dusun": "Hari Dua - Tadau Ko'duo",
+    "category": ""
   },
   {
-    "english": "water",
-    "dusun": "Waig"
+    "english": "rabu",
+    "dusun": "Hari Tiga - Tadau Ko'tolu",
+    "category": ""
   },
   {
-    "english": "food",
-    "dusun": "Takanon"
+    "english": "khamis",
+    "dusun": "Hari Empat - Tadau Ka'apat",
+    "category": ""
   },
   {
-    "english": "friend",
-    "dusun": "Kowusio"
+    "english": "jumaat",
+    "dusun": "Hari Lima - Tadau Ko'limo",
+    "category": ""
   },
   {
-    "english": "food",
-    "dusun": "takanon"
+    "english": "sabtu",
+    "dusun": "Hari Enam - Tadau Ko'onom",
+    "category": ""
   },
   {
-    "english": "water",
-    "dusun": "waig"
+    "english": "ahad",
+    "dusun": "Hari Minggu - Tadau Ko'turu",
+    "category": ""
   },
   {
-    "english": "friend",
-    "dusun": "toyoh"
+    "english": "ou kokodos",
+    "dusun": "tidak dapat menahan sabar",
+    "category": ""
+  },
+  {
+    "english": "au katama",
+    "dusun": "tidak berani",
+    "category": ""
+  },
+  {
+    "english": "berdengkur",
+    "dusun": "kogoruk",
+    "category": ""
+  },
+  {
+    "english": "tergelincir",
+    "dusun": "kotompisal",
+    "category": ""
+  },
+  {
+    "english": "bekal",
+    "dusun": "kokorui",
+    "category": ""
+  },
+  {
+    "english": "merujuk kepada masa tiba seseorang",
+    "dusun": "koririkot",
+    "category": ""
+  },
+  {
+    "english": "mengantuk",
+    "dusun": "kotutok",
+    "category": ""
+  },
+  {
+    "english": "dukung",
+    "dusun": "kibit",
+    "category": ""
+  },
+  {
+    "english": "kasawit",
+    "dusun": "sangkut",
+    "category": ""
+  },
+  {
+    "english": "batuk",
+    "dusun": "kukul",
+    "category": ""
   }
 ]

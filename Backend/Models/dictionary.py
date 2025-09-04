@@ -47,9 +47,9 @@ class DusunTranslator:
             self.scrape_and_save_dictionary()
 
     def scrape_and_save_dictionary(self):
-        """Scrape dictionary from the web and save to JSON"""
+        """Scrape dictionary from Glosbe and save to JSON"""
         entries = []
-        url = "https://online.anyflip.com/luckd/sblx/mobile/index.html"
+        blog_url = "https://kandokfamily.blogspot.com/2015/03/mari-belajar-bahasa-dusun.html"
         
         # Setup Chrome with required options
         options = webdriver.ChromeOptions()
@@ -59,122 +59,136 @@ class DusunTranslator:
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--window-size=1920,1080')
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        # Add user agent to appear more like a regular browser
         options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36')
-        # Enable JavaScript
-        options.add_argument('--enable-javascript')
-        # Increase timeout for page load
-        options.add_argument('--page-load-strategy=eager')
         
         print("Initializing Chrome driver...")
         driver = webdriver.Chrome(options=options)
-        
+        wait = WebDriverWait(driver, 10)
+
         try:
-            print("Accessing dictionary webpage...")
-            driver.get(url)
+            print("Starting dictionary scraping from blog...")
+            driver.get(blog_url)
             
-            print("Waiting for content to load...")
-            wait = WebDriverWait(driver, 30)
+            # Wait for the blog content to load
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "post-body")))
             
-            # Wait for the page to fully load
-            print("Waiting for page to load...")
-            time.sleep(10)  # Give time for JavaScript to execute
+            # Get the main content
+            content = driver.find_element(By.CLASS_NAME, "post-body").text
             
-            # Try to find iframes
-            iframes = driver.find_elements(By.TAG_NAME, "iframe")
-            print(f"Found {len(iframes)} iframes")
+            # Split content into lines
+            lines = content.split('\n')
             
-            # Try each iframe
-            for idx, iframe in enumerate(iframes):
-                try:
-                    print(f"Trying iframe {idx + 1}")
-                    driver.switch_to.frame(iframe)
-                    
-                    # Look for content inside this iframe
-                    content_present = False
-                    try:
-                        content = driver.find_element(By.CLASS_NAME, "flipbook-container")
-                        if content:
-                            content_present = True
-                            print("Found flipbook content")
-                    except:
-                        pass
-                    
-                    # If no content, switch back and try next iframe
-                    if not content_present:
-                        driver.switch_to.default_content()
-                        continue
-                        
-                    # If we found content, break the loop
-                    break
-                except:
-                    driver.switch_to.default_content()
+            # Process each line
+            current_section = ""
+            for line in lines:
+                line = line.strip()
+                
+                # Skip empty lines
+                if not line:
                     continue
-            
-            # Wait for the book content
-            print("Waiting for book content...")
-            time.sleep(5)  # Give initial time for content to load
-            
-            # Try different selectors that might contain the dictionary content
-            selectors = [
-                ".page-content",
-                ".flipbook-page",
-                "#bookContainer",
-                ".pageContent",
-                ".flip-page-content",
-                ".page",
-                ".text-layer"
-            ]
-            
-            # Try to navigate through pages using AnyFlip's page navigation
-            print("Attempting to extract content from pages...")
-            for selector in selectors:
+                    
+                # Look for section headers (usually in all caps)
+                if line.isupper() and len(line) > 3:
+                    current_section = line
+                    continue
+                
                 try:
-                    # First try to find the page elements
-                    pages = driver.find_elements(By.CSS_SELECTOR, selector)
-                    if pages:
-                        print(f"Found content using selector: {selector}")
-                        for page_num, page in enumerate(pages, 1):
-                            print(f"Processing page {page_num}")
-                            # Try to make the page visible
-                            driver.execute_script("arguments[0].scrollIntoView(true);", page)
-                            time.sleep(2)  # Give more time for content to render
+                    # Try different separators and formats
+                    parts = None
+                    english = None
+                    dusun = None
+                    
+                    # Handle cases like "Good morning - Kopivosian do kosuabon"
+                    if ' - ' in line:
+                        parts = line.split(' - ', 1)
+                        if parts and len(parts) == 2:
+                            # Check if the first part has a slash (like "Monday/Isnin")
+                            if '/' in parts[0]:
+                                eng_parts = parts[0].split('/')
+                                english = eng_parts[0].strip()
+                                dusun = parts[1].strip()
+                            else:
+                                # Detect which part is likely Dusun by looking for common patterns
+                                first_word = parts[0].strip().lower()
+                                second_word = parts[1].strip()
+                                
+                                # Common Dusun prefixes
+                                dusun_prefixes = ['min', 'mim', 'mom', 'kou', 'ko', 'ki', 'ku']
+                                # Common Malay/English words that might appear in explanations
+                                malay_words = ['ber', 'me', 'ter', 'se', 'di', 'ke', 'dari', 'yang', 'dan', 'untuk', 'dengan']
+                                
+                                # Check if first part starts with Dusun prefix
+                                if any(first_word.startswith(prefix) for prefix in dusun_prefixes):
+                                    dusun = parts[0].strip()
+                                    english = parts[1].strip()
+                                # Check if second part has Malay explanation patterns
+                                elif any(word in parts[1].lower() for word in malay_words):
+                                    dusun = parts[0].strip()
+                                    english = parts[1].strip()
+                                # Default to first part being English if no other patterns match
+                                else:
+                                    english = parts[0].strip()
+                                    dusun = parts[1].strip()
+                    
+                    # Handle cases like "Good morning : Kopivosian do kosuabon"
+                    elif ' : ' in line:
+                        parts = line.split(' : ', 1)
+                        if parts and len(parts) == 2:
+                            # Apply same pattern detection logic
+                            first_word = parts[0].strip().lower()
+                            if any(first_word.startswith(prefix) for prefix in ['min', 'mim', 'mom', 'kou', 'ko', 'ki', 'ku']):
+                                dusun = parts[0].strip()
+                                english = parts[1].strip()
+                            else:
+                                english = parts[0].strip()
+                                dusun = parts[1].strip()
                             
-                            # Get the text content of the page
-                            text = page.text
-                            if text:
-                                print(f"Found text content on page {page_num}")
-                                lines = text.split('\n')
-                                for line in lines:
-                                    # Look for dictionary entry patterns
-                                    if ' - ' in line or ':' in line:
-                                        try:
-                                            # Try different separators
-                                            if ' - ' in line:
-                                                english, dusun = line.split(' - ', 1)
-                                            else:
-                                                english, dusun = line.split(':', 1)
-                                            
-                                            # Clean up and validate the entry
-                                            english = english.strip().lower()
-                                            dusun = dusun.strip()
-                                            
-                                            if english and dusun and len(english) > 1 and len(dusun) > 1:
-                                                entries.append({
-                                                    "english": english,
-                                                    "dusun": dusun
-                                                })
-                                                print(f"Found entry: {english} - {dusun}")
-                                        except ValueError:
-                                            continue
+                    if english and dusun:
+                        # Clean up the English part
+                        english = english.lower()
+                        if '[' in english:
+                            english = english.split('[')[0].strip()
+                        if ',' in english:
+                            english = english.split(',')[0].strip()
+                            
+                        # Clean up the Dusun part
+                        if '[' in dusun:
+                            dusun = dusun.split('[')[0].strip()
+                        if ',' in dusun:
+                            dusun = dusun.split(',')[0].strip()
                         
-                        if entries:  # If we found entries, break the loop
-                            break
-                            
+                        # Skip invalid entries
+                        if (len(english) < 2 or len(dusun) < 2 or 
+                            '=' in english or '=' in dusun or
+                            english.isupper() or  # Skip category headers
+                            len(english.split()) > 5 or  # Skip long paragraphs
+                            len(dusun.split()) > 5 or  # Skip long explanations
+                            '.' in english or  # Skip sentences
+                            len(english) > 50 or  # Skip very long text
+                            len(dusun) > 50):  # Skip very long text
+                            continue
+                        
+                        # Create the entry
+                        entry = {
+                            "english": english,
+                            "dusun": dusun,
+                            "category": current_section
+                        }
+                        
+                        # Only add if it's a new unique entry and both parts look valid
+                        if (entry not in entries and 
+                            not any(e['english'] == english for e in entries) and
+                            not any(e['dusun'] == dusun for e in entries) and
+                            not english.startswith('hari') and  # Skip Malay day names
+                            not english.startswith('tadau')):  # Skip Dusun day names
+                            entries.append(entry)
+                            print(f"Found translation: {english} - {dusun}")
+                                
                 except Exception as e:
-                    print(f"Error with selector {selector}: {str(e)}")
+                    print(f"Error processing line: {line}")
+                    print(f"Error details: {str(e)}")
                     continue
-            
+                        
             if not entries:  # If scraping failed, use fallback data
                 print("Scraping failed. Using fallback dictionary data...")
                 entries = [
