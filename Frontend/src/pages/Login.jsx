@@ -30,7 +30,7 @@ const Login = () => {
 
   const handleGuestLogin = () => {
     loginAsGuest();
-    navigate("/game");
+    navigate("/"); // Changed from "/game" to "/" for homepage
   };
 
   return (
