@@ -17,7 +17,6 @@ import Map from "./pages/Map";
 import GamePage from "./pages/GamePage";
 import Register from "./pages/Register";
 import ExplorePage from "./pages/ExplorePage";
-import TranslatorPage from "./pages/TranslatorPage";
 import DictionaryPage from "./pages/DictionaryPage";
 
 function App() {
@@ -39,7 +38,6 @@ function App() {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/explore/:districtName" element={<ExplorePage />} />
-          <Route path="/translator" element={<TranslatorPage />} />
           <Route path="/dictionary" element={<DictionaryPage />} />
         </Routes>
       </Layout>

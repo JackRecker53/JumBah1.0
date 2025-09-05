@@ -1,86 +1,12 @@
-/* --- Ask AI Button --- */
-.ask-ai-btn {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-  border: none;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+/* ===================================
+   GLOBAL STYLES & RESET
+   =================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.ask-ai-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: 0.5s;
-}
-
-.ask-ai-btn:disabled {
-  background: linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%);
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-.ask-ai-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.ask-ai-btn:hover:not(:disabled)::before {
-  left: 100%;
-}
-
-.ask-ai-btn:active:not(:disabled) {
-  transform: translateY(1px);
-  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
-}
-
-/* Add pulsing animation for loading state */
-.ask-ai-btn.loading {
-  position: relative;
-  cursor: wait;
-}
-
-.ask-ai-btn.loading::after {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
-  margin-left: 10px;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-/* --- General Styles & Body --- */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
@@ -90,7 +16,9 @@ body {
   padding: 1rem;
 }
 
-/* --- Main Container --- */
+/* ===================================
+   MAIN CONTAINER
+   =================================== */
 .dictionary-container {
   max-width: 900px;
   margin: 2rem auto;
@@ -100,112 +28,9 @@ body {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* --- Translator Section --- */
-.translator-section {
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background-color: #f8fafc;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.translator-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.translation-input {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  resize: vertical;
-  min-height: 100px;
-  transition: border-color 0.3s ease;
-}
-
-.translation-input:focus {
-  outline: none;
-  border-color: #6366f1;
-}
-
-.translate-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  background: #6366f1;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.translate-btn:hover:not(:disabled) {
-  background: #4f46e5;
-  transform: translateY(-1px);
-}
-
-.translate-btn:disabled {
-  background: #94a3b8;
-  cursor: not-allowed;
-}
-
-.translation-results {
-  margin-top: 2rem;
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: 1fr;
-}
-
-.dictionary-translation,
-.ai-translation {
-  padding: 1.5rem;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.ai-provider {
-  font-size: 0.85rem;
-  font-weight: normal;
-  color: #6366f1;
-  margin-left: 0.5rem;
-  padding: 0.2rem 0.5rem;
-  background: #e0e7ff;
-  border-radius: 4px;
-}
-
-.found-words,
-.not-found-words {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f1f5f9;
-  border-radius: 6px;
-}
-
-.found-words h4,
-.not-found-words h4 {
-  color: #475569;
-  margin-bottom: 0.5rem;
-}
-
-.found-words ul,
-.not-found-words ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.found-words li,
-.not-found-words li {
-  padding: 0.25rem 0;
-  color: #64748b;
-}
-
+/* ===================================
+   HEADER SECTION
+   =================================== */
 .dictionary-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -216,14 +41,336 @@ body {
 .dictionary-header h1 {
   color: #1a2c42;
   margin-bottom: 0.5rem;
+  font-size: 2.5rem;
 }
 
 .dictionary-header p {
   color: #66727f;
   font-size: 1.1rem;
+  margin: 0;
 }
 
-/* --- Search Bar --- */
+/* ===================================
+   TRANSLATOR SECTION
+   =================================== */
+.translator-section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.translator-section h2 {
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+/* ===================================
+   FORM STYLES
+   =================================== */
+.translator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.translation-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.translation-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.translation-input::placeholder {
+  color: #94a3b8;
+}
+
+/* ===================================
+   BUTTON STYLES
+   =================================== */
+.translate-btn {
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background: #6366f1;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.translate-btn:hover:not(:disabled) {
+  background: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+}
+
+.translate-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.translate-btn.loading {
+  pointer-events: none;
+  padding-right: 3rem;
+}
+
+.translate-btn.loading::after {
+  content: "";
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===================================
+   LOADING & ERROR MESSAGES
+   =================================== */
+.loading-message {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  border: 1px solid #0ea5e9;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.loading-message p {
+  color: #0369a1;
+  margin: 0;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.error-message {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.error-message strong {
+  font-weight: 700;
+}
+
+/* ===================================
+   DEBUG INFO
+   =================================== */
+.debug-info {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.debug-info h4 {
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.debug-info pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ===================================
+   TRANSLATION RESULTS
+   =================================== */
+.translation-results {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+.translation-content {
+  margin-bottom: 1rem;
+}
+
+.translation-text {
+  font-size: 1.2rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  line-height: 1.6;
+}
+
+.no-translation {
+  font-size: 1rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.ai-provider {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #8b5cf6;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: #ede9fe;
+  border-radius: 12px;
+}
+
+/* ===================================
+   FOUND/NOT FOUND WORDS
+   =================================== */
+.found-words,
+.not-found-words {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.found-words {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1px solid #bbf7d0;
+}
+
+.not-found-words {
+  background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%);
+  border: 1px solid #fed7aa;
+}
+
+.found-words h4 {
+  color: #059669;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.not-found-words h4 {
+  color: #d97706;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.found-words ul,
+.not-found-words ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.found-words li {
+  padding: 0.5rem 0;
+  color: #047857;
+  font-size: 1rem;
+  border-bottom: 1px solid #bbf7d0;
+}
+
+.found-words li:last-child {
+  border-bottom: none;
+}
+
+.found-words li strong {
+  color: #065f46;
+}
+
+.found-words li em {
+  color: #059669;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.not-found-words li {
+  padding: 0.5rem 0;
+  color: #b45309;
+  font-size: 1rem;
+  font-weight: 500;
+  border-bottom: 1px solid #fed7aa;
+}
+
+.not-found-words li:last-child {
+  border-bottom: none;
+}
+
+/* ===================================
+   NO RESULTS MESSAGE
+   =================================== */
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 1.1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+/* ===================================
+   DICTIONARY SECTION
+   =================================== */
+.dictionary-section {
+  margin-bottom: 3rem;
+}
+
+.dictionary-section h2 {
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
 .search-container {
   margin-bottom: 2rem;
 }
@@ -232,19 +379,25 @@ body {
   width: 100%;
   padding: 12px 16px;
   font-size: 1rem;
-  border: 1px solid #dcdcdc;
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
-  box-sizing: border-box; /* Important for consistent sizing */
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
+  background-color: #fff;
 }
 
 .search-bar:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-/* --- Dictionary List (Card Layout) --- */
+.search-bar::placeholder {
+  color: #94a3b8;
+}
+
+/* ===================================
+   DICTIONARY LIST
+   =================================== */
 .dictionary-list {
   list-style: none;
   padding: 0;
@@ -260,97 +413,131 @@ body {
   background-color: #fdfdfd;
   border: 1px solid #e9e9e9;
   border-radius: 8px;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: all 0.2s ease;
 }
 
-/* Add a nice hover effect */
 .dictionary-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-color: #6366f1;
 }
 
 .english-word {
   font-weight: 600;
-  color: #333;
+  color: #374151;
   text-transform: capitalize;
+  font-size: 1rem;
 }
 
 .dusun-word {
   font-weight: 500;
-  color: #0056b3;
-  background-color: #e7f3ff;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  color: #1d4ed8;
+  background-color: #dbeafe;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.95rem;
 }
 
-.no-results {
-  text-align: center;
-  padding: 2rem;
-  color: #888;
-  font-style: italic;
-}
-
-/* --- Translation Section --- */
-.translation-input {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 1rem;
-  border: 1px solid #dcdcdc;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  resize: vertical;
-  min-height: 100px;
-  background-color: #fff;
-  transition: all 0.3s ease;
-}
-
-.translation-input:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-}
-
-.translation-result {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: linear-gradient(to right, #f8fafc, #f1f5f9);
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-}
-
-.translation-result h3 {
-  color: #475569;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-}
-
-.dusun-translation {
-  font-size: 1.2rem;
-  color: #1e293b;
-  font-weight: 500;
-  margin: 0;
-  padding: 0.5rem 0;
-}
-
-/* --- Tips Section --- */
+/* ===================================
+   TIPS SECTION
+   =================================== */
 .tips-card {
   margin-top: 3rem;
   padding: 1.5rem;
-  background-color: #fcf8e3; /* A soft yellow for tips */
-  border-left: 4px solid #f0ad4e; /* An accent color */
+  background: linear-gradient(135deg, #fcf8e3 0%, #fefce8 100%);
+  border-left: 4px solid #f59e0b;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .tips-card h2 {
   margin-top: 0;
-  color: #8a6d3b;
+  color: #92400e;
+  font-size: 1.5rem;
 }
 
 .tips-card ul {
   list-style: disc;
   padding-left: 1.5rem;
   margin: 0.5rem 0 0 0;
-  color: #555;
+  color: #78350f;
   line-height: 1.6;
+}
+
+.tips-card li {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+  .dictionary-container {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  .translator-section {
+    padding: 1.5rem;
+  }
+
+  .dictionary-header h1 {
+    font-size: 2rem;
+  }
+
+  .dictionary-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .dusun-word {
+    align-self: flex-end;
+  }
+
+  .debug-info pre {
+    font-size: 0.75rem;
+  }
+
+  .translation-text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  .dictionary-container {
+    margin: 0.5rem auto;
+    padding: 1rem;
+  }
+
+  .translator-section {
+    padding: 1rem;
+  }
+
+  .dictionary-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .translation-input {
+    font-size: 0.95rem;
+    min-height: 100px;
+  }
+
+  .translate-btn {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .debug-info {
+    padding: 0.75rem;
+  }
+
+  .debug-info pre {
+    font-size: 0.7rem;
+  }
 }

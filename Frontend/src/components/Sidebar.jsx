@@ -102,12 +102,6 @@ const Sidebar = () => {
       color: "#10b981",
     },
     {
-      icon: <FaLanguage />,
-      label: "Translator",
-      to: "/translator",
-      color: "#8b5cf6",
-    },
-    {
       icon: <FaBook />,
       label: "About Sabah",
       to: "/about",

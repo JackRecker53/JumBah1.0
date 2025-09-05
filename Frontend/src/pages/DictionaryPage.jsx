@@ -15,81 +15,12 @@ const phrases = [
   { english: "I am fine", dusun: "Avasi zio" },
   { english: "what is your name?", dusun: "Isai ngaran nu?" },
 ];
+
 const tips = [
   "Greet locals with 'Kopivosian' to start a friendly conversation.",
   "Practice a few phrases every day to build confidence.",
   "Listen to native speakers to get the pronunciation right.",
 ];
-
-// --- New AI Assistant Component ---
-const AIAssistant = () => {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!question.trim()) return;
-
-    setIsLoading(true);
-    setAnswer(""); // Clear previous answer
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/translate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text: question, from_lang: "en" }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to get a response from the server.");
-      }
-
-      const data = await response.json();
-      setAnswer(
-        data.translations?.enhanced ||
-          data.translations?.basic ||
-          "Translation not available"
-      );
-    } catch (error) {
-      console.error(error);
-      setAnswer("Sorry, something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="ai-assistant">
-      <h2>AI Translation Assistant</h2>
-      <p>Enter text in English to translate to Dusun</p>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Enter English text to translate..."
-          rows="3"
-          className="translation-input"
-        />
-        <button
-          className={`ask-ai-btn ${isLoading ? "loading" : ""}`}
-          type="submit"
-          disabled={isLoading}
-        >
-          {isLoading ? "Translating..." : "Translate with AI"}
-        </button>
-      </form>
-      {answer && (
-        <div className="translation-result">
-          <h3>Translation:</h3>
-          <p className="dusun-translation">{answer}</p>
-        </div>
-      )}
-    </div>
-  );
-};
 
 // --- Main Dictionary Page Component ---
 const DictionaryPage = () => {
@@ -97,6 +28,7 @@ const DictionaryPage = () => {
   const [translationText, setTranslationText] = useState("");
   const [translationResult, setTranslationResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const filteredPhrases = phrases.filter(
     (p) =>
@@ -104,12 +36,19 @@ const DictionaryPage = () => {
       p.dusun.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleTranslate = async (e) => {
-    e.preventDefault();
+  const handleTranslate = async () => {
     if (!translationText.trim()) return;
 
     setIsLoading(true);
+    setError(null);
+    setTranslationResult(null);
+
     try {
+      console.log("Main translator - Sending request:", {
+        text: translationText,
+        from_lang: "en",
+      });
+
       const response = await fetch(`${API_BASE_URL}/api/translate`, {
         method: "POST",
         headers: {
@@ -118,14 +57,22 @@ const DictionaryPage = () => {
         body: JSON.stringify({ text: translationText, from_lang: "en" }),
       });
 
+      console.log("Main translator - Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error("Translation failed");
+        const errorText = await response.text();
+        console.error("Main translator - Error response:", errorText);
+        throw new Error(
+          `Translation failed: ${response.status} - ${errorText}`
+        );
       }
 
       const data = await response.json();
+      console.log("Main translator - Response data:", data);
       setTranslationResult(data);
     } catch (error) {
       console.error("Translation error:", error);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +88,7 @@ const DictionaryPage = () => {
       {/* --- Translator Section --- */}
       <section className="translator-section">
         <h2>Text Translation</h2>
-        <form onSubmit={handleTranslate} className="translator-form">
+        <div className="translator-form">
           <textarea
             value={translationText}
             onChange={(e) => setTranslationText(e.target.value)}
@@ -150,45 +97,74 @@ const DictionaryPage = () => {
             className="translation-input"
           />
           <button
-            type="submit"
+            onClick={handleTranslate}
             className={`translate-btn ${isLoading ? "loading" : ""}`}
             disabled={isLoading}
           >
             {isLoading ? "Translating..." : "Translate"}
           </button>
-        </form>
+        </div>
+
+        {error && (
+          <div className="error-message">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
 
         {translationResult && (
           <div className="translation-results">
             <div className="dictionary-translation">
               <h3>Dictionary Translation</h3>
-              <p>{translationResult.translations?.basic}</p>
-              {translationResult.details?.found_words &&
-                translationResult.details.found_words.length > 0 && (
-                  <div className="found-words">
-                    <h4>Words found in dictionary:</h4>
-                    <ul>
-                      {translationResult.details.found_words.map((word, idx) => (
-                        <li key={idx}>
-                          {word.english} → {word.dusun}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              {translationResult.details?.not_found &&
-                translationResult.details.not_found.length > 0 && (
-                  <div className="not-found-words">
-                    <h4>Words not found in dictionary:</h4>
-                    <ul>
-                      {translationResult.details.not_found.map((word, idx) => (
-                        <li key={idx}>{word}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              <p>
+                {translationResult.translations?.basic ||
+                  translationResult.basic_translation ||
+                  "No basic translation available"}
+              </p>
+
+              {/* Handle found words - check multiple possible structures */}
+              {((translationResult.details?.found_words &&
+                translationResult.details.found_words.length > 0) ||
+                (translationResult.found_words &&
+                  translationResult.found_words.length > 0)) && (
+                <div className="found-words">
+                  <h4>Words found in dictionary:</h4>
+                  <ul>
+                    {(
+                      translationResult.details?.found_words ||
+                      translationResult.found_words ||
+                      []
+                    ).map((word, idx) => (
+                      <li key={idx}>
+                        {word.english} → {word.dusun}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Handle not found words - check multiple possible structures */}
+              {((translationResult.details?.not_found &&
+                translationResult.details.not_found.length > 0) ||
+                (translationResult.not_found_words &&
+                  translationResult.not_found_words.length > 0)) && (
+                <div className="not-found-words">
+                  <h4>Words not found in dictionary:</h4>
+                  <ul>
+                    {(
+                      translationResult.details?.not_found ||
+                      translationResult.not_found_words ||
+                      []
+                    ).map((word, idx) => (
+                      <li key={idx}>{word}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {translationResult.translations?.enhanced && (
+
+            {/* AI Enhanced Translation */}
+            {(translationResult.translations?.enhanced ||
+              translationResult.enhanced_translation) && (
               <div className="ai-translation">
                 <h3>
                   AI-Enhanced Translation
@@ -200,7 +176,10 @@ const DictionaryPage = () => {
                     </span>
                   )}
                 </h3>
-                <p>{translationResult.translations.enhanced}</p>
+                <p>
+                  {translationResult.translations?.enhanced ||
+                    translationResult.enhanced_translation}
+                </p>
               </div>
             )}
           </div>
