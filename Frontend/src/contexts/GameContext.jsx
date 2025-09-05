@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { quests } from '../data/quests';
+import { API_BASE_URL } from '../config';
 
 const GameContext = createContext();
 
@@ -11,6 +11,14 @@ export const GameProvider = ({ children }) => {
     const [points, setPoints] = useState(0);
     const [completedQuests, setCompletedQuests] = useState(new Set());
     const [collectedStamps, setCollectedStamps] = useState(new Set());
+    const [quests, setQuests] = useState([]);
+
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/quests`)
+            .then(res => res.json())
+            .then(data => setQuests(data))
+            .catch(err => console.error('Failed to load quests', err));
+    }, []);
 
     useEffect(() => {
         // Reset game state if user logs out
@@ -39,7 +47,7 @@ export const GameProvider = ({ children }) => {
        console.log(`Stamp ${stampId} collected! +50 points.`);
     };
 
-    const value = { points, completedQuests, collectedStamps, completeQuest, collectStamp };
+    const value = { points, completedQuests, collectedStamps, completeQuest, collectStamp, quests };
 
     return (
         <GameContext.Provider value={value}>

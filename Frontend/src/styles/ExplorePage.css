@@ -198,6 +198,15 @@ body {
   border-radius: 2px;
 }
 
+.latest-section {
+  margin: 2rem 0;
+}
+
+.latest-section ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
 .attractionsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

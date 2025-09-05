@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { useGame } from "../contexts/GameContext";
 import "../styles/ExplorePage.css";
+import { API_BASE_URL } from "../config";
 
 // Embedded districts data
 const districts = {
@@ -263,6 +264,16 @@ const ExplorePage = () => {
   const { collectStamp, collectedStamps } = useGame();
 
   const [itinerary, setItinerary] = React.useState([]);
+  const [latest, setLatest] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/explore/latest`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setLatest(data);
+      })
+      .catch((err) => console.error("Failed to load latest data", err));
+  }, []);
 
   const toggleItinerary = (attraction) => {
     setItinerary((prev) => {
@@ -292,10 +303,24 @@ const ExplorePage = () => {
     return (
       <div className="explore-list container">
         <h2>Explore Sabah Districts</h2>
+        {latest.length > 0 && (
+          <section className="latest-section">
+            <h3>Latest from Sabah Tourism</h3>
+            <ul>
+              {latest.map((item, idx) => (
+                <li key={idx}>
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                    {item.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <div className="districts-grid">
           {Object.keys(districts).map((name) => (
             <div key={name} className="district-card">
-              <Link to={`/explore/${name.replace(/ /g, "-")}`}>
+              <Link to={`/explore/${name.replace(/ /g, "-")}`}> 
                 <div className="district-content">
                   <h3>{name}</h3>
                   <p>{districts[name].description}</p>

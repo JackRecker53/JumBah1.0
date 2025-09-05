@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Eye, Volume2, Copy, RefreshCw } from "lucide-react";
+import React, { useState } from "react";
+import { Volume2, Copy, RefreshCw } from "lucide-react";
 import "../styles/TranslatorPage.css";
-
-// --- IMPORTANT: API Key Configuration ---
-// Use your Gemini API key from the Vite environment variable.
-// Make sure you have VITE_GEMINI_API_KEY set in your .env file.
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+import { API_BASE_URL } from "../config";
 
 // --- Language Data ---
 const languages = [
@@ -34,10 +30,6 @@ export default function TranslatorPage() {
 
   // --- Event Handlers ---
   const handleTranslate = async () => {
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-      setError("Please configure your Gemini API Key in the code.");
-      return;
-    }
     if (!inputText.trim()) {
       setError("Please enter text to translate.");
       return;
@@ -45,28 +37,22 @@ export default function TranslatorPage() {
     setError("");
     setIsLoading(true);
     setOutputText("");
-    const model = "gemini-2.5-flash";
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
-    const prompt = `Translate the following text from ${
-      sourceLang === "auto"
-        ? "the detected language"
-        : languages.find((l) => l.code === sourceLang)?.name
-    } to Dusun. Provide only the Dusun translation and nothing else.\n\nText: "${inputText}"\n\nDusun Translation:`;
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${API_BASE_URL}/api/translate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+        body: JSON.stringify({ text: inputText, from_lang: sourceLang }),
       });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
-          errorData.error?.message || `HTTP error! status: ${response.status}`
+          errorData.error || `HTTP error! status: ${response.status}`
         );
       }
       const data = await response.json();
       const translation =
-        data.candidates?.[0]?.content?.parts?.[0]?.text.trim() ||
+        data.translations?.enhanced ||
+        data.translations?.basic ||
         "Translation not available.";
       setOutputText(translation);
     } catch (err) {

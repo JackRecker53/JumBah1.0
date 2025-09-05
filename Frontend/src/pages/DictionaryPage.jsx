@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/DictionaryPage.css";
+import { API_BASE_URL } from "../config";
 
 // --- Data (same as before) ---
 const phrases = [
@@ -34,7 +35,7 @@ const AIAssistant = () => {
     setAnswer(""); // Clear previous answer
 
     try {
-      const response = await fetch("http://localhost:8000/api/translate", {
+      const response = await fetch(`${API_BASE_URL}/api/translate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +48,11 @@ const AIAssistant = () => {
       }
 
       const data = await response.json();
-      setAnswer(data.translation);
+      setAnswer(
+        data.translations?.enhanced ||
+          data.translations?.basic ||
+          "Translation not available"
+      );
     } catch (error) {
       console.error(error);
       setAnswer("Sorry, something went wrong. Please try again.");
@@ -105,7 +110,7 @@ const DictionaryPage = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/translate", {
+      const response = await fetch(`${API_BASE_URL}/api/translate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -157,13 +162,13 @@ const DictionaryPage = () => {
           <div className="translation-results">
             <div className="dictionary-translation">
               <h3>Dictionary Translation</h3>
-              <p>{translationResult.basic_translation}</p>
-              {translationResult.found_words &&
-                translationResult.found_words.length > 0 && (
+              <p>{translationResult.translations?.basic}</p>
+              {translationResult.details?.found_words &&
+                translationResult.details.found_words.length > 0 && (
                   <div className="found-words">
                     <h4>Words found in dictionary:</h4>
                     <ul>
-                      {translationResult.found_words.map((word, idx) => (
+                      {translationResult.details.found_words.map((word, idx) => (
                         <li key={idx}>
                           {word.english} → {word.dusun}
                         </li>
@@ -171,19 +176,19 @@ const DictionaryPage = () => {
                     </ul>
                   </div>
                 )}
-              {translationResult.not_found_words &&
-                translationResult.not_found_words.length > 0 && (
+              {translationResult.details?.not_found &&
+                translationResult.details.not_found.length > 0 && (
                   <div className="not-found-words">
                     <h4>Words not found in dictionary:</h4>
                     <ul>
-                      {translationResult.not_found_words.map((word, idx) => (
+                      {translationResult.details.not_found.map((word, idx) => (
                         <li key={idx}>{word}</li>
                       ))}
                     </ul>
                   </div>
                 )}
             </div>
-            {translationResult.enhanced_translation && (
+            {translationResult.translations?.enhanced && (
               <div className="ai-translation">
                 <h3>
                   AI-Enhanced Translation
@@ -195,7 +200,7 @@ const DictionaryPage = () => {
                     </span>
                   )}
                 </h3>
-                <p>{translationResult.enhanced_translation}</p>
+                <p>{translationResult.translations.enhanced}</p>
               </div>
             )}
           </div>

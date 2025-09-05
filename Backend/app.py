@@ -12,6 +12,8 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import google.generativeai as genai
 import jwt
+import requests
+from bs4 import BeautifulSoup
 
 # Load environment variables
 load_dotenv()
@@ -289,6 +291,14 @@ quiz_questions = [
     }
 ]
 
+# Load quests data from JSON file
+quests_path = os.path.join(os.path.dirname(__file__), "data", "quests.json")
+try:
+    with open(quests_path, "r", encoding="utf-8") as f:
+        quests_data = json.load(f)
+except Exception:
+    quests_data = []
+
 # Health check
 @app.get("/health")
 async def health_check():
@@ -380,6 +390,11 @@ async def get_leaderboard():
     leaderboard.sort(key=lambda x: x["score"], reverse=True)
     return leaderboard[:10]  # Top 10
 
+# Quests endpoint
+@app.get("/quests")
+async def get_quests():
+    return quests_data
+
 # Attractions endpoint
 @app.get("/attractions")
 async def get_attractions():
@@ -387,6 +402,26 @@ async def get_attractions():
     data_path = os.path.join(os.path.dirname(__file__), "data", "attractions.json")
     with open(data_path, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+# Latest highlights from Sabah Tourism
+@app.get("/explore/latest")
+async def get_latest_explore():
+    """Scrape the Sabah Tourism website for the latest articles."""
+    url = "https://sabahtourism.com"
+    try:
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        items = []
+        for article in soup.select("article")[:5]:
+            link = article.find("a")
+            title = link.get_text(strip=True) if link else article.get_text(strip=True)
+            href = link["href"] if link and link.get("href") else url
+            items.append({"title": title, "link": href})
+        return items
+    except Exception as e:
+        return {"error": str(e)}
 
 # Chatbot endpoints
 @app.get("/chatbot/info")

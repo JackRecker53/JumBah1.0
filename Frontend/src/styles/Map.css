@@ -386,3 +386,9 @@ body,
   margin-bottom: 8px;
   box-sizing: border-box;
 }
+
+.attraction-marker {
+  font-size: 24px;
+  text-align: center;
+  line-height: 30px;
+}

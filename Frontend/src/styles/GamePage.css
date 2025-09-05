@@ -118,3 +118,18 @@
 .score-section button:hover {
   background-color: #0056b3;
 }
+
+.login-warning {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.login-warning button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

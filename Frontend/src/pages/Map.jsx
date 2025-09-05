@@ -43,36 +43,42 @@ export default function LeafletMap() {
       lng: 116.5621,
       description:
         "Highest mountain in Malaysia and famous for its biodiversity...",
+      icon: "⛰️",
     },
     {
       name: "Sepilok Orangutan Sanctuary",
       lat: 5.8742,
       lng: 117.9444,
       description: "Famous orangutan rehabilitation center...",
+      icon: "🦧",
     },
     {
       name: "Sipadan Island",
       lat: 4.1133,
       lng: 118.6281,
       description: "One of the most top 10 world-class diving destination...",
+      icon: "🏝️",
     },
     {
       name: "Kinabatangan River",
       lat: 5.5167,
       lng: 118.2333,
       description: "Wildlife sanctuary and river cruise...",
+      icon: "🐊",
     },
     {
       name: "Tip of Borneo",
       lat: 7.0186,
       lng: 116.6794,
       description: "Northernmost point of Borneo.",
+      icon: "📍",
     },
     {
       name: "Mari Mari Cultural Village",
       lat: 6.0433,
       lng: 116.1133,
       description: "Traditional cultural experience.",
+      icon: "🏘️",
     },
   ];
 
@@ -108,7 +114,13 @@ export default function LeafletMap() {
   // --- CORE FUNCTIONS ---
   const addAttractionMarkers = (map) => {
     sabahAttractions.forEach((attraction) => {
-      const marker = L.marker([attraction.lat, attraction.lng]).addTo(map);
+      const marker = L.marker([attraction.lat, attraction.lng], {
+        icon: L.divIcon({
+          html: `<div class="attraction-marker">${attraction.icon || "📍"}</div>`,
+          className: "",
+          iconSize: [30, 30],
+        }),
+      }).addTo(map);
       marker.bindPopup(`<strong>${attraction.name}</strong>`);
       marker.on("click", () => centerOnAttraction(attraction));
     });

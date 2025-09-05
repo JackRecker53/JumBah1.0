@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useGame } from "../contexts/GameContext";
-import { quests } from "../data/quests";
 import { FaCheckCircle, FaAward, FaTicketAlt } from "react-icons/fa";
 import "../styles/GamePage.css";
 import { API_BASE_URL } from "../config";
@@ -15,7 +14,7 @@ const GamePage = () => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const { isAuthenticated, token, user } = useAuth();
-  const { points, completedQuests, collectedStamps } = useGame();
+  const { points, completedQuests, collectedStamps, quests } = useGame();
 
   useEffect(() => {
     fetchQuestions();
@@ -94,6 +93,15 @@ const GamePage = () => {
     setIsCorrect(null);
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="login-warning">
+        <p>Please log in to play.</p>
+        <button onClick={() => (window.location.href = "/login")}>Login</button>
+      </div>
+    );
+  }
+
   if (questions.length === 0) {
     return <div>Loading questions...</div>;
   }
@@ -159,17 +167,6 @@ const GamePage = () => {
         {/* Quiz Section */}
         <section className="game-section">
           <h2>Quiz Game</h2>
-          {!isAuthenticated && (
-            <div className="login-reminder">
-              <p>Log in to save your progress and submit your score!</p>
-              <button
-                className="btn-primary"
-                onClick={() => (window.location.href = "/login")}
-              >
-                Login
-              </button>
-            </div>
-          )}
           {showScore ? (
             <div className="score-section">
               <h2>
