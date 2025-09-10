@@ -62,11 +62,7 @@ const ChatbotWidget = () => {
   return (
     <div className="fab-container">
       {/* Tooltip: always in DOM, only shows on hover via CSS; hidden when chat is open */}
-      {!isOpen && (
-        <div className="fab-tooltip">
-          Hi, I'm Madu. Your AI Sabah companion.
-        </div>
-      )}
+      {!isOpen && <div className="fab-tooltip">Hi, I'm Madu.</div>}
 
       <button
         className="fab"
