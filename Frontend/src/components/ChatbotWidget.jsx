@@ -4,6 +4,7 @@ import { runChat } from "../services/geminiService";
 import { FaCommentDots, FaTimes, FaSpinner } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
 import "../styles/Sidebar.css";
+import sunbearImg from "/backgrounds/sunbear.jpg";
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +58,7 @@ const ChatbotWidget = () => {
       ) {
         completeQuest("q4");
       }
-    } catch (error) {
+    } catch {
       const errorMessage = {
         sender: "bot",
         text: "Oops! I'm having a little trouble connecting. Please try again.",
@@ -77,11 +78,7 @@ const ChatbotWidget = () => {
         {isOpen ? (
           <FaTimes />
         ) : (
-          <img
-            src="/backgrounds/sunbear.jpg"
-            alt="Madu Chat"
-            className="fabIcon"
-          />
+          <img src={sunbearImg} alt="Madu Chat" className="fabIcon" />
         )}
       </button>
       {isOpen && (

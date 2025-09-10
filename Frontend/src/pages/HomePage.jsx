@@ -14,6 +14,7 @@ import "swiper/css/pagination";
 // Import local styles and data
 import "../styles/HomePage.css";
 import { districts } from "../data/attractions";
+import heroImage from "/backgrounds/MountKinabalu.png";
 
 const HomePage = () => {
   const districtList = Object.keys(districts);
@@ -21,7 +22,10 @@ const HomePage = () => {
   return (
     <div className="homePage full-height-page">
       {/* --- Hero Section --- */}
-      <header className="heroSection">
+      <header
+        className="heroSection"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
         <div className="heroOverlay"></div>
         <div className="heroContent">
           <h1>Welcome to Sabah, Land Below the Wind</h1>
