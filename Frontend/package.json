@@ -13,6 +13,7 @@
     "@google/generative-ai": "^0.24.1",
     "@splidejs/react-splide": "^0.7.12",
     "@splidejs/splide": "^4.1.4",
+    "@zxing/library": "^0.21.3",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
     "lucide-react": "^0.540.0",
@@ -22,6 +23,7 @@
     "react-leaflet": "^5.0.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.7.1",
+    "react-webcam": "^7.2.0",
     "remark-gfm": "^4.0.1",
     "swiper": "^11.2.10"
   },

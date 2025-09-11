@@ -1,0 +1,31 @@
+{
+  "greetings": [
+    {
+      "en": "Hello",
+      "bm": "Halo",
+      "dusun": "Kotohuadan"
+    },
+    {
+      "en": "Thank you",
+      "bm": "Terima kasih",
+      "dusun": "Kotohuadan"
+    },
+    {
+      "en": "How much is this?",
+      "bm": "Berapa harga ini?",
+      "dusun": "Nopuai do boros oku?"
+    }
+  ],
+  "directions": [
+    {
+      "en": "Where is the toilet?",
+      "bm": "Tandas di mana?",
+      "dusun": "Diti ot tandas?"
+    },
+    {
+      "en": "Turn left / Turn right",
+      "bm": "Belok kiri / Belok kanan",
+      "dusun": "Lomou kiri / lomou kanan"
+    }
+  ]
+}

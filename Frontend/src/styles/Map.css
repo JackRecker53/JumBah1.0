@@ -1,4 +1,398 @@
-/* Add these new styles to your Map.css file */
+/* Map.css */
+.map-container {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+}
+
+.status-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.route-info {
+  margin-top: 5px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.search-section,
+.navigation-section,
+.transport-section,
+.history-section {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-section:last-child,
+.navigation-section:last-child,
+.transport-section:last-child,
+.history-section:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.search-input,
+.nav-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.locate-btn,
+.nav-btn,
+.clear-btn,
+.pin-btn,
+.history-btn {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.locate-btn {
+  background: #007bff;
+  color: white;
+}
+
+.locate-btn:hover {
+  background: #0056b3;
+}
+
+.pin-btn {
+  background: #6f42c1;
+  color: white;
+}
+
+.pin-btn:hover {
+  background: #5a32a3;
+}
+
+.nav-btn {
+  background: #28a745;
+  color: white;
+}
+
+.nav-btn:hover {
+  background: #1e7e34;
+}
+
+.clear-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.clear-btn:hover {
+  background: #c82333;
+}
+
+.history-btn {
+  background: #17a2b8;
+  color: white;
+}
+
+.history-btn:hover {
+  background: #138496;
+}
+
+/* Transport Mode Styles */
+.transport-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.transport-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.transport-btn {
+  padding: 8px 4px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.transport-btn:hover {
+  background: #f8f9fa;
+  border-color: #007bff;
+}
+
+.transport-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Location History Panel */
+.location-history-panel {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.location-history-panel h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.history-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.history-item {
+  padding: 8px;
+  margin-bottom: 5px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.history-coords {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.history-time {
+  color: #666;
+  margin-top: 2px;
+}
+
+/* POI Details Modal */
+.poi-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.poi-details-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+.poi-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.poi-action-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.poi-action-btn:hover {
+  background: #0056b3;
+}
+
+/* Custom marker styles */
+.attraction-marker {
+  font-size: 20px;
+  text-align: center;
+  line-height: 30px;
+  background: white;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.poi-marker {
+  background: transparent;
+}
+
+.poi-icon {
+  font-size: 24px;
+  text-align: center;
+  line-height: 30px;
+  background: white;
+  border: 2px solid #28a745;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 30px;
+  height: 30px;
+}
+
+.current-location-marker {
+  background: transparent;
+}
+
+.pulse-marker {
+  width: 20px;
+  height: 20px;
+  background: #007bff;
+  border: 3px solid white;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+
+.pin-marker {
+  background: transparent;
+  font-size: 25px;
+}
+
+/* POI Popup Styles */
+.poi-popup h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.poi-popup p {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.poi-popup-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.poi-popup-actions button {
+  flex: 1;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 3px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.poi-popup-actions button:hover {
+  background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .map-controls {
+    right: 5px;
+    top: 5px;
+    min-width: 250px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .location-history-panel {
+    left: 5px;
+    bottom: 5px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .transport-modes {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .poi-details-content {
+    width: 95%;
+    margin: 10px;
+  }
+}
 
 .user-location-icon {
   font-size: 24px;

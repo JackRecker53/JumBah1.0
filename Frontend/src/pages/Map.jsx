@@ -3,6 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css"; // Import the routing CSS
 import "leaflet-routing-machine"; // Import the routing machine
+import { useGame } from "../contexts/GameContext";
+import { FaMapMarkerAlt, FaHistory, FaCar, FaBus, FaWalking, FaBicycle, FaPlane, FaClock, FaRoute } from "react-icons/fa";
 
 // Your local styles (make sure this path is correct)
 import "../styles/Map.css";
@@ -26,6 +28,7 @@ export default function LeafletMap() {
   const mapInstanceRef = useRef(null);
   const routingControlRef = useRef(null);
   const userLocationMarkerRef = useRef(null);
+  const markersRef = useRef({});
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [status, setStatus] = useState("Initializing map...");
@@ -34,6 +37,14 @@ export default function LeafletMap() {
   const [searchTerm, setSearchTerm] = useState("");
   const [navDestination, setNavDestination] = useState("");
   const [externalResults, setExternalResults] = useState([]);
+  const [transportMode, setTransportMode] = useState('driving');
+  const [showLocationHistory, setShowLocationHistory] = useState(false);
+  const [estimatedTime, setEstimatedTime] = useState(null);
+  const [routeDistance, setRouteDistance] = useState(null);
+  const [pinnedLocations, setPinnedLocations] = useState([]);
+  const [showPOIDetails, setShowPOIDetails] = useState(null);
+  
+  const { updateLocation, locationHistory, currentLocation } = useGame();
 
   // --- DATA ---
   const sabahAttractions = [
@@ -44,6 +55,7 @@ export default function LeafletMap() {
       description:
         "Highest mountain in Malaysia and famous for its biodiversity...",
       icon: "⛰️",
+      category: "nature",
     },
     {
       name: "Sepilok Orangutan Sanctuary",
@@ -51,6 +63,7 @@ export default function LeafletMap() {
       lng: 117.9444,
       description: "Famous orangutan rehabilitation center...",
       icon: "🦧",
+      category: "nature",
     },
     {
       name: "Sipadan Island",
@@ -58,6 +71,7 @@ export default function LeafletMap() {
       lng: 118.6281,
       description: "One of the most top 10 world-class diving destination...",
       icon: "🏝️",
+      category: "nature",
     },
     {
       name: "Kinabatangan River",
@@ -65,6 +79,7 @@ export default function LeafletMap() {
       lng: 118.2333,
       description: "Wildlife sanctuary and river cruise...",
       icon: "🐊",
+      category: "nature",
     },
     {
       name: "Tip of Borneo",
@@ -72,6 +87,7 @@ export default function LeafletMap() {
       lng: 116.6794,
       description: "Northernmost point of Borneo.",
       icon: "📍",
+      category: "nature",
     },
     {
       name: "Mari Mari Cultural Village",
@@ -79,6 +95,7 @@ export default function LeafletMap() {
       lng: 116.1133,
       description: "Traditional cultural experience.",
       icon: "🏘️",
+      category: "culture",
     },
   ];
 
@@ -100,6 +117,8 @@ export default function LeafletMap() {
           "Map loaded successfully! Click on an attraction to explore."
         );
         addAttractionMarkers(map);
+        // Start GPS tracking after map loads
+        startLocationTracking();
       });
       tiles.addTo(map);
     }
@@ -111,19 +130,100 @@ export default function LeafletMap() {
     };
   }, []);
 
+  // GPS tracking function
+  const startLocationTracking = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const newLocation = { lat: latitude, lng: longitude, timestamp: Date.now() };
+          
+          setUserLocation([latitude, longitude]);
+          updateLocation(newLocation);
+          
+          // Update current location marker
+          if (userLocationMarkerRef.current) {
+            userLocationMarkerRef.current.setLatLng([latitude, longitude]);
+          } else {
+            const currentLocationIcon = L.divIcon({
+              className: 'current-location-marker',
+              html: '<div class="pulse-marker">📍</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15]
+            });
+            
+            userLocationMarkerRef.current = L.marker([latitude, longitude], {
+              icon: currentLocationIcon
+            }).addTo(mapInstanceRef.current);
+          }
+        },
+        (error) => {
+          console.error('GPS tracking error:', error);
+          setStatus('GPS tracking failed');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      );
+    } else {
+      setStatus('GPS not supported');
+    }
+  };
+
   // --- CORE FUNCTIONS ---
   const addAttractionMarkers = (map) => {
     sabahAttractions.forEach((attraction) => {
-      const marker = L.marker([attraction.lat, attraction.lng], {
-        icon: L.divIcon({
-          html: `<div class="attraction-marker">${attraction.icon || "📍"}</div>`,
-          className: "",
-          iconSize: [30, 30],
-        }),
-      }).addTo(map);
-      marker.bindPopup(`<strong>${attraction.name}</strong>`);
+      // Create custom POI icon
+      const poiIcon = L.divIcon({
+        className: 'poi-marker',
+        html: `<div class="poi-icon">${attraction.category === 'nature' ? '🌿' : attraction.category === 'culture' ? '🏛️' : '🏖️'}</div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+      });
+      
+      const marker = L.marker([attraction.lat, attraction.lng], { icon: poiIcon })
+        .addTo(map)
+        .bindPopup(
+          `<div class="poi-popup">
+            <h3>${attraction.name}</h3>
+            <p>${attraction.description}</p>
+            <div class="poi-popup-actions">
+              <button onclick="window.centerOnAttraction('${attraction.name}')">📍 Center</button>
+              <button onclick="window.navigateToAttraction('${attraction.name}')">🧭 Navigate</button>
+              <button onclick="window.showPOIDetails('${attraction.name}')">ℹ️ Details</button>
+            </div>
+          </div>`
+        );
+
+      // Store marker reference
+      markersRef.current[attraction.name] = marker;
       marker.on("click", () => centerOnAttraction(attraction));
     });
+
+    // Make functions globally accessible
+    window.centerOnAttraction = (attractionName) => {
+      const attraction = sabahAttractions.find((a) => a.name === attractionName);
+      if (attraction) {
+        centerOnAttraction(attraction);
+      }
+    };
+    
+    window.navigateToAttraction = (attractionName) => {
+      const attraction = sabahAttractions.find((a) => a.name === attractionName);
+      if (attraction) {
+        setNavDestination(attraction.name);
+        handleNavigation(attraction);
+      }
+    };
+    
+    window.showPOIDetails = (attractionName) => {
+      const attraction = sabahAttractions.find((a) => a.name === attractionName);
+      if (attraction) {
+        showPOIInfo(attraction);
+      }
+    };
   };
 
   const centerOnAttraction = (attraction) => {
@@ -173,7 +273,19 @@ export default function LeafletMap() {
     if (routingControlRef.current) {
       map.removeControl(routingControlRef.current);
     }
-    setStatus(`Calculating route to ${attraction.name}...`);
+    
+    // Get transport mode profile
+    const getRouteProfile = () => {
+      switch(transportMode) {
+        case 'walking': return 'foot';
+        case 'cycling': return 'bike';
+        case 'driving': return 'car';
+        case 'bus': return 'car'; // Use car profile for bus routes
+        default: return 'car';
+      }
+    };
+    
+    setStatus(`Calculating ${transportMode} route to ${attraction.name}...`);
     const routingControl = L.Routing.control({
       waypoints: [
         L.latLng(userLocation[0], userLocation[1]),
@@ -185,8 +297,65 @@ export default function LeafletMap() {
       },
       show: false,
       addWaypoints: false,
+      router: L.Routing.osrmv1({
+        serviceUrl: `https://router.project-osrm.org/route/v1/${getRouteProfile()}`
+      })
+    }).on('routesfound', function(e) {
+      const routes = e.routes;
+      const summary = routes[0].summary;
+      
+      // Calculate ETA based on transport mode
+      const distance = (summary.totalDistance / 1000).toFixed(1); // km
+      let timeInMinutes = Math.round(summary.totalTime / 60);
+      
+      // Adjust time based on transport mode
+      if (transportMode === 'bus') {
+        timeInMinutes *= 1.5; // Add 50% for bus delays
+      } else if (transportMode === 'walking') {
+        timeInMinutes = Math.round(summary.totalDistance / 83.33); // 5 km/h walking speed
+      } else if (transportMode === 'cycling') {
+        timeInMinutes = Math.round(summary.totalDistance / 250); // 15 km/h cycling speed
+      }
+      
+      setRouteDistance(distance);
+      setEstimatedTime(timeInMinutes);
+      setStatus(`Route found: ${distance}km, ETA: ${timeInMinutes} min`);
     }).addTo(map);
     routingControlRef.current = routingControl;
+  };
+  
+  // Pin current location
+  const pinCurrentLocation = () => {
+    if (userLocation) {
+      const newPin = {
+        id: Date.now(),
+        lat: userLocation[0],
+        lng: userLocation[1],
+        name: `Pinned Location ${pinnedLocations.length + 1}`,
+        timestamp: new Date().toLocaleString()
+      };
+      
+      setPinnedLocations([...pinnedLocations, newPin]);
+      
+      // Add pin marker to map
+      const pinIcon = L.divIcon({
+        className: 'pin-marker',
+        html: '📌',
+        iconSize: [25, 25],
+        iconAnchor: [12, 25]
+      });
+      
+      L.marker([newPin.lat, newPin.lng], { icon: pinIcon })
+        .bindPopup(`<b>${newPin.name}</b><br>Pinned: ${newPin.timestamp}`)
+        .addTo(mapInstanceRef.current);
+        
+      setStatus('Location pinned successfully!');
+    }
+  };
+  
+  // Show POI details
+  const showPOIInfo = (attraction) => {
+    setShowPOIDetails(attraction);
   };
 
   const clearRoute = () => {
@@ -403,6 +572,160 @@ export default function LeafletMap() {
             </div>
           )}
         </div>
+        
+        {/* Status overlay */}
+        <div className="status-overlay">
+          <p>{status}</p>
+          {estimatedTime && routeDistance && (
+            <div className="route-info">
+              <FaClock /> {estimatedTime} min • <FaRoute /> {routeDistance} km
+            </div>
+          )}
+        </div>
+
+        {/* Enhanced Map Controls */}
+        <div className="map-controls">
+          <div className="search-section">
+            <input
+              type="text"
+              placeholder="Search attractions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <button onClick={locateUser} className="locate-btn">
+              <FaMapMarkerAlt /> My Location
+            </button>
+            <button onClick={pinCurrentLocation} className="pin-btn">
+              📌 Pin Location
+            </button>
+          </div>
+
+          {/* Transport Mode Selection */}
+          <div className="transport-section">
+            <label>Transport Mode:</label>
+            <div className="transport-modes">
+              <button 
+                className={`transport-btn ${transportMode === 'walking' ? 'active' : ''}`}
+                onClick={() => setTransportMode('walking')}
+              >
+                <FaWalking /> Walk
+              </button>
+              <button 
+                className={`transport-btn ${transportMode === 'cycling' ? 'active' : ''}`}
+                onClick={() => setTransportMode('cycling')}
+              >
+                <FaBicycle /> Bike
+              </button>
+              <button 
+                className={`transport-btn ${transportMode === 'driving' ? 'active' : ''}`}
+                onClick={() => setTransportMode('driving')}
+              >
+                <FaCar /> Drive
+              </button>
+              <button 
+                className={`transport-btn ${transportMode === 'bus' ? 'active' : ''}`}
+                onClick={() => setTransportMode('bus')}
+              >
+                <FaBus /> Bus
+              </button>
+            </div>
+          </div>
+
+          <div className="navigation-section">
+            <input
+              type="text"
+              placeholder="Enter destination..."
+              value={navDestination}
+              onChange={(e) => setNavDestination(e.target.value)}
+              className="nav-input"
+            />
+            <button onClick={() => {
+              if (!userLocation) {
+                setStatus(
+                  "Please click 'My Location' first before navigating."
+                );
+                alert("Please click 'My Location' first before navigating.");
+                return;
+              }
+              const dest = sabahAttractions.find(
+                (a) => a.name === navDestination
+              );
+              if (dest) {
+                handleNavigation(dest);
+                setSelectedAttraction(dest);
+              }
+            }} className="nav-btn">
+              🧭 Navigate
+            </button>
+            <button onClick={clearRoute} className="clear-btn">
+              ❌ Clear Route
+            </button>
+          </div>
+          
+          {/* Location History Toggle */}
+          <div className="history-section">
+            <button 
+              onClick={() => setShowLocationHistory(!showLocationHistory)}
+              className="history-btn"
+            >
+              <FaHistory /> Location History
+            </button>
+          </div>
+        </div>
+        
+        {/* Location History Panel */}
+        {showLocationHistory && (
+          <div className="location-history-panel">
+            <h3>Location History</h3>
+            {locationHistory.length > 0 ? (
+              <div className="history-list">
+                {locationHistory.slice(-10).reverse().map((location, index) => (
+                  <div key={index} className="history-item">
+                    <div className="history-coords">
+                      {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
+                    </div>
+                    <div className="history-time">
+                      {new Date(location.timestamp).toLocaleTimeString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No location history available</p>
+            )}
+          </div>
+        )}
+        
+        {/* POI Details Modal */}
+        {showPOIDetails && (
+          <div className="poi-details-modal">
+            <div className="poi-details-content">
+              <button 
+                className="close-btn"
+                onClick={() => setShowPOIDetails(null)}
+              >
+                ×
+              </button>
+              <h2>{showPOIDetails.name}</h2>
+              <p>{showPOIDetails.description}</p>
+              <div className="poi-actions">
+                <button 
+                  onClick={() => centerOnAttraction(showPOIDetails)}
+                  className="poi-action-btn"
+                >
+                  <FaMapMarkerAlt /> Show on Map
+                </button>
+                <button 
+                  onClick={() => handleNavigation(showPOIDetails)}
+                  className="poi-action-btn"
+                >
+                  🧭 Get Directions
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

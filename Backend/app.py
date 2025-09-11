@@ -55,10 +55,38 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
 # In-memory storage (replace with database in production)
-users_db: Dict[str, Dict[str, Any]] = {}
+users_db: Dict[str, Dict[str, Any]] = {
+    "jer@jumbah.com": {
+        "user_id": "dummy-user-001",
+        "username": "Adventure Seeker",
+        "password": "jer@jumbah",
+        "created_at": "2024-01-01T00:00:00"
+    }
+}
 chat_sessions: Dict[str, List[Dict[str, Any]]] = {}
 user_contexts: Dict[str, Dict[str, Any]] = {}
-user_scores: Dict[str, List[Dict[str, Any]]] = {}
+user_scores: Dict[str, List[Dict[str, Any]]] = {
+    "dummy-user-001": []
+}
+# Game progression storage
+user_game_progress: Dict[str, Dict[str, Any]] = {
+    "dummy-user-001": {
+        "points": 0,
+        "completed_quests": [],
+        "active_quests": [],
+        "achievements": [],
+        "collected_stamps": [],
+        "quiz_scores": []
+    }
+}
+# Map history storage
+user_map_history: Dict[str, List[Dict[str, Any]]] = {
+    "dummy-user-001": []
+}
+# AI planner prompt history storage
+user_ai_history: Dict[str, List[Dict[str, Any]]] = {
+    "dummy-user-001": []
+}
 
 # Pydantic models
 class UserRegister(BaseModel):
@@ -88,6 +116,26 @@ class ChatSession(BaseModel):
 
 class ScoreSubmission(BaseModel):
     score: int = Field(..., ge=0, le=100)
+
+class GameProgressUpdate(BaseModel):
+    points: Optional[int] = None
+    completed_quests: Optional[List[str]] = None
+    active_quests: Optional[List[Dict[str, Any]]] = None
+    achievements: Optional[List[str]] = None
+    collected_stamps: Optional[List[str]] = None
+    quiz_scores: Optional[List[int]] = None
+
+class MapHistoryEntry(BaseModel):
+    location: str
+    coordinates: Optional[Dict[str, float]] = None
+    timestamp: Optional[str] = None
+    notes: Optional[str] = None
+
+class AIPromptEntry(BaseModel):
+    prompt: str
+    response: str
+    timestamp: Optional[str] = None
+    category: Optional[str] = None
 
 class TravelRecommendationRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=500)
@@ -390,7 +438,101 @@ async def get_leaderboard():
     leaderboard.sort(key=lambda x: x["score"], reverse=True)
     return leaderboard[:10]  # Top 10
 
-# Quests endpoint
+# Game progression endpoints
+@app.get("/game-progress")
+async def get_game_progress(current_user: dict = Depends(verify_token)):
+    user_id = current_user["user_id"]
+    if user_id not in user_game_progress:
+        user_game_progress[user_id] = {
+            "points": 0,
+            "completed_quests": [],
+            "active_quests": [],
+            "achievements": [],
+            "collected_stamps": [],
+            "quiz_scores": []
+        }
+    return user_game_progress[user_id]
+
+@app.post("/game-progress")
+async def update_game_progress(progress_data: GameProgressUpdate, current_user: dict = Depends(verify_token)):
+    user_id = current_user["user_id"]
+    
+    if user_id not in user_game_progress:
+        user_game_progress[user_id] = {
+            "points": 0,
+            "completed_quests": [],
+            "active_quests": [],
+            "achievements": [],
+            "collected_stamps": [],
+            "quiz_scores": []
+        }
+    
+    # Update only provided fields
+    if progress_data.points is not None:
+        user_game_progress[user_id]["points"] = progress_data.points
+    if progress_data.completed_quests is not None:
+        user_game_progress[user_id]["completed_quests"] = progress_data.completed_quests
+    if progress_data.active_quests is not None:
+        user_game_progress[user_id]["active_quests"] = progress_data.active_quests
+    if progress_data.achievements is not None:
+        user_game_progress[user_id]["achievements"] = progress_data.achievements
+    if progress_data.collected_stamps is not None:
+        user_game_progress[user_id]["collected_stamps"] = progress_data.collected_stamps
+    if progress_data.quiz_scores is not None:
+        user_game_progress[user_id]["quiz_scores"] = progress_data.quiz_scores
+    
+    return {"message": "Game progress updated successfully", "progress": user_game_progress[user_id]}
+
+# Map history endpoints
+@app.get("/map-history")
+async def get_map_history(current_user: dict = Depends(verify_token)):
+    user_id = current_user["user_id"]
+    if user_id not in user_map_history:
+        user_map_history[user_id] = []
+    return user_map_history[user_id]
+
+@app.post("/map-history")
+async def add_map_history(map_entry: MapHistoryEntry, current_user: dict = Depends(verify_token)):
+    user_id = current_user["user_id"]
+    
+    if user_id not in user_map_history:
+        user_map_history[user_id] = []
+    
+    entry = {
+        "location": map_entry.location,
+        "coordinates": map_entry.coordinates,
+        "timestamp": map_entry.timestamp or datetime.now().isoformat(),
+        "notes": map_entry.notes
+    }
+    
+    user_map_history[user_id].append(entry)
+    return {"message": "Map history entry added successfully", "entry": entry}
+
+# AI planner prompt history endpoints
+@app.get("/ai-history")
+async def get_ai_history(current_user: dict = Depends(verify_token)):
+    user_id = current_user["user_id"]
+    if user_id not in user_ai_history:
+        user_ai_history[user_id] = []
+    return user_ai_history[user_id]
+
+@app.post("/ai-history")
+async def add_ai_history(ai_entry: AIPromptEntry, current_user: dict = Depends(verify_token)):
+    user_id = current_user["user_id"]
+    
+    if user_id not in user_ai_history:
+        user_ai_history[user_id] = []
+    
+    entry = {
+        "prompt": ai_entry.prompt,
+        "response": ai_entry.response,
+        "timestamp": ai_entry.timestamp or datetime.now().isoformat(),
+        "category": ai_entry.category
+    }
+    
+    user_ai_history[user_id].append(entry)
+    return {"message": "AI history entry added successfully", "entry": entry}
+
 @app.get("/quests")
 async def get_quests():
     return quests_data

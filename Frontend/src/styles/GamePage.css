@@ -18,6 +18,9 @@
   --error-border: #f5c6cb;
   --error-text: #721c24;
   --border-radius: 12px;
+  --achievement-gold: #ffd700;
+  --achievement-silver: #c0c0c0;
+  --achievement-bronze: #cd7f32;
 }
 
 /* 2. Main Page Layout */
@@ -43,14 +46,125 @@
 
 /* 3. Adventure Gate (Login Prompt) */
 .adventure-gate {
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: 18px;
-  box-shadow: 0 10px 30px var(--shadow-color);
+  background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+  border: 2px solid #4a7c59;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(44, 85, 48, 0.3);
   text-align: center;
-  padding: 2.5rem 2rem;
-  max-width: 550px;
-  margin: 8vh auto;
+  padding: 3rem 2rem;
+  max-width: 650px;
+  margin: 6vh auto;
+  color: white;
+}
+
+.adventure-gate h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.welcome-subtitle em {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.sabah-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.showcase-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.showcase-icon {
+  font-size: 2rem;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.showcase-item span:last-child {
+  font-size: 0.8rem;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.gate-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.feature span {
+  font-weight: 600;
+  text-align: center;
+}
+
+.feature small {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.gate-message {
+  font-size: 1.1rem;
+  margin: 2rem 0;
+  line-height: 1.6;
+}
+
+.gate-message em {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #2c5530;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.login-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
 }
 
 .adventure-gate .gate-icon {
@@ -317,6 +431,592 @@
   }
   .game-stats {
     flex-direction: column;
-    gap: 1.5rem;
   }
+}
+
+/* 10. Quest Controls Section */
+.quest-controls {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.quest-control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.quest-control-header h2 {
+  margin: 0;
+  color: white;
+}
+
+.quest-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.qr-scan-btn,
+.generate-quest-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.qr-scan-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.qr-scan-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.generate-quest-btn {
+  background: var(--achievement-gold);
+  color: var(--text-primary);
+}
+
+.generate-quest-btn:hover:not(:disabled) {
+  background: #ffed4e;
+  transform: translateY(-2px);
+}
+
+.generate-quest-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.scan-result-message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+}
+
+.scan-result-message.success {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.scan-result-message.error {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: #ffebee;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Quest Board Navigation Section */
+.quest-board-navigation {
+  background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem 0;
+  color: white;
+  box-shadow: 0 8px 32px rgba(44, 85, 48, 0.3);
+}
+
+.quest-nav-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.quest-nav-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.quest-nav-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.quest-nav-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 1.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.nav-icon {
+  font-size: 2rem;
+  color: #ffd700;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.nav-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.nav-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.nav-subtitle {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.quest-board-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 237, 78, 0.2) 100%);
+}
+
+.stampbook-btn:hover {
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.3) 0%, rgba(160, 82, 45, 0.3) 100%);
+}
+
+.qr-scan-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.2) 0%, rgba(102, 16, 242, 0.2) 100%);
+}
+
+/* Responsive Design for Quest Navigation */
+@media (max-width: 768px) {
+  .quest-nav-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .nav-btn {
+    padding: 1rem;
+  }
+  
+  .quest-nav-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .quest-nav-header p {
+    font-size: 1rem;
+  }
+}
+
+/* 11. Achievements Section */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.achievement-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--achievement-gold), var(--achievement-bronze));
+}
+
+.achievement-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+.achievement-icon {
+  font-size: 2.5rem;
+  min-width: 60px;
+  text-align: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.achievement-info p {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.achievement-points {
+  background: var(--achievement-gold);
+  color: var(--text-primary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.no-achievements {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 2rem;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+/* 12. Mobile Responsiveness for New Components */
+@media (max-width: 768px) {
+  .quest-control-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .quest-buttons {
+    justify-content: center;
+  }
+  
+  .qr-scan-btn,
+  .generate-quest-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .achievement-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .achievement-icon {
+    min-width: auto;
+  }
+  .achievement-info {
+    text-align: center;
+  }
+}
+
+/* 13. Quest Discovery Section */
+.quest-discovery {
+  margin-bottom: 2rem;
+}
+
+.quest-discovery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.available-quests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.discovery-quest-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.discovery-quest-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+}
+
+.quest-image-container {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.quest-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.discovery-quest-card:hover .quest-image-container img {
+  transform: scale(1.05);
+}
+
+.quest-type-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quest-info {
+  padding: 1.5rem;
+}
+
+.quest-info h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.quest-info p {
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.quest-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.quest-points {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.quest-category {
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.start-quest-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.start-quest-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(4, 132, 214, 0.4);
+}
+
+.start-quest-btn:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 14. Redesigned Complete Quest Button */
+.complete-quest-btn.modern-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.complete-quest-btn.modern-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.complete-quest-btn.modern-btn:hover::before {
+  left: 100%;
+}
+
+.complete-quest-btn.modern-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.btn-icon {
+  background: rgba(255, 255, 255, 0.2);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-text {
+  flex: 1;
+  text-align: center;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+.btn-points {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Mobile responsiveness for new components */
+@media (max-width: 768px) {
+  .available-quests-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .quest-discovery-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .quest-info {
+    padding: 1.25rem;
+  }
+  
+  .quest-meta {
+     flex-direction: column;
+     align-items: stretch;
+     gap: 0.5rem;
+   }
+ }
+
+/* 15. Completed Quest Styling */
+.quest-card.completed {
+  background: #f8fffe;
+  border-color: #10b981;
+  opacity: 0.8;
+}
+
+.quest-card.completed h3 {
+  color: #059669;
+}
+
+.quest-card.completed .quest-points {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.completed-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.completed-icon {
+  font-size: 18px;
+}
+
+.completed-text {
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
 }

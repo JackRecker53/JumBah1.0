@@ -1,0 +1,113 @@
+[
+  {
+    "id": "kk-001",
+    "title": "Gaya Street Explorer",
+    "district": "kk",
+    "type": "qr",
+    "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "stamp",
+      "name": "Gaya Scout"
+    },
+    "qr_secret": "sunrise2025",
+    "description": "Find the heritage mural and scan the QR to learn its story.",
+    "points": 100,
+    "category": "exploration"
+  },
+  {
+    "id": "kk-002",
+    "title": "Seaside Sunset Snap",
+    "district": "kk",
+    "type": "photo",
+    "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "stamp",
+      "name": "Sunset Chaser"
+    },
+    "description": "Capture a photo near Tanjung Aru beach during golden hour.",
+    "points": 150,
+    "category": "photography"
+  },
+  {
+    "id": "kk-003",
+    "title": "Market Hunt",
+    "district": "kk",
+    "type": "qr",
+    "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "stamp",
+      "name": "Market Maven"
+    },
+    "qr_secret": "pasar2025",
+    "description": "Find a friendly vendor QR at the Filipino Market and scan it.",
+    "points": 120,
+    "category": "culture"
+  },
+  {
+    "id": "kk-004",
+    "title": "Sabah Phrase Challenge",
+    "district": "kk",
+    "type": "audio",
+    "image": "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "stamp",
+      "name": "Language Learner"
+    },
+    "description": "Learn to say a local greeting and record your best take.",
+    "points": 200,
+    "category": "language"
+  },
+  {
+    "id": "kk-005",
+    "title": "Café Art Quest",
+    "district": "kk",
+    "type": "photo",
+    "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "stamp",
+      "name": "Latte Artist"
+    },
+    "description": "Snap your favorite latte art in a local café.",
+    "points": 100,
+    "category": "food"
+  },
+  {
+    "id": "kk-006",
+    "title": "Heritage Trivia",
+    "district": "kk",
+    "type": "trivia",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "stamp",
+      "name": "History Buff"
+    },
+    "trivia": [
+      {
+        "q": "Which festival celebrates the rice harvest in Sabah?",
+        "a": "Kaamatan"
+      },
+      {
+        "q": "Name the sea gypsies of Semporna region.",
+        "a": "Bajau Laut"
+      }
+    ],
+    "description": "Answer 2–3 cultural questions to earn a stamp.",
+    "points": 180,
+    "category": "culture"
+  },
+  {
+    "id": "kk-007",
+    "title": "Foodie Badge",
+    "district": "kk",
+    "type": "qr",
+    "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=500&fit=crop&crop=center",
+    "reward": {
+      "type": "badge",
+      "name": "KK Foodie"
+    },
+    "qr_secret": "foodie777",
+    "description": "Collect 3 food stall QR scans to unlock the badge.",
+    "points": 300,
+    "category": "food"
+  }
+]

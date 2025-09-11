@@ -245,6 +245,35 @@
 .profile-avatar {
   font-size: 3rem;
   color: #6366f1;
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-image {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #6366f1;
+}
+
+.fallback-icon {
+  display: none;
+}
+
+.profile-avatar .fallback-icon {
+  display: block;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
   background: linear-gradient(
     135deg,
     rgba(99, 102, 241, 0.1),

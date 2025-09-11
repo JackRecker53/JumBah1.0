@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [profileImage, setProfileImage] = useState(localStorage.getItem('profileImage'));
 
   useEffect(() => {
     if (token) {
@@ -13,7 +14,11 @@ export const AuthProvider = ({ children }) => {
       // For simplicity, we'll just decode it (not secure for production)
       try {
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        setUser(decodedToken.sub);
+        setUser({
+          username: decodedToken.username,
+          user_id: decodedToken.user_id,
+          profileImage: profileImage
+        });
       } catch (e) {
         console.error("Invalid token", e);
         logout();
@@ -33,7 +38,11 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", data.access_token);
       setToken(data.access_token);
       const decodedToken = JSON.parse(atob(data.access_token.split(".")[1]));
-      setUser(decodedToken.sub);
+      setUser({
+        username: decodedToken.username,
+        user_id: decodedToken.user_id,
+        profileImage: profileImage
+      });
     } else {
       const errorData = await response.json();
       throw new Error(errorData.msg || "Login failed");
@@ -42,8 +51,18 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem('profileImage');
     setToken(null);
+    setProfileImage(null);
     setUser(null);
+  };
+
+  const updateProfileImage = (imageUrl) => {
+    setProfileImage(imageUrl);
+    localStorage.setItem('profileImage', imageUrl);
+    if (user) {
+      setUser(prev => ({ ...prev, profileImage: imageUrl }));
+    }
   };
 
   const loginAsGuest = () => {
@@ -64,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     login,
     loginAsGuest,
     logout,
+    updateProfileImage,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

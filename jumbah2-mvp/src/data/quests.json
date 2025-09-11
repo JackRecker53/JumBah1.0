@@ -1,0 +1,99 @@
+[
+  {
+    "id": "kk-001",
+    "title": "Gaya Street Explorer",
+    "district": "kk",
+    "type": "qr",
+    "image": "https://via.placeholder.com/800x500?text=Gaya+Street+Explorer",
+    "reward": {
+      "type": "stamp",
+      "name": "Gaya Scout"
+    },
+    "qr_secret": "sunrise2025",
+    "description": "Find the heritage mural and scan the QR to learn its story."
+  },
+  {
+    "id": "kk-002",
+    "title": "Seaside Sunset Snap",
+    "district": "kk",
+    "type": "photo",
+    "image": "https://via.placeholder.com/800x500?text=Tanjung+Aru+Sunset",
+    "reward": {
+      "type": "stamp",
+      "name": "Sunset Chaser"
+    },
+    "description": "Capture a photo near Tanjung Aru beach during golden hour."
+  },
+  {
+    "id": "kk-003",
+    "title": "Market Hunt",
+    "district": "kk",
+    "type": "qr",
+    "image": "https://via.placeholder.com/800x500?text=Filipino+Market",
+    "reward": {
+      "type": "stamp",
+      "name": "Market Maven"
+    },
+    "qr_secret": "pasar2025",
+    "description": "Find a friendly vendor QR at the Filipino Market and scan it."
+  },
+  {
+    "id": "kk-004",
+    "title": "Sabah Phrase Challenge",
+    "district": "kk",
+    "type": "audio",
+    "image": "https://via.placeholder.com/800x500?text=Phrase+Challenge",
+    "reward": {
+      "type": "stamp",
+      "name": "Language Learner"
+    },
+    "description": "Learn to say a local greeting and record your best take."
+  },
+  {
+    "id": "kk-005",
+    "title": "Caf\u00e9 Art Quest",
+    "district": "kk",
+    "type": "photo",
+    "image": "https://via.placeholder.com/800x500?text=Cafe+Art",
+    "reward": {
+      "type": "stamp",
+      "name": "Latte Artist"
+    },
+    "description": "Snap your favorite latte art in a local caf\u00e9."
+  },
+  {
+    "id": "kk-006",
+    "title": "Heritage Trivia",
+    "district": "kk",
+    "type": "trivia",
+    "image": "https://via.placeholder.com/800x500?text=Heritage+Trivia",
+    "reward": {
+      "type": "stamp",
+      "name": "History Buff"
+    },
+    "trivia": [
+      {
+        "q": "Which festival celebrates the rice harvest in Sabah?",
+        "a": "Kaamatan"
+      },
+      {
+        "q": "Name the sea gypsies of Semporna region.",
+        "a": "Bajau Laut"
+      }
+    ],
+    "description": "Answer 2\u20133 cultural questions to earn a stamp."
+  },
+  {
+    "id": "kk-007",
+    "title": "Foodie Badge",
+    "district": "kk",
+    "type": "qr",
+    "image": "https://via.placeholder.com/800x500?text=Foodie+Badge",
+    "reward": {
+      "type": "badge",
+      "name": "KK Foodie"
+    },
+    "qr_secret": "foodie777",
+    "description": "Collect 3 food stall QR scans to unlock the badge."
+  }
+]

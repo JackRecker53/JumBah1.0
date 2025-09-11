@@ -1,0 +1,236 @@
+/* QuestBoard.css - Clean and modern design */
+
+.quest-board-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.quest-board-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 20px 0;
+}
+
+.back-button {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+  z-index: 1000;
+  background: #ffffff;
+  border: 2px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2);
+  font-size: 16px;
+}
+
+.back-button:hover {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: #ffffff;
+  transform: translateX(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+}
+
+.quest-board-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.quest-board-subtitle {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 400;
+}
+
+.quest-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #0ea5e9;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0ea5e9;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.no-quests {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  color: #64748b;
+}
+
+.no-quests p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.quest-board-footer {
+  text-align: center;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-top: 32px;
+}
+
+.footer-text {
+  margin: 0;
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .quest-board-container {
+    padding: 16px;
+  }
+  
+  .quest-board-title {
+    font-size: 2rem;
+  }
+  
+  .quest-board-subtitle {
+    font-size: 1rem;
+  }
+  
+
+  
+  .quest-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .quest-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .stat-item {
+    padding: 16px;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .quest-board-title {
+    font-size: 1.75rem;
+  }
+}
+
+/* Loading and Error States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #0ea5e9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  color: #dc2626;
+}
+
+.error-text {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+.retry-button {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.retry-button:hover {
+  background: #b91c1c;
+}

@@ -22,7 +22,7 @@ const Login = () => {
       if (!completedQuests.has("q1")) {
         completeQuest("q1");
       }
-      navigate("/profile");
+      navigate("/home");
     } catch (err) {
       setError(err.message || "Login failed. Please check your password.");
     }

@@ -166,7 +166,7 @@ const Sidebar = () => {
               {isAuthenticated ? (
                 <>
                   <h3 className="app-title">
-                    Welcome {user?.name || "Explorer"}
+                    Welcome {user?.username || "Explorer"}
                   </h3>
                   <p className="app-subtitle">Enjoy JumBah</p>
                 </>
@@ -204,10 +204,21 @@ const Sidebar = () => {
             <div className="profile-section">
               <div className="profile-card">
                 <div className="profile-avatar">
-                  <FaUserCircle />
+                  {user?.profileImage ? (
+                    <img 
+                      src={user.profileImage} 
+                      alt="Profile" 
+                      className="profile-image"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'block';
+                      }}
+                    />
+                  ) : null}
+                  <FaUserCircle className={user?.profileImage ? "fallback-icon" : ""} />
                 </div>
                 <div className="profile-info">
-                  <h4 className="profile-name">{user?.name || "Explorer"}</h4>
+                  <h4 className="profile-name">{user?.username || "Explorer"}</h4>
                   <div className="profile-stats">
                     <div className="stat-item">
                       <FaCoins className="stat-icon coins" />

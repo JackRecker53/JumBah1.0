@@ -1,0 +1,478 @@
+/* Stampbook Styles with Sabahan Cultural Elements */
+
+.stampbook-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+}
+
+.stampbook-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.3);
+}
+
+.back-button {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+  z-index: 1000;
+  background: #ffffff;
+  border: 2px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 14px 20px;
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2);
+  font-size: 16px;
+}
+
+.back-button:hover {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: #ffffff;
+  transform: translateX(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+}
+
+.stampbook-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stampbook-subtitle {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.stampbook-subtitle em {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.progress-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700 0%, #ffed4e 100%);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+.stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stamp-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 3px solid #e9ecef;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stamp-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #e9ecef 0%, #e9ecef 100%);
+}
+
+.stamp-card.earned {
+  border-color: #28a745;
+  transform: translateY(0);
+}
+
+.stamp-card.earned::before {
+  background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+}
+
+.stamp-card.earned:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(40, 167, 69, 0.2);
+}
+
+.stamp-card.locked {
+  opacity: 0.6;
+  background: #f8f9fa;
+}
+
+.stamp-card.locked::before {
+  background: linear-gradient(90deg, #6c757d 0%, #adb5bd 100%);
+}
+
+.stamp-card.common::before {
+  background: linear-gradient(90deg, #6c757d 0%, #adb5bd 100%);
+}
+
+.stamp-card.uncommon::before {
+  background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+}
+
+.stamp-card.rare::before {
+  background: linear-gradient(90deg, #007bff 0%, #6610f2 100%);
+}
+
+.stamp-card.legendary::before {
+  background: linear-gradient(90deg, #ffc107 0%, #fd7e14 100%);
+}
+
+.stamp-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.stamp-card.locked .stamp-icon {
+  filter: grayscale(100%) opacity(0.5);
+}
+
+.stamp-info {
+  text-align: center;
+}
+
+.stamp-name {
+  font-size: 1.3rem;
+  color: #2c5530;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.stamp-card.locked .stamp-name {
+  color: #6c757d;
+}
+
+.stamp-description {
+  color: #6c757d;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.stamp-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.stamp-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.stamp-rarity {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stamp-rarity.common {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.stamp-rarity.uncommon {
+  background: #d4edda;
+  color: #155724;
+}
+
+.stamp-rarity.rare {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.stamp-rarity.legendary {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.stamp-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #28a745;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.stampbook-info {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #8b4513;
+}
+
+.info-card h3 {
+  color: #2c5530;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.info-card p {
+  color: #495057;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.rarity-guide h4 {
+  color: #2c5530;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.rarity-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.rarity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.rarity-item.common {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.rarity-item.uncommon {
+  background: #d4edda;
+  color: #155724;
+}
+
+.rarity-item.rare {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.rarity-item.legendary {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.sync-info {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #17a2b8;
+}
+
+.sync-message {
+  color: #495057;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.sync-message strong {
+  color: #2c5530;
+}
+
+.sync-message em {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.loading-message h2 {
+  color: #8b4513;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.loading-message p {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.sabah-decoration {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.decoration-icon {
+  font-size: 1.5rem;
+  opacity: 0.6;
+  animation: float 3s ease-in-out infinite;
+}
+
+.decoration-icon:nth-child(2) {
+  animation-delay: 0.5s;
+}
+
+.decoration-icon:nth-child(3) {
+  animation-delay: 1s;
+}
+
+.decoration-icon:nth-child(4) {
+  animation-delay: 1.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stampbook-container {
+    padding: 1rem;
+  }
+  
+  .stampbook-header {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .stampbook-header h1 {
+    font-size: 2rem;
+  }
+  
+  .stamps-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stampbook-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .progress-stats {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+  
+  .stamp-card {
+    padding: 1.5rem;
+  }
+  
+  .stamp-details {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .stampbook-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .stampbook-subtitle {
+    font-size: 1rem;
+  }
+  
+  .stamp-icon {
+    font-size: 2.5rem;
+  }
+  
+  .stamp-name {
+    font-size: 1.1rem;
+  }
+  
+  .info-card {
+    padding: 1.5rem;
+  }
+  
+  .sync-info {
+    padding: 1.5rem;
+  }
+  
+  .decoration-icon {
+    font-size: 1.2rem;
+  }
+}

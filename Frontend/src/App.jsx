@@ -18,6 +18,9 @@ import GamePage from "./pages/GamePage";
 import Register from "./pages/Register";
 import ExplorePage from "./pages/ExplorePage";
 import DictionaryPage from "./pages/DictionaryPage";
+import QuestBoard from "./pages/QuestBoard";
+import Quest from "./pages/Quest";
+import Stampbook from "./pages/Stampbook";
 
 function App() {
   return (
@@ -31,6 +34,9 @@ function App() {
           <Route path="/ai-planner" element={<AIPlanner />} />
           <Route path="/map" element={<Map />} />
           <Route path="/game" element={<GamePage />} />
+          <Route path="/quest-board" element={<QuestBoard />} />
+          <Route path="/quest/:id" element={<Quest />} />
+          <Route path="/stampbook" element={<Stampbook />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<Login />} />
