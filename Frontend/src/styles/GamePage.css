@@ -12,6 +12,11 @@
   max-width: 100%;
 }
 
+.qr-reader video {
+  width: 100%;
+  border-radius: 10px;
+}
+
 .quiz-section,
 .score-section {
   background-color: #fff;
