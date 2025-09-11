@@ -15,6 +15,8 @@ const GamePage = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const { isAuthenticated, token, user } = useAuth();
   const { points, completedQuests, collectedStamps, quests } = useGame();
+  const [district] = useState("Kota Kinabalu");
+  const [difficulty] = useState("easy");
 
   useEffect(() => {
     fetchQuestions();
@@ -23,9 +25,11 @@ const GamePage = () => {
 
   const fetchQuestions = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/quiz`);
+      const response = await fetch(
+        `${API_BASE_URL}/quiz?district=${encodeURIComponent(district)}&difficulty=${encodeURIComponent(difficulty)}`
+      );
       const data = await response.json();
-      setQuestions(data);
+      setQuestions(data.questions);
     } catch (error) {
       console.error("Error fetching questions:", error);
     }

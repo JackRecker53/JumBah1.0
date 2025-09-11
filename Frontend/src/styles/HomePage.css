@@ -42,6 +42,13 @@
   margin-bottom: 2rem;
 }
 
+.heroButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .section {
   padding: 4rem 0;
 }

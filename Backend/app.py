@@ -262,8 +262,8 @@ Be conversational, enthusiastic, and provide actionable advice."""
 
     return "Tell me about the wonderful destinations and experiences available in Sabah, Malaysia."
 
-# Quiz questions (from your original Flask app)
-quiz_questions = [
+# Default quiz questions used when Gemini is unavailable or fails
+DEFAULT_QUIZ_QUESTIONS = [
     {
         "question": "What is the capital of Sabah?",
         "answers": ["Kota Kinabalu", "Sandakan", "Tawau", "Lahad Datu"],
@@ -290,6 +290,35 @@ quiz_questions = [
         "correctAnswer": "Orangutans",
     }
 ]
+
+
+def generate_quiz_questions(district: str, difficulty: str) -> List[Dict[str, Any]]:
+    """Generate quiz questions about a Sabah district.
+
+    Falls back to ``DEFAULT_QUIZ_QUESTIONS`` if the Gemini model is not
+    configured or returns an unexpected response.
+    """
+
+    model = get_gemini_model()
+    if not model:
+        return DEFAULT_QUIZ_QUESTIONS
+
+    prompt = (
+        "Generate 5 {difficulty} multiple-choice trivia questions about the "
+        "district of {district} in Sabah, Malaysia. Respond in JSON format as "
+        "a list where each item has 'question', 'answers' (4 options) and "
+        "'correctAnswer'."
+    ).format(difficulty=difficulty, district=district)
+
+    try:
+        response = model.generate_content(prompt)
+        questions = json.loads(response.text)
+        if not isinstance(questions, list):
+            raise ValueError("Response is not a list")
+        return questions
+    except Exception:
+        # If anything goes wrong, return a static set so the game still works
+        return DEFAULT_QUIZ_QUESTIONS
 
 # Load quests data from JSON file
 quests_path = os.path.join(os.path.dirname(__file__), "data", "quests.json")
@@ -355,8 +384,10 @@ async def get_profile(current_user: dict = Depends(verify_token)):
 
 # Quiz endpoints
 @app.get("/quiz")
-async def get_quiz():
-    return {"questions": quiz_questions}
+async def get_quiz(district: str = "Kota Kinabalu", difficulty: str = "easy"):
+    """Return AI-generated quiz questions for a given Sabah district."""
+    questions = generate_quiz_questions(district, difficulty)
+    return {"questions": questions}
 
 @app.post("/scores")
 async def submit_score(score_data: ScoreSubmission, current_user: dict = Depends(verify_token)):
