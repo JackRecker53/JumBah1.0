@@ -1,91 +1,67 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
 import { useAuth } from "../contexts/AuthContext";
-import { useGame } from "../contexts/GameContext";
-import { FaCheckCircle, FaAward, FaTicketAlt } from "react-icons/fa";
 import "../styles/GamePage.css";
 import { API_BASE_URL } from "../config";
 
 const GamePage = () => {
+  const { isAuthenticated } = useAuth();
+  const [district, setDistrict] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [leaderboard, setLeaderboard] = useState([]);
-  const { isAuthenticated, token, user } = useAuth();
-  const { points, completedQuests, collectedStamps, quests } = useGame();
 
-  useEffect(() => {
-    fetchQuestions();
-    fetchLeaderboard();
-  }, []);
-
-  const fetchQuestions = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/quiz`);
-      const data = await response.json();
-      setQuestions(data);
-    } catch (error) {
-      console.error("Error fetching questions:", error);
+  const handleScan = (result, error) => {
+    if (result) {
+      const scannedDistrict = result?.text;
+      if (scannedDistrict) {
+        setDistrict(scannedDistrict);
+        fetchQuestions(scannedDistrict);
+      }
+    }
+    if (error) {
+      console.error(error);
     }
   };
 
-  const fetchLeaderboard = async () => {
+  const fetchQuestions = async (dist) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/leaderboard`);
+      const response = await fetch(
+        `${API_BASE_URL}/quiz?district=${encodeURIComponent(dist)}&difficulty=easy`
+      );
       const data = await response.json();
-      setLeaderboard(data);
-    } catch (error) {
-      console.error("Error fetching leaderboard:", error);
+      setQuestions(data.questions);
+    } catch (err) {
+      console.error("Error fetching questions:", err);
     }
   };
 
   const handleAnswerClick = (answer) => {
     if (selectedAnswer !== null) return;
-
-    const isAnswerCorrect =
-      answer === questions[currentQuestionIndex].correctAnswer;
+    const correct = answer === questions[currentQuestionIndex].correctAnswer;
     setSelectedAnswer(answer);
-    setIsCorrect(isAnswerCorrect);
-
-    if (isAnswerCorrect) {
+    setIsCorrect(correct);
+    if (correct) {
       setScore(score + 1);
     }
-
     setTimeout(() => {
-      const nextQuestion = currentQuestionIndex + 1;
-      if (nextQuestion < questions.length) {
-        setCurrentQuestionIndex(nextQuestion);
+      const next = currentQuestionIndex + 1;
+      if (next < questions.length) {
+        setCurrentQuestionIndex(next);
         setSelectedAnswer(null);
         setIsCorrect(null);
       } else {
         setShowScore(true);
-        if (isAuthenticated) {
-          submitScore(score + (isAnswerCorrect ? 1 : 0));
-        }
       }
     }, 1500);
   };
 
-  const submitScore = async (finalScore) => {
-    if (!isAuthenticated) return; // Only submit if user is authenticated
-    try {
-      await fetch(`${API_BASE_URL}/scores`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ score: finalScore }),
-      });
-      fetchLeaderboard(); // Refresh leaderboard after submitting score
-    } catch (error) {
-      console.error("Error submitting score:", error);
-    }
-  };
-
-  const restartQuiz = () => {
+  const restart = () => {
+    setDistrict(null);
+    setQuestions([]);
     setCurrentQuestionIndex(0);
     setScore(0);
     setShowScore(false);
@@ -102,131 +78,72 @@ const GamePage = () => {
     );
   }
 
-  if (questions.length === 0) {
-    return <div>Loading questions...</div>;
-  }
-
   return (
     <div className="game-container">
-      {/* Profile & Stats Section */}
-      <header className="game-header">
-        <h1>Your Adventure Hub</h1>
-        <div className="game-stats">
-          <div className="stat-item">
-            <FaAward size={30} className="stat-icon" />
-            <span>{points} Points</span>
+      {!district && (
+        <div className="qr-section">
+          <h2>Scan a hotspot QR to begin</h2>
+          <div className="qr-reader">
+            <QrReader
+              constraints={{ facingMode: "environment" }}
+              onResult={handleScan}
+            />
           </div>
-          <div className="stat-item">
-            <FaTicketAlt size={30} className="stat-icon" />
-            <span>{collectedStamps.size} Stamps</span>
-          </div>
-          {user && (
-            <div className="stat-item">
-              <span>Profile: {user.username || user.email || "User"}</span>
-            </div>
-          )}
         </div>
-      </header>
+      )}
 
-      <div className="game-main">
-        {/* Quests Section */}
-        <section className="game-section">
-          <h2>Quests</h2>
-          <ul className="quest-list">
-            {quests.map((quest) => (
-              <li
-                key={quest.id}
-                className={`quest-item ${
-                  completedQuests.has(quest.id) ? "completed" : ""
-                }`}
-              >
-                <div className="quest-info">
-                  <h3>{quest.title}</h3>
-                  <p>{quest.description}</p>
-                </div>
-                <div className="quest-reward">
-                  {completedQuests.has(quest.id) ? (
-                    <FaCheckCircle size={24} className="check-icon" />
-                  ) : (
-                    <span>{quest.points} pts</span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+      {district && questions.length === 0 && <p>Loading questions...</p>}
 
-        {/* Achievements Section */}
+      {district && questions.length > 0 && (
         <section className="game-section">
-          <h2>Achievements</h2>
-          <p className="coming-soon">
-            More exciting badges and achievements are coming soon!
-          </p>
-        </section>
-
-        {/* Quiz Section */}
-        <section className="game-section">
-          <h2>Quiz Game</h2>
+          <h2>{district} Quiz</h2>
           {showScore ? (
             <div className="score-section">
               <h2>
                 You scored {score} out of {questions.length}
               </h2>
-              <button onClick={restartQuiz}>Restart Quiz</button>
+              <button onClick={restart}>Scan Another QR</button>
             </div>
           ) : (
             <div className="quiz-section">
               <div className="question-count">
-                <span>Question {currentQuestionIndex + 1}</span>/
-                {questions.length}
+                <span>Question {currentQuestionIndex + 1}</span>/{questions.length}
               </div>
               <div className="question-text">
                 {questions[currentQuestionIndex].question}
               </div>
               <div className="answer-section">
-                {questions[currentQuestionIndex].answers.map(
-                  (answer, index) => {
-                    const isSelected = selectedAnswer === answer;
-                    const isCorrectAnswer =
-                      answer === questions[currentQuestionIndex].correctAnswer;
+                {questions[currentQuestionIndex].answers.map((answer, index) => {
+                  const isSelected = selectedAnswer === answer;
+                  const isCorrectAnswer =
+                    answer === questions[currentQuestionIndex].correctAnswer;
 
-                    let buttonClass = "";
-                    if (isSelected) {
-                      buttonClass = isCorrect ? "correct" : "incorrect";
-                    } else if (selectedAnswer !== null && isCorrectAnswer) {
-                      buttonClass = "correct";
-                    }
-                    return (
-                      <button
-                        key={index}
-                        className={`answer-button ${buttonClass}`}
-                        onClick={() => handleAnswerClick(answer)}
-                        disabled={selectedAnswer !== null}
-                      >
-                        {answer}
-                      </button>
-                    );
+                  let buttonClass = "";
+                  if (isSelected) {
+                    buttonClass = isCorrect ? "correct" : "incorrect";
+                  } else if (selectedAnswer !== null && isCorrectAnswer) {
+                    buttonClass = "correct";
                   }
-                )}
+
+                  return (
+                    <button
+                      key={index}
+                      className={`answer-button ${buttonClass}`}
+                      onClick={() => handleAnswerClick(answer)}
+                      disabled={selectedAnswer !== null}
+                    >
+                      {answer}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
         </section>
-      </div>
-
-      {/* Leaderboard Section */}
-      <div className="leaderboard-section">
-        <h3>Leaderboard</h3>
-        <ol>
-          {leaderboard.map((entry, index) => (
-            <li key={index}>
-              {entry.username}: {entry.score}
-            </li>
-          ))}
-        </ol>
-      </div>
+      )}
     </div>
   );
 };
 
 export default GamePage;
+
