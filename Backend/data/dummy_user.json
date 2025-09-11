@@ -1,0 +1,19 @@
+{
+  "user_id": "00000000-0000-0000-0000-000000000001",
+  "email": "jer@jumbah.com",
+  "password": "jerjumbah",
+  "created_at": "2024-01-01T00:00:00",
+  "game_progression": {
+    "level": 1,
+    "experience": 0
+  },
+  "chat_history": [],
+  "map": {
+    "last_location": {
+      "latitude": 0,
+      "longitude": 0
+    },
+    "settings": {}
+  },
+  "scores": []
+}
