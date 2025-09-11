@@ -30,11 +30,8 @@ const HomePage = () => {
             into a game?
           </p>
           <div className="heroButtons">
-            <Link to="/adventure" className="btn-primary">
-              Start Your Adventure
-            </Link>
             <Link to="/game" className="btn-primary">
-              Let's Play!
+              Start Your Adventure
             </Link>
           </div>
         </div>

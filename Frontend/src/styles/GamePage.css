@@ -1,53 +1,26 @@
 .game-container {
   display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   padding: 2rem;
-  height: 100vh;
-  background-color: #f0f2f5;
-  font-family: "Arial", sans-serif;
   gap: 2rem;
+  font-family: "Arial", sans-serif;
 }
 
-.game-main {
-  flex: 2;
+.qr-reader {
+  width: 300px;
+  max-width: 100%;
 }
 
 .quiz-section,
 .score-section {
-  background-color: white;
+  background-color: #fff;
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px;
   text-align: center;
-}
-
-.leaderboard-section {
-  flex: 1;
-  background-color: white;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.leaderboard-section h3 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: #333;
-}
-
-.leaderboard-section ol {
-  list-style-type: decimal;
-  padding-left: 2rem;
-}
-
-.leaderboard-section li {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-  color: #555;
 }
 
 .question-count {
@@ -110,7 +83,7 @@
   border: none;
   border-radius: 10px;
   background-color: #007bff;
-  color: white;
+  color: #fff;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -133,3 +106,4 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
