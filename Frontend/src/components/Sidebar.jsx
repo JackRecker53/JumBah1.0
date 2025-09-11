@@ -163,8 +163,21 @@ const Sidebar = () => {
           {/* Header */}
           <div className="dropdown-header">
             <div className="header-content">
-              <h3 className="app-title">JumBah</h3>
-              <p className="app-subtitle">Explore Malaysia</p>
+              {isAuthenticated ? (
+                <>
+                  <h3 className="app-title">
+                    Welcome {user?.name || "Explorer"}
+                  </h3>
+                  <p className="app-subtitle">Enjoy JumBah</p>
+                </>
+              ) : (
+                <>
+                  <h3 className="app-title">Welcome</h3>
+                  <p className="app-subtitle">
+                    Please sign in for the full experience
+                  </p>
+                </>
+              )}
             </div>
             <button
               className="close-button"
