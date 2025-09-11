@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/GamePage.css";
 import { API_BASE_URL } from "../config";
@@ -13,60 +14,18 @@ const GamePage = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
 
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    if (district) return;
-
-    let stream;
-    let animationId;
-    let detector;
-
-    const startScanner = async () => {
-      if (!("BarcodeDetector" in window)) {
-        console.error("Barcode Detector API not supported");
-        return;
+  const handleScan = (result, error) => {
+    if (result) {
+      const scannedDistrict = result?.text;
+      if (scannedDistrict) {
+        setDistrict(scannedDistrict);
+        fetchQuestions(scannedDistrict);
       }
-      try {
-        detector = new window.BarcodeDetector({ formats: ["qr_code"] });
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-        }
-        const scan = async () => {
-          if (videoRef.current) {
-            try {
-              const barcodes = await detector.detect(videoRef.current);
-              if (barcodes.length > 0) {
-                const scannedDistrict = barcodes[0].rawValue;
-                setDistrict(scannedDistrict);
-                fetchQuestions(scannedDistrict);
-                return;
-              }
-            } catch (err) {
-              console.error(err);
-            }
-          }
-          animationId = requestAnimationFrame(scan);
-        };
-        scan();
-      } catch (err) {
-        console.error("Error accessing camera:", err);
-      }
-    };
-
-    startScanner();
-
-    return () => {
-      if (animationId) cancelAnimationFrame(animationId);
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [district]);
+    }
+    if (error) {
+      console.error(error);
+    }
+  };
 
   const fetchQuestions = async (dist) => {
     try {
@@ -125,7 +84,10 @@ const GamePage = () => {
         <div className="qr-section">
           <h2>Scan a hotspot QR to begin</h2>
           <div className="qr-reader">
-            <video ref={videoRef} className="qr-video" />
+            <QrReader
+              constraints={{ facingMode: "environment" }}
+              onResult={handleScan}
+            />
           </div>
         </div>
       )}
