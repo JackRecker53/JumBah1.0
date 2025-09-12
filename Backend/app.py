@@ -89,6 +89,28 @@ user_ai_history: Dict[str, List[Dict[str, Any]]] = {
     "dummy-user-001": []
 }
 
+# Load dummy user for testing purposes
+dummy_user_file = os.path.join(os.path.dirname(__file__), "data", "dummy_user.json")
+if os.path.exists(dummy_user_file):
+    try:
+        with open(dummy_user_file, "r", encoding="utf-8") as f:
+            dummy = json.load(f)
+        email = dummy.get("email")
+        if email:
+            user_id = dummy.get("user_id", str(uuid.uuid4()))
+            users_db[email] = {
+                "user_id": user_id,
+                "username": email,
+                "password": dummy.get("password", ""),
+                "created_at": dummy.get("created_at", datetime.now().isoformat()),
+                "game_progression": dummy.get("game_progression", {}),
+                "chat_history": dummy.get("chat_history", []),
+                "map": dummy.get("map", {})
+            }
+            user_scores[user_id] = dummy.get("scores", [])
+    except Exception as e:
+        print(f"Failed to load dummy user: {e}")
+
 # Pydantic models
 class UserRegister(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
