@@ -14,6 +14,7 @@ import google.generativeai as genai
 import jwt
 import requests
 from bs4 import BeautifulSoup
+import re
 
 # Load environment variables
 load_dotenv()
@@ -167,21 +168,39 @@ def get_gemini_model():
     return genai.GenerativeModel("gemini-1.5-flash")
 
 def create_system_prompt():
-    """Create a system prompt that defines the chatbot's personality and knowledge."""
-    return """You are JumBah AI, a friendly and casual travel assistant for Sabah, Malaysia. 
+    """Create a concise system prompt for the chatbot."""
+    return """You are JumBah AI, a friendly Sabah travel assistant. 
 
-Keep your responses conversational and natural - like talking to a knowledgeable local friend. Don't use formal structures, bullet points, or numbered lists unless specifically asked. Just chat naturally about Sabah travel topics.
+IMPORTANT: Write like you're casually chatting with a friend. Never use bullet points, asterisks (*), or structured lists. Just write in natural paragraphs and sentences.
 
-You know about:
-- Sabah attractions like Mount Kinabalu, Sipadan Island, wildlife parks
-- Local food, restaurants, and cultural experiences  
-- Transportation, accommodation, and practical travel tips
-- Costs and timing for activities
-- Local customs and hidden gems
+Help with Sabah attractions, food, activities, costs, and travel tips in a conversational way.
 
-Be enthusiastic but casual. Give helpful advice in a natural conversational way. If someone asks something outside of Sabah travel, politely redirect the conversation back to helping them explore Sabah.
+For non-Sabah topics, reply: "Sorry, I can only help with Sabah travel questions."""
 
-Keep responses focused and conversational - avoid overly structured or formal formatting."""
+def clean_ai_response(response_text: str) -> str:
+    """Remove bullet points and structured formatting from AI response."""
+    # Remove bullet points and asterisks at start of lines
+    response_text = re.sub(r'^\s*[\*\-\•]\s*', '', response_text, flags=re.MULTILINE)
+    response_text = re.sub(r'\*\*(.*?)\*\*', r'\1', response_text)  # Remove bold formatting
+    return response_text.strip()
+
+def build_conversation_context(session_id: str, new_message: str) -> str:
+    """Build conversation context from chat history."""
+    system_prompt = create_system_prompt()
+
+    if session_id not in chat_sessions:
+        return f"{system_prompt}\n\nUser: {new_message}"
+
+    # Use only last 6 messages to keep context focused
+    recent_messages = chat_sessions[session_id][-6:]
+
+    conversation = f"{system_prompt}\n\n"
+    for msg in recent_messages:
+        role = "You" if msg["role"] == "assistant" else "User"
+        conversation += f"{role}: {msg['content']}\n"
+
+    conversation += f"\nUser: {new_message}"
+    return conversation
 
 # Utility functions
 def create_access_token(data: dict):
@@ -206,38 +225,6 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
 def generate_session_id():
     """Generate a unique session ID."""
     return str(uuid.uuid4())
-
-def build_conversation_context(session_id: str, new_message: str) -> str:
-    """Build conversation context from chat history with strict off-topic handling."""
-    system_prompt = create_system_prompt()
-
-    # STRICT off-topic behavior (no random suggestions).
-    off_topic_instruction = """
-You are ONLY a Sabah travel assistant.
-
-If the user's message is unrelated to Sabah travel, reply EXACTLY with:
-"Sorry, I can only help with Sabah travel questions."
-
-Do not provide suggestions, alternatives, or reframe their question.
-Keep responses conversational and short. Avoid bullet points unless the user asks for them.
-"""
-
-    full_system_prompt = system_prompt + "\n" + off_topic_instruction
-
-    if session_id not in chat_sessions:
-        return f"{full_system_prompt}\n\nUser: {new_message}"
-
-    # Use only the last few turns to keep the context focused
-    recent_messages = chat_sessions[session_id][-8:]
-
-    conversation = f"{full_system_prompt}\n\nRecent conversation:\n"
-    for msg in recent_messages:
-        role = "You" if msg["role"] == "assistant" else "User"
-        conversation += f"{role}: {msg['content']}\n"
-
-    conversation += f"\nUser: {new_message}"
-    return conversation
-
 
 def create_specialized_prompt(request_data: dict, prompt_type: str) -> str:
     """Create specialized prompts for different features."""
@@ -598,7 +585,7 @@ async def create_chat_session():
     
     return {
         "session_id": session_id,
-        "message": "🌺 Hello! I'm JumBah AI, your intelligent travel assistant for Sabah, Malaysia! I'm powered by advanced AI to help you discover the incredible beauty and experiences that Sabah has to offer. How can I help you plan your perfect Sabah adventure today?",
+        "message": "Hello! I'm JumBah AI, your friendly travel assistant for Sabah, Malaysia! How can I help you plan your perfect Sabah adventure today?",
         "created_at": datetime.now()
     }
 
@@ -644,7 +631,7 @@ async def chat_with_bot(message: ChatMessage):
         
         # Generate AI response
         response = model.generate_content(conversation_prompt)
-        ai_response = response.text
+        ai_response = clean_ai_response(response.text)
         
         # Store messages in session
         timestamp = datetime.now()

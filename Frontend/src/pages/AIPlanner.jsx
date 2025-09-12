@@ -2,18 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { aiPlannerService } from "../services/aiPlannerService";
-import "../styles/AIPlanner.css"; // Make sure to create and link this CSS file
+import "../styles/AIPlanner.css";
 import {
   FaUser,
   FaPaperPlane,
   FaMapMarkedAlt,
   FaPlane,
-  FaCommentDots, // Changed from FaHeart for clarity
+  FaCommentDots,
   FaCalendarAlt,
   FaMoneyBillWave,
   FaUsers,
   FaBed,
   FaCopy,
+  FaSync,
 } from "react-icons/fa";
 
 const AIPlanner = () => {
@@ -28,9 +29,13 @@ const AIPlanner = () => {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [activeMode, setActiveMode] = useState("chat"); // 'chat', 'itinerary', 'flights'
+  const [activeMode, setActiveMode] = useState("chat");
 
-  // --- RECODE FIX 1: Add a ref for the scrollable chat container ---
+  // AI Status Management
+  const [isAIOnline, setIsAIOnline] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+  const [lastStatusCheck, setLastStatusCheck] = useState(null);
+
   const chatContainerRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -48,6 +53,7 @@ const AIPlanner = () => {
     passengers: "1",
     class: "economy",
   });
+
   const interestOptions = [
     "Nature & Wildlife",
     "Adventure Sports",
@@ -61,8 +67,51 @@ const AIPlanner = () => {
     "History",
   ];
 
-  // --- RECODE FIX 2: Updated scroll function for reliability ---
-  // This now directly manipulates the scrollTop of the container, which is more robust.
+  // Function to check AI backend status
+  const checkAIStatus = async () => {
+    setIsCheckingStatus(true);
+    try {
+      // Option 1: Simple health check - replace with your actual health endpoint
+      const response = await fetch("/api/health", {
+        method: "GET",
+        timeout: 5000,
+      });
+
+      if (response.ok) {
+        setIsAIOnline(true);
+      } else {
+        setIsAIOnline(false);
+      }
+    } catch (error) {
+      // Option 2: Test with actual AI service call
+      try {
+        const testResponse = await aiPlannerService.getTravelRecommendations(
+          "ping",
+          { short_answer: true, test: true }
+        );
+        setIsAIOnline(testResponse.success);
+      } catch (aiError) {
+        console.error("AI backend check failed:", aiError);
+        setIsAIOnline(false);
+      }
+    } finally {
+      setIsCheckingStatus(false);
+      setLastStatusCheck(new Date());
+    }
+  };
+
+  // Check AI status on component mount and set up periodic checks
+  useEffect(() => {
+    // Initial check
+    checkAIStatus();
+
+    // Check every 30 seconds
+    const interval = setInterval(checkAIStatus, 30000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -70,8 +119,6 @@ const AIPlanner = () => {
     }
   };
 
-  // --- RECODE FIX 3: useEffect now watches 'isLoading' as well ---
-  // This ensures the view scrolls down when the "thinking..." message appears.
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
@@ -93,27 +140,48 @@ const AIPlanner = () => {
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
+
+    // Check if AI is offline before sending
+    if (!isAIOnline) {
+      addMessage(
+        "bot",
+        "⚠️ AI Assistant is currently offline. Please wait while I try to reconnect..."
+      );
+      await checkAIStatus(); // Try to reconnect
+      if (!isAIOnline) {
+        addMessage(
+          "bot",
+          "❌ Unable to connect to AI service. Please try again later."
+        );
+        return;
+      }
+    }
+
     const userMessage = inputMessage.trim();
     addMessage("user", userMessage);
     setInputMessage("");
     setIsLoading(true);
 
     try {
-      // When sending a request:
       const response = await aiPlannerService.getTravelRecommendations(
         userMessage,
         { short_answer: true }
       );
       if (response.success) {
         addMessage("bot", response.recommendations);
+        // Update status to online since request was successful
+        setIsAIOnline(true);
       } else {
         addMessage(
           "bot",
           "I'm sorry, I encountered an error. Please try again."
         );
+        // Check if this was a connection issue
+        setIsAIOnline(false);
       }
     } catch (error) {
       console.error("Error:", error);
+      setIsAIOnline(false); // Mark as offline due to error
       addMessage(
         "bot",
         "I'm having trouble connecting. Please check that the backend server is running and try again."
@@ -133,11 +201,11 @@ const AIPlanner = () => {
   };
 
   const generateItinerary = async () => {
-    // Logic remains the same...
+    // Your existing logic...
   };
 
   const getFlightRecommendations = async () => {
-    // Logic remains the same...
+    // Your existing logic...
   };
 
   const copyMessage = (content) => {
@@ -149,6 +217,11 @@ const AIPlanner = () => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  // Manual status refresh
+  const handleStatusRefresh = () => {
+    checkAIStatus();
   };
 
   // Auto-resize logic for textarea
@@ -208,12 +281,41 @@ const AIPlanner = () => {
           <div className="chat-header">
             <h2>Chat with AI Assistant</h2>
             <div className="chat-status">
-              <div className="status-indicator"></div>
-              <span>Online</span>
+              <div
+                className={`status-indicator ${
+                  isCheckingStatus
+                    ? "checking"
+                    : isAIOnline
+                    ? "online"
+                    : "offline"
+                }`}
+              ></div>
+              <span
+                className={`status-text ${
+                  isCheckingStatus
+                    ? "checking"
+                    : isAIOnline
+                    ? "online"
+                    : "offline"
+                }`}
+              >
+                {isCheckingStatus
+                  ? "Checking..."
+                  : isAIOnline
+                  ? "Online"
+                  : "Offline"}
+              </span>
+              <button
+                className="status-refresh-btn"
+                onClick={handleStatusRefresh}
+                disabled={isCheckingStatus}
+                title="Refresh status"
+              >
+                <FaSync className={isCheckingStatus ? "spinning" : ""} />
+              </button>
             </div>
           </div>
 
-          {/* --- RECODE FIX 4: Attach the ref to the scrollable container --- */}
           <div className="chat-container" ref={chatContainerRef}>
             <div className="messages-area">
               {messages.map((message) => (
@@ -276,18 +378,27 @@ const AIPlanner = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything about traveling to Sabah..."
-                disabled={isLoading}
+                placeholder={
+                  isAIOnline
+                    ? "Ask me anything about traveling to Sabah..."
+                    : "AI is offline - Please wait for reconnection..."
+                }
+                disabled={isLoading || !isAIOnline}
                 rows={1}
               />
               <button
                 className="send-btn"
                 onClick={handleSendMessage}
-                disabled={isLoading || !inputMessage.trim()}
+                disabled={isLoading || !inputMessage.trim() || !isAIOnline}
               >
                 <FaPaperPlane />
               </button>
             </div>
+            {lastStatusCheck && (
+              <div className="status-info">
+                Last checked: {lastStatusCheck.toLocaleTimeString()}
+              </div>
+            )}
           </div>
         </div>
       </div>
