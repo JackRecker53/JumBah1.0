@@ -36,36 +36,30 @@ const HomePage = () => {
         </div>
         <WeatherWidget />
       </header>
+      <section class="aboutSection">
+        <div class="aboutContainer">
+          <div class="aboutText">
+            <h2>About Us</h2>
+            <p>
+              At JumBah, we turn exploring Sabah into an adventure. Discover
+              attractions, culture, and events through an interactive, gamified
+              journey where you can complete challenges, earn rewards, and
+              redeem prizes at the Departure Gate. Our mission is to make
+              Sabah’s beauty and traditions more accessible while creating fun,
+              meaningful, and unforgettable travel experiences. With JumBah,
+              exploring isn’t just travel — it’s about playing, learning, and
+              connecting with Sabah like never before.
+            </p>
+          </div>
 
-      {/* --- Explore Districts Section --- */}
-      <section className="section container">
-        <h2 className="sectionTitle">Explore Our Districts</h2>
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={30}
-          slidesPerView={1}
-          navigation
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-        >
-          {districtList.map((name) => (
-            <SwiperSlide key={name}>
-              <Link
-                to={`/explore/${name.replace(/\s+/g, "-")}`}
-                className="districtCard"
-              >
-                <img src={districts[name].attractions[0].image} alt={name} />
-                <div className="cardOverlay">
-                  <h3>{name}</h3>
-                </div>
-              </Link>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <div class="aboutImageWrapper">
+            <img
+              src="/adventure/sabah page.jpeg"
+              alt="About Jumbah"
+              class="aboutUs"
+            />
+          </div>
+        </div>
       </section>
     </div>
   );
