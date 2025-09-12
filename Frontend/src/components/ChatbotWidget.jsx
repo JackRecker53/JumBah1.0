@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/Chatbot.css";
 import { runChat } from "../services/geminiService";
-import { FaCommentDots, FaTimes, FaSpinner } from "react-icons/fa";
+import { FaTimes, FaSpinner } from "react-icons/fa";
 import { useGame } from "../contexts/GameContext";
 import "../styles/Sidebar.css";
 

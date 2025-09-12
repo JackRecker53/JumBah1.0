@@ -4,10 +4,8 @@ import remarkGfm from "remark-gfm";
 import { aiPlannerService } from "../services/aiPlannerService";
 import "../styles/AIPlanner.css"; // Make sure to create and link this CSS file
 import {
-  FaRobot,
   FaUser,
   FaPaperPlane,
-  FaSpinner,
   FaMapMarkedAlt,
   FaPlane,
   FaCommentDots, // Changed from FaHeart for clarity
@@ -168,7 +166,11 @@ const AIPlanner = () => {
         {/* Sidebar */}
         <div className="planner-sidebar">
           <div className="sidebar-header">
-            <FaRobot className="header-icon" />
+            <img
+              src="/backgrounds/sunbear.jpg"
+              alt="Madu icon"
+              className="header-icon"
+            />
             <div>
               <h1>MaduAI</h1>
               <p>Your personal travel planner</p>
@@ -217,7 +219,11 @@ const AIPlanner = () => {
               {messages.map((message) => (
                 <div key={message.id} className={`message ${message.type}`}>
                   <div className="message-avatar">
-                    {message.type === "bot" ? <FaRobot /> : <FaUser />}
+                    {message.type === "bot" ? (
+                      <img src="/backgrounds/sunbear.jpg" alt="Madu" />
+                    ) : (
+                      <FaUser />
+                    )}
                   </div>
                   <div className="message-content">
                     <div className="message-text">
@@ -249,7 +255,7 @@ const AIPlanner = () => {
               {isLoading && (
                 <div className="message bot">
                   <div className="message-avatar">
-                    <FaRobot />
+                    <img src="/backgrounds/sunbear.jpg" alt="Madu" />
                   </div>
                   <div className="message-content">
                     <div className="typing-indicator">
